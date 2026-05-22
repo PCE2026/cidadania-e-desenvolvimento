@@ -8,24 +8,16 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:system-ui,-apple-system,sans-serif;background:#F5F4F0;color:#1a1a18;font-size:15px}
 .wrap{max-width:720px;margin:0 auto;padding:1.5rem 1rem 3rem}
-
-/* Header */
 .header{text-align:center;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid #E0DED6}
 .badge{display:inline-block;background:#EEEDFE;color:#3C3489;font-size:11px;font-weight:600;padding:3px 12px;border-radius:20px;margin-bottom:10px;letter-spacing:.6px;text-transform:uppercase}
 .header h1{font-size:22px;font-weight:600;margin-bottom:4px}
 .header p{font-size:14px;color:#666}
-
-/* Tabs */
 .tabs{display:flex;gap:4px;background:#E8E6E0;border-radius:10px;padding:4px;margin-bottom:1.5rem}
 .tab{flex:1;padding:9px 10px;font-size:13px;font-weight:500;border:none;background:transparent;border-radius:7px;cursor:pointer;color:#666;transition:all .15s}
 .tab.active{background:#fff;color:#1a1a18;box-shadow:0 1px 3px rgba(0,0,0,.1)}
 .panel{display:none}.panel.active{display:block}
-
-/* Section titles */
 .stitle{font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.7px;margin:1.5rem 0 10px}
 .stitle:first-child{margin-top:0}
-
-/* Fields */
 .field{margin-bottom:13px}
 .field label{display:block;font-size:13px;font-weight:500;color:#555;margin-bottom:5px}
 .req{color:#D85A30;margin-left:2px}
@@ -34,62 +26,39 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#F5F4F0;color:#1a
 .field textarea{min-height:70px;resize:vertical}
 .hint{font-size:11px;color:#999;margin-top:3px}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
 .divider{border:none;border-top:1px solid #E0DED6;margin:1.25rem 0}
-
-/* Chips */
 .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:5px}
 .chip{padding:6px 12px;border:1px solid #C8C6BE;border-radius:20px;font-size:12px;cursor:pointer;background:#fff;color:#555;transition:all .15s;white-space:nowrap}
 .chip.sel{background:#EEEDFE;border-color:#534AB7;color:#3C3489;font-weight:500}
 .chip:hover{border-color:#534AB7}
-
-/* Radio opts */
 .rgroup{display:flex;gap:6px;flex-wrap:wrap}
 .ropt{display:flex;align-items:center;gap:7px;padding:7px 12px;border:1px solid #C8C6BE;border-radius:20px;cursor:pointer;font-size:13px;transition:all .15s;background:#fff}
-.ropt:hover{border-color:#534AB7}
-.ropt.chk{background:#EEEDFE;border-color:#534AB7;color:#3C3489}
+.ropt:hover{border-color:#534AB7}.ropt.chk{background:#EEEDFE;border-color:#534AB7;color:#3C3489}
 .ropt input{accent-color:#534AB7;width:14px;height:14px}
-
-/* Year tabs */
 .ytabs{display:flex;gap:6px;margin-bottom:1rem}
 .ytab{padding:8px 20px;border:1px solid #C8C6BE;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;background:#fff;color:#555;transition:all .15s}
 .ytab.act{background:#534AB7;border-color:#534AB7;color:#fff}
-
-/* Boxes */
 .box{background:#F0EDE8;border-radius:10px;padding:.9rem}
-
-/* Alunos */
 .arow{display:grid;grid-template-columns:140px 1fr auto;gap:8px;align-items:center;margin-bottom:7px}
 .arow:last-child{margin-bottom:0}
-
-/* Buttons */
 .btn-rm{width:30px;height:30px;border:1px solid #C8C6BE;background:#fff;border-radius:7px;cursor:pointer;font-size:16px;color:#888;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
 .btn-rm:hover{background:#FCEBEB;border-color:#F09595;color:#A32D2D}
 .btn-add{font-size:12px;color:#534AB7;background:transparent;border:1px dashed #AFA9EC;padding:7px 12px;border-radius:7px;cursor:pointer;margin-top:8px;width:100%;font-family:inherit;transition:background .15s}
 .btn-add:hover{background:#EEEDFE}
 .btn-sub{width:100%;padding:12px;background:#534AB7;color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer;margin-top:1.25rem;font-family:inherit;transition:opacity .15s}
 .btn-sub:hover{opacity:.88}
-
-/* Materials table */
 .mat-wrap{overflow-x:auto}
 .mat-tbl{width:100%;border-collapse:collapse;font-size:13px}
 .mat-tbl th{font-size:11px;font-weight:600;color:#888;text-align:left;padding:6px 8px;background:#E8E6E0;border-bottom:1px solid #D5D3CB;text-transform:uppercase;letter-spacing:.4px}
 .mat-tbl td{padding:4px 6px;vertical-align:middle}
 .mat-tbl td input{font-size:13px;padding:6px 8px}
-
-/* Dominios */
 .dom-sec{margin-bottom:8px}
 .dom-lbl{font-size:11px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
 .dom-chips{display:flex;flex-wrap:wrap;gap:5px}
 .dchip{padding:6px 12px;border:1px solid #9FE1CB;border-radius:20px;font-size:12px;cursor:pointer;background:#E1F5EE;color:#085041;transition:all .15s;font-weight:500}
-.dchip:hover{border-color:#0F6E56}
-.dchip.sel-d{background:#0F6E56;border-color:#0F6E56;color:#fff}
-
-/* Lei box */
+.dchip:hover{border-color:#0F6E56}.dchip.sel-d{background:#0F6E56;border-color:#0F6E56;color:#fff}
 .lei-box{background:#E6F1FB;border:1px solid #B5D4F4;border-radius:9px;padding:11px 14px;font-size:12px;color:#0C447C;margin-bottom:1rem;line-height:1.7}
 .lei-box strong{font-weight:600}
-
-/* Cards */
 .proj-list{display:flex;flex-direction:column;gap:10px}
 .pcard{background:#fff;border:1px solid #E0DED6;border-radius:12px;padding:1rem 1.25rem}
 .ph{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
@@ -98,8 +67,6 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#F5F4F0;color:#1a
 .ptag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;background:#EEEDFE;color:#3C3489;font-weight:500;white-space:nowrap;margin-right:3px;margin-bottom:2px}
 .sbadge{font-size:11px;padding:3px 9px;border-radius:20px;font-weight:500;white-space:nowrap}
 .sp{background:#FAEEDA;color:#633806}.sd{background:#EAF3DE;color:#27500A}
-
-/* Evaluation */
 .eval-box{background:#F5F4F0;border-radius:9px;padding:1rem;margin-top:10px}
 .eval-box h3{font-size:14px;font-weight:600;margin-bottom:8px}
 .crit-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;gap:10px}
@@ -109,20 +76,28 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#F5F4F0;color:#1a
 .sb.act{background:#534AB7;border-color:#534AB7;color:#fff;font-weight:500}
 .eval-save{padding:9px 20px;background:#0F6E56;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;margin-top:12px;font-family:inherit}
 .eval-save:hover{opacity:.88}
-
-/* Summary */
 .summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.25rem}
 .stat{background:#F0EDE8;border-radius:9px;padding:12px;text-align:center}
 .snum{font-size:24px;font-weight:600}.slbl{font-size:11px;color:#888;margin-top:2px}
-
 .empty{text-align:center;padding:2.5rem 1rem;color:#888;font-size:14px}
 .expand-btn{font-size:12px;color:#534AB7;background:transparent;border:1px solid #AFA9EC;padding:6px 13px;border-radius:7px;cursor:pointer;margin-top:10px;font-family:inherit}
+.expand-btn:hover{background:#EEEDFE}
+/* Password / Zona reservada */
+.lock-screen{background:#fff;border:1px solid #E0DED6;border-radius:12px;padding:2rem;text-align:center;max-width:360px;margin:2rem auto}
+.lock-screen h2{font-size:18px;font-weight:600;margin-bottom:8px}
+.lock-screen p{font-size:13px;color:#666;margin-bottom:1.25rem;line-height:1.6}
+.lock-input{width:100%;padding:10px 14px;border:1px solid #D5D3CB;border-radius:8px;font-size:15px;font-family:inherit;text-align:center;letter-spacing:.1em;margin-bottom:10px}
+.lock-input:focus{outline:none;border-color:#534AB7}
+.lock-btn{width:100%;padding:11px;background:#534AB7;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
+.lock-btn:hover{opacity:.88}
+.lock-err{font-size:12px;color:#A32D2D;margin-top:6px;display:none}
 .export-bar{display:flex;gap:10px;margin-bottom:1.25rem;flex-wrap:wrap}
 .btn-export{display:flex;align-items:center;gap:7px;padding:10px 18px;border:none;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:opacity .15s}
 .btn-export:hover{opacity:.85}
 .btn-exp-green{background:#0F6E56;color:#fff}
 .btn-exp-blue{background:#185FA5;color:#fff}
-.expand-btn:hover{background:#EEEDFE}
+.prazo-box{background:#FFF8E6;border:1px solid #F5D98A;border-radius:9px;padding:10px 14px;font-size:13px;color:#7A4D00;margin-bottom:1rem}
+.prazo-encerrado{background:#FCEBEB;border:1px solid #F09595;border-radius:9px;padding:14px;font-size:14px;color:#A32D2D;text-align:center;font-weight:500}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
@@ -137,254 +112,248 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#F5F4F0;color:#1a
 
   <div class="tabs">
     <button class="tab active" onclick="switchTab('registo')" id="tab-registo">✏️ Registar projeto</button>
-    <button class="tab" onclick="switchTab('avaliar')" id="tab-avaliar">📋 Registo de participação</button>
+    <button class="tab" onclick="switchTab('avaliar')" id="tab-avaliar">🔒 Registo de participação</button>
     <button class="tab" onclick="switchTab('todos')" id="tab-todos">📁 Ver todos</button>
   </div>
 
-  <!-- ===== PAINEL REGISTO ===== -->
+  <!-- PAINEL REGISTO -->
   <div id="panel-registo" class="panel active">
-
-    <div class="stitle">Ano de escolaridade</div>
-    <div class="ytabs" id="ytabs">
-      <button class="ytab act" onclick="selYear(this,'10')">10.º ano</button>
-      <button class="ytab" onclick="selYear(this,'11')">11.º ano</button>
-      <button class="ytab" onclick="selYear(this,'12')">12.º ano</button>
-    </div>
-
-    <div class="g2">
-      <div class="field">
-        <label>Turma <span class="req">*</span></label>
-        <select id="turma"></select>
+    <div id="prazo-aviso" class="prazo-box" style="display:none"></div>
+    <div id="registo-form">
+      <div class="stitle">Ano de escolaridade</div>
+      <div class="ytabs" id="ytabs">
+        <button class="ytab act" onclick="selYear(this,'10')">10.º ano</button>
+        <button class="ytab" onclick="selYear(this,'11')">11.º ano</button>
+        <button class="ytab" onclick="selYear(this,'12')">12.º ano</button>
       </div>
-      <div class="field">
-        <label>Tipo de curso <span class="req">*</span></label>
-        <select id="tipo-curso">
-          <option value="">Selecionar...</option>
-          <option value="ch">Científico-humanístico (P. 226-A/2018)</option>
-          <option value="prof">Profissional (P. 235-A/2018)</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="divider"></div>
-    <div class="stitle">Identificação da atividade</div>
-
-    <div class="field">
-      <label>Nome da atividade <span class="req">*</span></label>
-      <input type="text" id="nome-ativ" placeholder="Ex: Workshop de Direitos Humanos">
-    </div>
-
-    <div class="field">
-      <label>Tipo de atividade <span class="req">*</span></label>
-      <select id="tipo-ativ">
-        <option value="">Selecionar...</option>
-        <option>Palestra</option>
-        <option>Workshop</option>
-        <option>Jogo</option>
-        <option>Prova de orientação</option>
-        <option>Peddy paper</option>
-        <option>Escape room</option>
-        <option>Demonstração de experiências</option>
-        <option>Exposição</option>
-        <option>Debate</option>
-        <option>Performance / Teatro</option>
-        <option>Outro</option>
-      </select>
-    </div>
-
-    <div class="field">
-      <label>Descrição da atividade <span class="req">*</span></label>
-      <textarea id="descricao" placeholder="Descreve o que vais fazer, os objetivos e como vai decorrer..."></textarea>
-    </div>
-
-    <div class="divider"></div>
-    <div class="stitle">Domínio de Cidadania e Desenvolvimento <span class="req">*</span></div>
-    <div id="dominios-area"></div>
-
-    <div class="divider"></div>
-    <div class="stitle">Data de realização</div>
-    <div class="field">
-      <label>Escolhe a data <span class="req">*</span></label>
-      <div class="chips" id="date-chips">
-        <div class="chip" onclick="selChip(this,'22 mar 2027')">22 março 2027</div>
-        <div class="chip" onclick="selChip(this,'23 mar 2027')">23 março 2027</div>
-        <div class="chip" onclick="selChip(this,'24 mar 2027')">24 março 2027</div>
-        <div class="chip" onclick="selChip(this,'outra')">Outra data</div>
-      </div>
-    </div>
-    <div class="field" id="outra-f" style="display:none">
-      <label>Especificar data</label>
-      <input type="date" id="outra-data">
-    </div>
-
-    <div class="divider"></div>
-    <div class="stitle">Professor(a) facilitador(a)</div>
-    <div class="field">
-      <label>Nome do(a) professor(a) facilitador(a)</label>
-      <input type="text" id="prof" placeholder="Nome completo (opcional)">
-      <div class="hint">Preenche apenas se houver um(a) docente que acompanha o projeto</div>
-    </div>
-
-    <div class="divider"></div>
-    <div class="stitle">Contacto do projeto</div>
-    <div class="g2">
-      <div class="field">
-        <label>Email de contacto <span class="req">*</span></label>
-        <input type="email" id="contacto-email" placeholder="Ex: nome@escola.pt">
-      </div>
-      <div class="field">
-        <label>Telemóvel de contacto</label>
-        <input type="tel" id="contacto-telm" placeholder="Ex: 912 345 678">
-      </div>
-    </div>
-
-    <div class="divider"></div>
-    <div class="stitle">Alunos envolvidos</div>
-    <div class="box">
-      <div id="alunos-lista">
-        <div class="arow">
-          <input type="text" placeholder="N.º processo" data-field="proc">
-          <input type="text" placeholder="Nome completo" data-field="nome">
-          <button class="btn-rm" onclick="rmAluno(this)" title="Remover">✕</button>
+      <div class="g2">
+        <div class="field">
+          <label>Turma <span class="req">*</span></label>
+          <select id="turma"></select>
+        </div>
+        <div class="field">
+          <label>Tipo de curso <span class="req">*</span></label>
+          <select id="tipo-curso">
+            <option value="">Selecionar...</option>
+            <option value="ch">Científico-humanístico (P. 226-A/2018)</option>
+            <option value="prof">Profissional (P. 235-A/2018)</option>
+          </select>
         </div>
       </div>
-      <button class="btn-add" onclick="addAluno()">+ Adicionar aluno(a)</button>
-    </div>
-
-    <div class="divider"></div>
-    <div class="stitle">Logística e espaço</div>
-
-    <div class="g2">
+      <div class="divider"></div>
+      <div class="stitle">Identificação da atividade</div>
       <div class="field">
-        <label>Espaço necessário <span class="req">*</span></label>
-        <select id="espaco">
+        <label>Nome da atividade <span class="req">*</span></label>
+        <input type="text" id="nome-ativ" placeholder="Ex: Workshop de Direitos Humanos">
+      </div>
+      <div class="field">
+        <label>Tipo de atividade <span class="req">*</span></label>
+        <select id="tipo-ativ">
           <option value="">Selecionar...</option>
-          <option>Sala de aula</option>
-          <option>Sala polivalente / anfiteatro</option>
-          <option>Ginásio</option>
-          <option>Laboratório</option>
-          <option>Espaço exterior (recreio / campo)</option>
-          <option>Biblioteca</option>
-          <option>Corredor / átrio</option>
+          <option>Palestra</option>
+          <option>Workshop</option>
+          <option>Jogo</option>
+          <option>Prova de orientação</option>
+          <option>Peddy paper</option>
+          <option>Escape room</option>
+          <option>Demonstração de experiências</option>
+          <option>Exposição</option>
+          <option>Debate</option>
+          <option>Artes performativas / Teatro / Dança</option>
           <option>Outro</option>
         </select>
       </div>
       <div class="field">
-        <label>Especificação do espaço</label>
-        <input type="text" id="espaco-det" placeholder="Ex: sala com projetor, 60 lugares...">
+        <label>Descrição da atividade <span class="req">*</span></label>
+        <textarea id="descricao" placeholder="Descreve o que vais fazer, os objetivos e como vai decorrer..."></textarea>
       </div>
-    </div>
-
-    <div class="field">
-      <label>Materiais necessários</label>
-      <div class="box">
-        <div class="mat-wrap">
-          <table class="mat-tbl">
-            <thead>
-              <tr>
-                <th style="width:150px">Quantidade</th>
-                <th>Material / Produto</th>
-                <th style="width:38px"></th>
-              </tr>
-            </thead>
-            <tbody id="mat-lista">
-              <tr>
-                <td><input type="text" placeholder="Ex: 30 unidades"></td>
-                <td><input type="text" placeholder="Ex: Folhas A4"></td>
-                <td><button class="btn-rm" onclick="rmMat(this)" title="Remover">✕</button></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <button class="btn-add" onclick="addMat()">+ Adicionar material</button>
-      </div>
-    </div>
-
-    <div class="field">
-      <label>A atividade é aberta a outras turmas?</label>
-      <div class="rgroup" id="abertura-g">
-        <label class="ropt" onclick="selR(this,'abertura','aberta');showAnos(false)">
-          <input type="radio" name="abertura" value="aberta"> Aberta a todas as turmas
-        </label>
-        <label class="ropt" onclick="selR(this,'abertura','parcial');showAnos(true)">
-          <input type="radio" name="abertura" value="parcial"> Aberta a alguns anos
-        </label>
-        <label class="ropt" onclick="selR(this,'abertura','propria');showAnos(false)">
-          <input type="radio" name="abertura" value="propria"> Só para a nossa turma
-        </label>
-      </div>
-    </div>
-    <div class="field" id="anos-f" style="display:none">
-      <label>Quais os anos abrangidos?</label>
-      <input type="text" id="anos-abr" placeholder="Ex: 10.º e 11.º anos">
-    </div>
-
-    <div class="divider"></div>
-    <div class="stitle">Convidado ou entidade externa</div>
-    <div class="box">
-      <div class="field" style="margin-bottom:10px">
-        <label>É necessário convidado ou empresa externa para a realização?</label>
-        <div class="rgroup" id="conv-g">
-          <label class="ropt" onclick="selR(this,'conv','nao');showConv(false)">
-            <input type="radio" name="conv" value="nao"> Não
-          </label>
-          <label class="ropt" onclick="selR(this,'conv','sim');showConv(true)">
-            <input type="radio" name="conv" value="sim"> Sim
-          </label>
+      <div class="divider"></div>
+      <div class="stitle">Domínio de Cidadania e Desenvolvimento <span class="req">*</span></div>
+      <div id="dominios-area"></div>
+      <div class="divider"></div>
+      <div class="stitle">Data de realização</div>
+      <div class="field">
+        <label>Escolhe a data <span class="req">*</span></label>
+        <div class="chips" id="date-chips">
+          <div class="chip" onclick="selChip(this,'22 mar 2027')">22 março 2027</div>
+          <div class="chip" onclick="selChip(this,'23 mar 2027')">23 março 2027</div>
+          <div class="chip" onclick="selChip(this,'24 mar 2027')">24 março 2027</div>
+          <div class="chip" onclick="selChip(this,'outra')">Outra data</div>
         </div>
       </div>
-      <div id="conv-det" style="display:none">
-        <div class="g2">
-          <div class="field">
-            <label>Nome / entidade</label>
-            <input type="text" id="conv-nome" placeholder="Nome ou organização">
-          </div>
-          <div class="field">
-            <label>Tipo de participação</label>
-            <select id="conv-tipo">
-              <option value="">Selecionar...</option>
-              <option>Palestrante / orador(a)</option>
-              <option>Facilitador(a) de workshop</option>
-              <option>Empresa / organização parceira</option>
-              <option>Especialista / técnico(a)</option>
-              <option>Outro</option>
-            </select>
-          </div>
+      <div class="field" id="outra-f" style="display:none">
+        <label>Especificar data</label>
+        <input type="date" id="outra-data">
+      </div>
+      <div class="divider"></div>
+      <div class="stitle">Professor(a) facilitador(a)</div>
+      <div class="field">
+        <label>Nome do(a) professor(a) facilitador(a)</label>
+        <input type="text" id="prof" placeholder="Nome completo (opcional)">
+        <div class="hint">Preenche apenas se houver um(a) docente que acompanha o projeto</div>
+      </div>
+      <div class="divider"></div>
+      <div class="stitle">Contacto do projeto</div>
+      <div class="g2">
+        <div class="field">
+          <label>Email de contacto <span class="req">*</span></label>
+          <input type="email" id="contacto-email" placeholder="Ex: nome@escola.pt">
         </div>
         <div class="field">
-          <label>Observações sobre o convidado</label>
-          <input type="text" id="conv-obs" placeholder="Área de especialidade, contacto, etc.">
+          <label>Telemóvel de contacto</label>
+          <input type="tel" id="contacto-telm" placeholder="Ex: 912345678" maxlength="9" oninput="this.value=this.value.replace(/\D/g,'').slice(0,9)">
+          <div class="hint">9 dígitos, sem espaços</div>
         </div>
       </div>
+      <div class="divider"></div>
+      <div class="stitle">Alunos envolvidos</div>
+      <div class="box">
+        <div id="alunos-lista">
+          <div class="arow">
+            <input type="text" placeholder="N.º processo" data-field="proc">
+            <input type="text" placeholder="Nome completo" data-field="nome">
+            <button class="btn-rm" onclick="rmAluno(this)" title="Remover">✕</button>
+          </div>
+        </div>
+        <button class="btn-add" onclick="addAluno()">+ Adicionar aluno(a)</button>
+      </div>
+      <div class="divider"></div>
+      <div class="stitle">Logística e espaço</div>
+      <div class="g2">
+        <div class="field">
+          <label>Espaço necessário <span class="req">*</span></label>
+          <select id="espaco">
+            <option value="">Selecionar...</option>
+            <option>Sala de aula</option>
+            <option>Sala polivalente / anfiteatro</option>
+            <option>Ginásio</option>
+            <option>Laboratório</option>
+            <option>Espaço exterior (recreio / campo)</option>
+            <option>Biblioteca</option>
+            <option>Corredor / átrio</option>
+            <option>Outro</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Especificação do espaço</label>
+          <input type="text" id="espaco-det" placeholder="Ex: sala com projetor, 60 lugares...">
+        </div>
+      </div>
+      <div class="field">
+        <label>Materiais necessários</label>
+        <div class="box">
+          <div class="mat-wrap">
+            <table class="mat-tbl">
+              <thead><tr><th style="width:150px">Quantidade</th><th>Material / Produto</th><th style="width:38px"></th></tr></thead>
+              <tbody id="mat-lista">
+                <tr>
+                  <td><input type="text" placeholder="Ex: 30 unidades"></td>
+                  <td><input type="text" placeholder="Ex: Folhas A4"></td>
+                  <td><button class="btn-rm" onclick="rmMat(this)" title="Remover">✕</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <button class="btn-add" onclick="addMat()">+ Adicionar material</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>A atividade é aberta a outras turmas?</label>
+        <div class="rgroup" id="abertura-g">
+          <label class="ropt" onclick="selR(this,'abertura','aberta');showAnos(false)"><input type="radio" name="abertura" value="aberta"> Aberta a todas as turmas</label>
+          <label class="ropt" onclick="selR(this,'abertura','parcial');showAnos(true)"><input type="radio" name="abertura" value="parcial"> Aberta a alguns anos</label>
+          <label class="ropt" onclick="selR(this,'abertura','propria');showAnos(false)"><input type="radio" name="abertura" value="propria"> Só para a nossa turma</label>
+        </div>
+      </div>
+      <div class="field" id="anos-f" style="display:none">
+        <label>Quais os anos abrangidos?</label>
+        <input type="text" id="anos-abr" placeholder="Ex: 10.º e 11.º anos">
+      </div>
+      <div class="divider"></div>
+      <div class="stitle">Convidado ou entidade externa</div>
+      <div class="box">
+        <div class="field" style="margin-bottom:10px">
+          <label>Nome do convidado ou empresa</label>
+          <div class="rgroup" id="conv-g">
+            <label class="ropt" onclick="selR(this,'conv','nao');showConv(false)"><input type="radio" name="conv" value="nao"> Não há convidado</label>
+            <label class="ropt" onclick="selR(this,'conv','sim');showConv(true)"><input type="radio" name="conv" value="sim"> Sim, há convidado / empresa</label>
+          </div>
+        </div>
+        <div id="conv-det" style="display:none">
+          <div class="g2">
+            <div class="field">
+              <label>Nome / entidade <span class="req">*</span></label>
+              <input type="text" id="conv-nome" placeholder="Nome ou organização">
+            </div>
+            <div class="field">
+              <label>Tipo de participação</label>
+              <select id="conv-tipo">
+                <option value="">Selecionar...</option>
+                <option>Palestrante / orador(a)</option>
+                <option>Facilitador(a) de workshop</option>
+                <option>Empresa / organização parceira</option>
+                <option>Especialista / técnico(a)</option>
+                <option>Outro</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label>Observações sobre o convidado</label>
+            <input type="text" id="conv-obs" placeholder="Área de especialidade, contacto, etc.">
+          </div>
+        </div>
+      </div>
+      <button class="btn-sub" onclick="submitProjeto()">➤ Registar projeto</button>
     </div>
-
-    <button class="btn-sub" onclick="submitProjeto()">➤ Registar projeto</button>
   </div>
 
-  <!-- ===== PAINEL PARTICIPAÇÃO ===== -->
+  <!-- PAINEL PARTICIPAÇÃO (ZONA RESERVADA) -->
   <div id="panel-avaliar" class="panel">
-    <div class="lei-box">
-      <strong>Enquadramento legal:</strong> Nos termos da <strong>Portaria n.º 226-A/2018</strong>, de 7 de agosto (cursos científico-humanísticos) e da <strong>Portaria n.º 235-A/2018</strong>, de 23 de agosto (cursos profissionais), Cidadania e Desenvolvimento <strong>não é objeto de avaliação sumativa</strong>. A participação dos alunos nos projetos é objeto de <strong>registo anual no certificado do aluno</strong>. Este painel permite documentar essa participação de forma qualitativa, em conformidade com a legislação.
+    <!-- Ecrã de login -->
+    <div id="lock-screen" class="lock-screen">
+      <div style="font-size:36px;margin-bottom:12px">🔒</div>
+      <h2>Área Reservada</h2>
+      <p>Este espaço é exclusivo para professores.<br>Introduz a password para aceder ao registo de participação e exportação de dados.</p>
+      <input class="lock-input" type="password" id="lock-pwd" placeholder="Password" onkeydown="if(event.key==='Enter')checkPwd()">
+      <button class="lock-btn" onclick="checkPwd()">Entrar</button>
+      <div class="lock-err" id="lock-err">Password incorreta. Tenta novamente.</div>
     </div>
-    <div id="avaliar-content"></div>
+    <!-- Conteúdo após login -->
+    <div id="avaliar-authed" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+        <div class="lei-box" style="margin-bottom:0;flex:1;margin-right:12px">
+          <strong>Enquadramento legal:</strong> Portaria n.º 226-A/2018 (cursos científico-humanísticos) e Portaria n.º 235-A/2018 (cursos profissionais). C&amp;D <strong>não tem avaliação sumativa</strong>. A participação é registada no certificado do aluno.
+        </div>
+        <button onclick="logout()" style="padding:7px 14px;border:1px solid #C8C6BE;background:#fff;border-radius:8px;cursor:pointer;font-size:12px;white-space:nowrap">🔓 Sair</button>
+      </div>
+      <div class="export-bar">
+        <button class="btn-export btn-exp-green" onclick="exportProjetos()">⬇ Exportar Projetos (.xlsx)</button>
+        <button class="btn-export btn-exp-blue" onclick="exportParticipacao()">⬇ Exportar Participação (.xlsx)</button>
+      </div>
+      <div id="avaliar-content"></div>
+    </div>
   </div>
 
-  <!-- ===== PAINEL VER TODOS ===== -->
+  <!-- PAINEL VER TODOS (público) -->
   <div id="panel-todos" class="panel">
-    <div class="export-bar">
-      <button class="btn-export btn-exp-green" onclick="exportProjetos()">⬇ Exportar Projetos (.xlsx)</button>
-      <button class="btn-export btn-exp-blue" onclick="exportParticipacao()">⬇ Exportar Participação (.xlsx)</button>
-    </div>
     <div id="todos-content"></div>
   </div>
 
 </div>
 
 <script>
+// =====================================================
+// CONFIGURAÇÕES — ALTERAR AQUI
+// =====================================================
+var PASSWORD_PROFESSORES = 'templarios2027'; // Alterar para a password desejada
+var DATA_LIMITE_REGISTO = '2027-03-15';       // Formato AAAA-MM-DD — após esta data o registo fecha
+// =====================================================
+
 var projetos = [];
 var anoAtual = '10';
 var selDate = '', selAbertura = '', selConv = 'nao';
 var scoresMap = {}, mencaoMap = {}, selDoms = {};
+var authed = false;
 
 var letras = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P'];
 
@@ -394,23 +363,19 @@ var domsBase = [
   {id:'ds', label:'Desenvolvimento Sustentável'},
   {id:'lf', label:'Literacia Financeira e Empreendedorismo'}
 ];
-
 var domsExtra = {
   '10': [{id:'sau', label:'Saúde'}, {id:'media', label:'Media'}],
   '11': [{id:'risco', label:'Risco'}, {id:'seg', label:'Segurança Rodoviária'}],
   '12': [{id:'plur', label:'Pluralismo e Diversidade Cultural'}]
 };
-
 var domNomes = {
   dh:'Direitos Humanos', dem:'Democracia e Inst. Políticas',
   ds:'Desenvolvimento Sustentável', lf:'Literacia Financeira/Empreend.',
   sau:'Saúde', media:'Media', risco:'Risco',
   seg:'Segurança Rodoviária', plur:'Pluralismo e Diversidade Cultural'
 };
-
 var cursoLabel = {ch:'Científico-humanístico', prof:'Profissional'};
 var aberLabel = {aberta:'Aberta a todas as turmas', parcial:'Aberta a alguns anos', propria:'Só para a turma'};
-
 var criterios = [
   {id:'part', label:'Nível de participação na atividade'},
   {id:'emp',  label:'Empenho e responsabilidade demonstrados'},
@@ -420,95 +385,124 @@ var criterios = [
 ];
 var mencoes = ['Participou com distinção', 'Participou', 'Participou satisfatoriamente', 'Não participou'];
 
+// ---- Prazo ----
+function prazoEncerrado() {
+  var hoje = new Date();
+  var limite = new Date(DATA_LIMITE_REGISTO + 'T23:59:59');
+  return hoje > limite;
+}
+
+function verificarPrazo() {
+  var aviso = document.getElementById('prazo-aviso');
+  var form = document.getElementById('registo-form');
+  if (prazoEncerrado()) {
+    aviso.style.display = 'block';
+    aviso.className = 'prazo-encerrado';
+    aviso.innerHTML = '⛔ O prazo de registo de projetos terminou em ' + DATA_LIMITE_REGISTO.split('-').reverse().join('/') + '. Não é possível registar novos projetos.';
+    form.style.display = 'none';
+  } else {
+    var limite = new Date(DATA_LIMITE_REGISTO + 'T23:59:59');
+    var hoje = new Date();
+    var dias = Math.ceil((limite - hoje) / (1000*60*60*24));
+    aviso.style.display = 'block';
+    aviso.className = 'prazo-box';
+    aviso.innerHTML = '📅 Prazo de registo: até <strong>' + DATA_LIMITE_REGISTO.split('-').reverse().join('/') + '</strong> — faltam ' + dias + ' dia(s).';
+    form.style.display = 'block';
+  }
+}
+
+// ---- Password ----
+function checkPwd() {
+  var val = document.getElementById('lock-pwd').value;
+  if (val === PASSWORD_PROFESSORES) {
+    authed = true;
+    document.getElementById('lock-screen').style.display = 'none';
+    document.getElementById('avaliar-authed').style.display = 'block';
+    renderAvaliar();
+  } else {
+    document.getElementById('lock-err').style.display = 'block';
+    document.getElementById('lock-pwd').value = '';
+    document.getElementById('lock-pwd').focus();
+  }
+}
+function logout() {
+  authed = false;
+  document.getElementById('avaliar-authed').style.display = 'none';
+  document.getElementById('lock-screen').style.display = 'block';
+  document.getElementById('lock-pwd').value = '';
+  document.getElementById('lock-err').style.display = 'none';
+}
+
+// ---- Tabs ----
 function switchTab(t) {
   document.querySelectorAll('.tab').forEach(function(b){ b.classList.remove('active'); });
   document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('active'); });
   document.getElementById('tab-'+t).classList.add('active');
   document.getElementById('panel-'+t).classList.add('active');
-  if (t==='avaliar') renderAvaliar();
+  if (t==='avaliar' && authed) renderAvaliar();
   if (t==='todos') renderTodos();
 }
 
+// ---- Anos / turmas / domínios ----
 function selYear(btn, yr) {
   document.querySelectorAll('.ytab').forEach(function(b){ b.classList.remove('act'); });
-  btn.classList.add('act');
-  anoAtual = yr;
-  updateTurmas();
-  renderDoms();
+  btn.classList.add('act'); anoAtual = yr;
+  updateTurmas(); renderDoms();
 }
-
 function updateTurmas() {
   var sel = document.getElementById('turma');
   sel.innerHTML = '<option value="">Selecionar turma...</option>';
   letras.forEach(function(l) {
     var o = document.createElement('option');
-    o.value = anoAtual+'.º '+l;
-    o.textContent = anoAtual+'.º '+l;
+    o.value = anoAtual+'.º '+l; o.textContent = anoAtual+'.º '+l;
     sel.appendChild(o);
   });
 }
-
 function renderDoms() {
   selDoms = {};
   var extras = domsExtra[anoAtual] || [];
   var h = '<div class="dom-sec"><div class="dom-lbl">Temas obrigatórios em todos os anos (10.º, 11.º e 12.º)</div><div class="dom-chips">';
-  domsBase.forEach(function(d) {
-    h += '<div class="dchip" data-id="'+d.id+'" onclick="togDom(this)">'+d.label+'</div>';
-  });
+  domsBase.forEach(function(d){ h += '<div class="dchip" data-id="'+d.id+'" onclick="togDom(this)">'+d.label+'</div>'; });
   h += '</div></div>';
   if (extras.length) {
     h += '<div class="dom-sec" style="margin-top:10px"><div class="dom-lbl">Temas obrigatórios no '+anoAtual+'.º ano</div><div class="dom-chips">';
-    extras.forEach(function(d) {
-      h += '<div class="dchip" data-id="'+d.id+'" onclick="togDom(this)">'+d.label+'</div>';
-    });
+    extras.forEach(function(d){ h += '<div class="dchip" data-id="'+d.id+'" onclick="togDom(this)">'+d.label+'</div>'; });
     h += '</div></div>';
   }
   document.getElementById('dominios-area').innerHTML = h;
 }
-
 function togDom(el) {
   var id = el.dataset.id;
   if (selDoms[id]) { delete selDoms[id]; el.classList.remove('sel-d'); }
   else { selDoms[id] = true; el.classList.add('sel-d'); }
 }
 
+// ---- Formulário helpers ----
 function selChip(el, val) {
   document.querySelectorAll('#date-chips .chip').forEach(function(c){ c.classList.remove('sel'); });
-  el.classList.add('sel');
-  selDate = val;
+  el.classList.add('sel'); selDate = val;
   document.getElementById('outra-f').style.display = val==='outra' ? 'block' : 'none';
 }
-
 function selR(el, name, val) {
   document.querySelectorAll('[name="'+name+'"]').forEach(function(r){ r.closest('.ropt').classList.remove('chk'); });
   el.classList.add('chk');
   if (name==='abertura') selAbertura = val;
   if (name==='conv') selConv = val;
 }
-
 function showAnos(show) { document.getElementById('anos-f').style.display = show ? 'block' : 'none'; }
 function showConv(show) { document.getElementById('conv-det').style.display = show ? 'block' : 'none'; }
-
 function addAluno() {
   var d = document.createElement('div'); d.className = 'arow';
   d.innerHTML = '<input type="text" placeholder="N.º processo" data-field="proc"><input type="text" placeholder="Nome completo" data-field="nome"><button class="btn-rm" onclick="rmAluno(this)" title="Remover">✕</button>';
   document.getElementById('alunos-lista').appendChild(d);
 }
-function rmAluno(btn) {
-  var rows = document.querySelectorAll('.arow');
-  if (rows.length > 1) btn.closest('.arow').remove();
-}
-
+function rmAluno(btn) { if (document.querySelectorAll('.arow').length > 1) btn.closest('.arow').remove(); }
 function addMat() {
   var tr = document.createElement('tr');
   tr.innerHTML = '<td><input type="text" placeholder="Ex: 10 unidades"></td><td><input type="text" placeholder="Material / produto"></td><td><button class="btn-rm" onclick="rmMat(this)" title="Remover">✕</button></td>';
   document.getElementById('mat-lista').appendChild(tr);
 }
-function rmMat(btn) {
-  var rows = document.querySelectorAll('#mat-lista tr');
-  if (rows.length > 1) btn.closest('tr').remove();
-}
-
+function rmMat(btn) { if (document.querySelectorAll('#mat-lista tr').length > 1) btn.closest('tr').remove(); }
 function getMats() {
   var rows = document.querySelectorAll('#mat-lista tr'), mats = [];
   rows.forEach(function(r) {
@@ -518,7 +512,6 @@ function getMats() {
   });
   return mats;
 }
-
 function getAlunos() {
   var rows = document.querySelectorAll('.arow'), al = [];
   rows.forEach(function(r) {
@@ -528,10 +521,11 @@ function getAlunos() {
   });
   return al;
 }
-
 function getDoms() { return Object.keys(selDoms); }
 
+// ---- Submeter projeto ----
 function submitProjeto() {
+  if (prazoEncerrado()) { alert('O prazo de registo terminou. Não é possível registar novos projetos.'); return; }
   var nome = document.getElementById('nome-ativ').value.trim();
   var tipo = document.getElementById('tipo-ativ').value;
   var turma = document.getElementById('turma').value;
@@ -543,76 +537,59 @@ function submitProjeto() {
     alert('Por favor preenche todos os campos obrigatórios (*) e seleciona pelo menos um domínio de Cidadania.');
     return;
   }
+  var telm = document.getElementById('contacto-telm').value.replace(/\D/g,'');
+  if (telm && telm.length !== 9) { alert('O telemóvel deve ter exatamente 9 dígitos.'); return; }
   var data = selDate;
-  if (selDate==='outra') {
-    var d = document.getElementById('outra-data').value;
-    data = d || 'Data a definir';
-  }
+  if (selDate==='outra') { var d = document.getElementById('outra-data').value; data = d || 'Data a definir'; }
   var convidado = null;
   if (selConv==='sim') {
-    convidado = {
-      nome: document.getElementById('conv-nome').value.trim(),
-      tipo: document.getElementById('conv-tipo').value,
-      obs:  document.getElementById('conv-obs').value.trim()
-    };
+    var cnome = document.getElementById('conv-nome').value.trim();
+    if (!cnome) { alert('Indica o nome do convidado ou empresa.'); return; }
+    convidado = { nome:cnome, tipo:document.getElementById('conv-tipo').value, obs:document.getElementById('conv-obs').value.trim() };
   }
   projetos.push({
-    id: Date.now(), nome:nome, tipo:tipo, turma:turma, desc:desc, curso:curso,
+    id:Date.now(), nome:nome, tipo:tipo, turma:turma, desc:desc, curso:curso,
     ano:anoAtual, data:data,
-    prof: document.getElementById('prof').value.trim(),
-    contactoEmail: email,
-    contactoTelm: document.getElementById('contacto-telm').value.trim(),
-    alunos: getAlunos(), mats: getMats(),
-    espaco: document.getElementById('espaco').value,
-    espacoDet: document.getElementById('espaco-det').value.trim(),
-    abertura: selAbertura,
-    anosAbr: document.getElementById('anos-abr').value.trim(),
-    dominios: doms, convidado: convidado, participacao: null
+    prof:document.getElementById('prof').value.trim(),
+    contactoEmail:email, contactoTelm:telm,
+    alunos:getAlunos(), mats:getMats(),
+    espaco:document.getElementById('espaco').value,
+    espacoDet:document.getElementById('espaco-det').value.trim(),
+    abertura:selAbertura, anosAbr:document.getElementById('anos-abr').value.trim(),
+    dominios:doms, convidado:convidado, participacao:null
   });
   alert('✅ Projeto registado com sucesso!');
   resetForm();
 }
-
 function resetForm() {
-  ['nome-ativ','descricao','prof','contacto-email','contacto-telm','anos-abr','outra-data','espaco-det','conv-nome','conv-obs'].forEach(function(id){
-    var el = document.getElementById(id); if (el) el.value='';
-  });
-  ['tipo-ativ','turma','espaco','tipo-curso','conv-tipo'].forEach(function(id){
-    document.getElementById(id).value='';
-  });
+  ['nome-ativ','descricao','prof','contacto-email','contacto-telm','anos-abr','outra-data','espaco-det','conv-nome','conv-obs'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+  ['tipo-ativ','turma','espaco','tipo-curso','conv-tipo'].forEach(function(id){ document.getElementById(id).value=''; });
   document.querySelectorAll('.chip').forEach(function(c){ c.classList.remove('sel'); });
   document.querySelectorAll('.ropt').forEach(function(r){ r.classList.remove('chk'); });
-  document.getElementById('outra-f').style.display = 'none';
-  document.getElementById('anos-f').style.display = 'none';
-  document.getElementById('conv-det').style.display = 'none';
-  document.getElementById('alunos-lista').innerHTML = '<div class="arow"><input type="text" placeholder="N.º processo" data-field="proc"><input type="text" placeholder="Nome completo" data-field="nome"><button class="btn-rm" onclick="rmAluno(this)" title="Remover">✕</button></div>';
-  document.getElementById('mat-lista').innerHTML = '<tr><td><input type="text" placeholder="Ex: 30 unidades"></td><td><input type="text" placeholder="Ex: Folhas A4"></td><td><button class="btn-rm" onclick="rmMat(this)" title="Remover">✕</button></td></tr>';
+  document.getElementById('outra-f').style.display='none';
+  document.getElementById('anos-f').style.display='none';
+  document.getElementById('conv-det').style.display='none';
+  document.getElementById('alunos-lista').innerHTML='<div class="arow"><input type="text" placeholder="N.º processo" data-field="proc"><input type="text" placeholder="Nome completo" data-field="nome"><button class="btn-rm" onclick="rmAluno(this)" title="Remover">✕</button></div>';
+  document.getElementById('mat-lista').innerHTML='<tr><td><input type="text" placeholder="Ex: 30 unidades"></td><td><input type="text" placeholder="Ex: Folhas A4"></td><td><button class="btn-rm" onclick="rmMat(this)" title="Remover">✕</button></td></tr>';
   selDate=''; selAbertura=''; selConv='nao'; selDoms={};
   renderDoms();
 }
 
-/* ===== AVALIAÇÃO / PARTICIPAÇÃO ===== */
+// ---- Registo de participação ----
 function renderAvaliar() {
   var cont = document.getElementById('avaliar-content');
-  if (!projetos.length) {
-    cont.innerHTML = '<div class="empty">📋 Ainda não há projetos registados. Começa por registar um projeto.</div>';
-    return;
-  }
+  if (!projetos.length) { cont.innerHTML = '<div class="empty">📋 Ainda não há projetos registados.</div>'; return; }
   var pend = projetos.filter(function(p){ return !p.participacao; });
-  if (!pend.length) {
-    cont.innerHTML = '<div class="empty">✅ Todos os projetos já têm registo de participação!</div>';
-    return;
-  }
   var done = projetos.filter(function(p){ return p.participacao; }).length;
   var h = '<div class="summary">';
   h += '<div class="stat"><div class="snum">'+projetos.length+'</div><div class="slbl">Projetos</div></div>';
   h += '<div class="stat"><div class="snum">'+pend.length+'</div><div class="slbl">Por registar</div></div>';
   h += '<div class="stat"><div class="snum">'+done+'</div><div class="slbl">Registados</div></div>';
-  h += '</div><div class="proj-list">';
-
+  h += '</div>';
+  if (!pend.length) { cont.innerHTML = h + '<div class="empty">✅ Todos os projetos já têm registo de participação!</div>'; return; }
+  h += '<div class="proj-list">';
   pend.forEach(function(p) {
-    scoresMap[p.id] = {};
-    criterios.forEach(function(c){ scoresMap[p.id][c.id] = null; });
+    scoresMap[p.id] = {}; criterios.forEach(function(c){ scoresMap[p.id][c.id] = null; });
     var portaria = p.curso==='prof' ? '235-A/2018' : '226-A/2018';
     h += '<div class="pcard" id="pc-'+p.id+'">';
     h += '<div class="ph"><div>';
@@ -620,30 +597,20 @@ function renderAvaliar() {
     h += '<div class="pmeta">'+p.turma+' · '+p.data+' · '+(cursoLabel[p.curso]||p.curso)+'</div>';
     h += '<div class="pmeta" style="margin-top:4px">'+p.dominios.map(function(d){ return '<span class="ptag">'+(domNomes[d]||d)+'</span>'; }).join('')+'</div>';
     h += '</div><span class="sbadge sp">Por registar</span></div>';
-
     h += '<div id="ev-'+p.id+'" style="display:none"><div class="eval-box">';
     h += '<h3>Registo de participação — '+p.nome+'</h3>';
-    h += '<p style="font-size:12px;color:#666;margin-bottom:12px;line-height:1.6">Portaria n.º '+portaria+'. Cidadania e Desenvolvimento <strong>não tem avaliação sumativa</strong>. A participação é registada no certificado do aluno.</p>';
-
+    h += '<p style="font-size:12px;color:#666;margin-bottom:12px;line-height:1.6">Portaria n.º '+portaria+'. C&amp;D <strong>não tem avaliação sumativa</strong>. A participação é registada no certificado do aluno.</p>';
     criterios.forEach(function(c) {
-      h += '<div class="crit-row"><span class="crit-lbl">'+c.label+'</span>';
-      h += '<div class="sbtns" id="sc-'+p.id+'-'+c.id+'">';
-      ['Insuficiente','Suficiente','Bom','Muito Bom'].forEach(function(l, i) {
-        h += '<button class="sb" data-val="'+(i+1)+'" onclick="setScore('+p.id+',\''+c.id+'\','+(i+1)+')">'+l+'</button>';
-      });
+      h += '<div class="crit-row"><span class="crit-lbl">'+c.label+'</span><div class="sbtns" id="sc-'+p.id+'-'+c.id+'">';
+      ['Insuficiente','Suficiente','Bom','Muito Bom'].forEach(function(l,i){ h += '<button class="sb" data-val="'+(i+1)+'" onclick="setScore('+p.id+',\''+c.id+'\','+(i+1)+')">'+l+'</button>'; });
       h += '</div></div>';
     });
-
     h += '<div class="field" style="margin-top:12px"><label style="font-size:13px;font-weight:500;color:#555;display:block;margin-bottom:5px">Observações para o certificado do aluno</label>';
     h += '<textarea id="obs-'+p.id+'" placeholder="Descreve a participação do grupo de forma qualitativa para constar no certificado..."></textarea></div>';
-
     h += '<div class="field"><label style="font-size:13px;font-weight:500;color:#555;display:block;margin-bottom:6px">Menção global de participação <span class="req">*</span></label>';
     h += '<div class="rgroup" id="men-'+p.id+'">';
-    mencoes.forEach(function(m) {
-      h += '<label class="ropt" onclick="selMencao(this,'+p.id+',\''+m+'\')"><input type="radio" name="men-'+p.id+'"> '+m+'</label>';
-    });
+    mencoes.forEach(function(m){ h += '<label class="ropt" onclick="selMencao(this,'+p.id+',\''+m+'\')"><input type="radio" name="men-'+p.id+'"> '+m+'</label>'; });
     h += '</div></div>';
-
     h += '<button class="eval-save" onclick="savePartic('+p.id+')">✓ Guardar registo de participação</button>';
     h += '</div></div>';
     h += '<button class="expand-btn" onclick="togEv('+p.id+')" id="btn-ev-'+p.id+'">✏️ Registar participação</button>';
@@ -652,12 +619,9 @@ function renderAvaliar() {
   h += '</div>';
   cont.innerHTML = h;
 }
-
 function setScore(pid, key, val) {
   scoresMap[pid][key] = val;
-  document.querySelectorAll('#sc-'+pid+'-'+key+' .sb').forEach(function(b) {
-    b.classList.toggle('act', parseInt(b.dataset.val)===val);
-  });
+  document.querySelectorAll('#sc-'+pid+'-'+key+' .sb').forEach(function(b){ b.classList.toggle('act', parseInt(b.dataset.val)===val); });
 }
 function selMencao(el, pid, val) {
   mencaoMap[pid] = val;
@@ -665,8 +629,7 @@ function selMencao(el, pid, val) {
   el.classList.add('chk');
 }
 function togEv(pid) {
-  var el = document.getElementById('ev-'+pid);
-  var btn = document.getElementById('btn-ev-'+pid);
+  var el = document.getElementById('ev-'+pid), btn = document.getElementById('btn-ev-'+pid);
   var open = el.style.display==='none';
   el.style.display = open ? 'block' : 'none';
   btn.textContent = open ? '🔼 Fechar' : '✏️ Registar participação';
@@ -674,32 +637,23 @@ function togEv(pid) {
 function savePartic(pid) {
   if (!mencaoMap[pid]) { alert('Seleciona a menção global de participação.'); return; }
   var proj = projetos.find(function(p){ return p.id===pid; });
-  proj.participacao = {
-    scores: JSON.parse(JSON.stringify(scoresMap[pid])),
-    obs: document.getElementById('obs-'+pid).value,
-    mencao: mencaoMap[pid]
-  };
+  proj.participacao = { scores:JSON.parse(JSON.stringify(scoresMap[pid])), obs:document.getElementById('obs-'+pid).value, mencao:mencaoMap[pid] };
   alert('✅ Registo guardado — ' + mencaoMap[pid]);
   renderAvaliar();
 }
 
-/* ===== VER TODOS ===== */
+// ---- Ver todos ----
 function renderTodos() {
   var cont = document.getElementById('todos-content');
-  if (!projetos.length) {
-    cont.innerHTML = '<div class="empty">📁 Ainda não há projetos registados.</div>';
-    return;
-  }
+  if (!projetos.length) { cont.innerHTML = '<div class="empty">📁 Ainda não há projetos registados.</div>'; return; }
   var totAl = projetos.reduce(function(a,p){ return a+(p.alunos.length||0); }, 0);
   var h = '<div class="summary">';
   h += '<div class="stat"><div class="snum">'+projetos.length+'</div><div class="slbl">Projetos</div></div>';
   h += '<div class="stat"><div class="snum">'+totAl+'</div><div class="slbl">Alunos</div></div>';
   h += '<div class="stat"><div class="snum">'+projetos.filter(function(p){ return p.participacao; }).length+'</div><div class="slbl">Registados</div></div>';
   h += '</div><div class="proj-list">';
-
   projetos.forEach(function(p) {
-    h += '<div class="pcard">';
-    h += '<div class="ph"><div>';
+    h += '<div class="pcard"><div class="ph"><div>';
     h += '<div class="ptitle">'+p.nome+'</div>';
     h += '<div class="pmeta">'+p.turma+' · '+p.data+(p.prof?' · Prof. '+p.prof:'')+'</div>';
     h += '<div class="pmeta">'+(cursoLabel[p.curso]||p.curso)+' · '+(aberLabel[p.abertura]||'')+'</div>';
@@ -708,48 +662,23 @@ function renderTodos() {
     h += '<span class="ptag">'+p.tipo+'</span>';
     h += '<span class="sbadge '+(p.participacao?'sd':'sp')+'">'+(p.participacao?p.participacao.mencao:'Por registar')+'</span>';
     h += '</div></div>';
-
     if (p.alunos.length) {
       h += '<div style="margin-top:10px;border-top:1px solid #E0DED6;padding-top:8px">';
       h += '<div style="font-size:11px;font-weight:600;color:#888;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px">'+p.alunos.length+' aluno(s)</div>';
-      p.alunos.forEach(function(a) {
-        h += '<div style="font-size:13px;color:#555;padding:1px 0">'+(a.proc?'<strong>'+a.proc+'</strong> — ':'')+a.nome+'</div>';
-      });
+      p.alunos.forEach(function(a){ h += '<div style="font-size:13px;color:#555;padding:1px 0">'+(a.proc?'<strong>'+a.proc+'</strong> — ':'')+a.nome+'</div>'; });
       h += '</div>';
     }
-
-    if (p.mats && p.mats.length) {
-      h += '<div style="margin-top:7px;font-size:13px;color:#666"><strong>Materiais:</strong> ';
-      h += p.mats.map(function(m){ return (m.qt?m.qt+' × ':'')+m.prod; }).join(', ');
-      h += '</div>';
-    }
-
-    if (p.convidado) {
-      h += '<div style="margin-top:6px;font-size:13px;color:#555">🎤 <strong>Convidado:</strong> '+p.convidado.nome+(p.convidado.tipo?' ('+p.convidado.tipo+')':'')+'</div>';
-    }
-
-    if (p.espaco) {
-      h += '<div style="margin-top:4px;font-size:13px;color:#666">📍 '+p.espaco+(p.espacoDet?' — '+p.espacoDet:'')+'</div>';
-    }
-
-    if (p.contactoEmail) {
-      h += '<div style="margin-top:5px;font-size:13px;color:#555">✉️ <strong>Contacto:</strong> <a href="mailto:'+p.contactoEmail+'" style="color:#534AB7">'+p.contactoEmail+'</a>'+(p.contactoTelm?' &nbsp;·&nbsp; 📞 '+p.contactoTelm:'')+'</div>';
-    }
-
-    if (p.participacao && p.participacao.obs) {
-      h += '<div style="margin-top:8px;background:#F0EDE8;border-radius:8px;padding:9px 12px;font-size:13px;color:#555;font-style:italic">"'+p.participacao.obs+'"</div>';
-    }
-
+    if (p.mats && p.mats.length) { h += '<div style="margin-top:7px;font-size:13px;color:#666"><strong>Materiais:</strong> '+p.mats.map(function(m){ return (m.qt?m.qt+' × ':'')+m.prod; }).join(', ')+'</div>'; }
+    if (p.convidado) { h += '<div style="margin-top:6px;font-size:13px;color:#555">🎤 <strong>Convidado:</strong> '+p.convidado.nome+(p.convidado.tipo?' ('+p.convidado.tipo+')':'')+'</div>'; }
+    if (p.espaco) { h += '<div style="margin-top:4px;font-size:13px;color:#666">📍 '+p.espaco+(p.espacoDet?' — '+p.espacoDet:'')+'</div>'; }
+    if (p.contactoEmail) { h += '<div style="margin-top:5px;font-size:13px;color:#555">✉️ <strong>Contacto:</strong> <a href="mailto:'+p.contactoEmail+'" style="color:#534AB7">'+p.contactoEmail+'</a>'+(p.contactoTelm?' &nbsp;·&nbsp; 📞 '+p.contactoTelm:'')+'</div>'; }
     h += '</div>';
   });
   h += '</div>';
   cont.innerHTML = h;
 }
 
-updateTurmas();
-renderDoms();
-
-/* ===== EXPORTAR EXCEL ===== */
+// ---- Exportar Excel ----
 function exportProjetos() {
   if (!projetos.length) { alert('Não há projetos para exportar.'); return; }
   var rows = [];
@@ -758,37 +687,24 @@ function exportProjetos() {
     var matsStr = p.mats.map(function(m){ return (m.qt?m.qt+' × ':'')+m.prod; }).join(' | ');
     var domsStr = p.dominios.map(function(d){ return domNomes[d]||d; }).join(', ');
     rows.push({
-      'Ano': p.ano+'.º ano',
-      'Turma': p.turma,
+      'Ano': p.ano+'.º ano', 'Turma': p.turma,
       'Tipo de curso': cursoLabel[p.curso]||p.curso,
-      'Nome da atividade': p.nome,
-      'Tipo de atividade': p.tipo,
-      'Domínios C&D': domsStr,
-      'Data de realização': p.data,
-      'Descrição': p.desc,
-      'Prof. facilitador(a)': p.prof||'',
-      'Email contacto': p.contactoEmail||'',
-      'Telemóvel contacto': p.contactoTelm||'',
-      'N.º alunos': p.alunos.length,
-      'Alunos (proc - nome)': alunosStr,
-      'Espaço': p.espaco||'',
-      'Detalhe espaço': p.espacoDet||'',
-      'Materiais': matsStr,
-      'Abertura': aberLabel[p.abertura]||'',
+      'Nome da atividade': p.nome, 'Tipo de atividade': p.tipo,
+      'Domínios C&D': domsStr, 'Data de realização': p.data,
+      'Descrição': p.desc, 'Prof. facilitador(a)': p.prof||'',
+      'Email contacto': p.contactoEmail||'', 'Telemóvel': p.contactoTelm||'',
+      'N.º alunos': p.alunos.length, 'Alunos (proc — nome)': alunosStr,
+      'Espaço': p.espaco||'', 'Detalhe espaço': p.espacoDet||'',
+      'Materiais': matsStr, 'Abertura': aberLabel[p.abertura]||'',
       'Anos abrangidos': p.anosAbr||'',
-      'Convidado / entidade': p.convidado ? p.convidado.nome : '',
-      'Tipo convidado': p.convidado ? p.convidado.tipo : '',
-      'Obs. convidado': p.convidado ? p.convidado.obs : '',
-      'Estado participação': p.participacao ? p.participacao.mencao : 'Por registar'
+      'Convidado / entidade': p.convidado?p.convidado.nome:'',
+      'Tipo convidado': p.convidado?p.convidado.tipo:'',
+      'Obs. convidado': p.convidado?p.convidado.obs:'',
+      'Estado participação': p.participacao?p.participacao.mencao:'Por registar'
     });
   });
   var ws = XLSX.utils.json_to_sheet(rows);
-  /* Column widths */
-  ws['!cols'] = [
-    {wch:10},{wch:8},{wch:22},{wch:30},{wch:20},{wch:40},{wch:16},{wch:40},
-    {wch:25},{wch:28},{wch:18},{wch:10},{wch:40},{wch:22},{wch:25},{wch:35},
-    {wch:28},{wch:20},{wch:28},{wch:25},{wch:30},{wch:22}
-  ];
+  ws['!cols'] = [{wch:10},{wch:8},{wch:22},{wch:30},{wch:22},{wch:40},{wch:16},{wch:40},{wch:25},{wch:28},{wch:14},{wch:10},{wch:40},{wch:22},{wch:25},{wch:35},{wch:28},{wch:20},{wch:28},{wch:22},{wch:30},{wch:22}];
   var wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'Projetos');
   XLSX.writeFile(wb, 'CD_Templarios_Projetos_2027.xlsx');
@@ -797,66 +713,44 @@ function exportProjetos() {
 function exportParticipacao() {
   var comPartic = projetos.filter(function(p){ return p.participacao; });
   if (!comPartic.length) { alert('Ainda não há registos de participação para exportar.'); return; }
-  var rows = [];
-  var critLabels = {part:'Participação', emp:'Empenho', comp:'Competências', trab:'Qualidade trabalho', ref:'Reflexão crítica'};
   var scoreLabels = {1:'Insuficiente', 2:'Suficiente', 3:'Bom', 4:'Muito Bom'};
+  var rows = [];
   comPartic.forEach(function(p) {
     var sc = p.participacao.scores || {};
-    /* Uma linha por aluno */
+    var base = {
+      'Ano': p.ano+'.º ano', 'Turma': p.turma,
+      'Nome da atividade': p.nome, 'Tipo de atividade': p.tipo,
+      'Domínios C&D': p.dominios.map(function(d){ return domNomes[d]||d; }).join(', '),
+      'Data de realização': p.data, 'Prof. facilitador(a)': p.prof||'',
+      'Tipo de curso': cursoLabel[p.curso]||p.curso,
+      'Participação': scoreLabels[sc.part]||'', 'Empenho': scoreLabels[sc.emp]||'',
+      'Competências de cidadania': scoreLabels[sc.comp]||'',
+      'Qualidade do trabalho': scoreLabels[sc.trab]||'',
+      'Reflexão crítica': scoreLabels[sc.ref]||'',
+      'Menção global': p.participacao.mencao,
+      'Observações para certificado': p.participacao.obs||''
+    };
     if (p.alunos.length) {
       p.alunos.forEach(function(a) {
-        rows.push({
-          'Ano': p.ano+'.º ano',
-          'Turma': p.turma,
-          'N.º processo': a.proc||'',
-          'Nome do aluno': a.nome||'',
-          'Nome da atividade': p.nome,
-          'Tipo de atividade': p.tipo,
-          'Domínios C&D': p.dominios.map(function(d){ return domNomes[d]||d; }).join(', '),
-          'Data de realização': p.data,
-          'Prof. facilitador(a)': p.prof||'',
-          'Tipo de curso': cursoLabel[p.curso]||p.curso,
-          'Participação': scoreLabels[sc.part]||'',
-          'Empenho': scoreLabels[sc.emp]||'',
-          'Competências de cidadania': scoreLabels[sc.comp]||'',
-          'Qualidade do trabalho': scoreLabels[sc.trab]||'',
-          'Reflexão crítica': scoreLabels[sc.ref]||'',
-          'Menção global': p.participacao.mencao,
-          'Observações para certificado': p.participacao.obs||''
-        });
+        var row = {'N.º processo': a.proc||'', 'Nome do aluno': a.nome||''};
+        Object.assign(row, base); rows.push(row);
       });
     } else {
-      rows.push({
-        'Ano': p.ano+'.º ano',
-        'Turma': p.turma,
-        'N.º processo': '',
-        'Nome do aluno': '(sem alunos registados)',
-        'Nome da atividade': p.nome,
-        'Tipo de atividade': p.tipo,
-        'Domínios C&D': p.dominios.map(function(d){ return domNomes[d]||d; }).join(', '),
-        'Data de realização': p.data,
-        'Prof. facilitador(a)': p.prof||'',
-        'Tipo de curso': cursoLabel[p.curso]||p.curso,
-        'Participação': scoreLabels[sc.part]||'',
-        'Empenho': scoreLabels[sc.emp]||'',
-        'Competências de cidadania': scoreLabels[sc.comp]||'',
-        'Qualidade do trabalho': scoreLabels[sc.trab]||'',
-        'Reflexão crítica': scoreLabels[sc.ref]||'',
-        'Menção global': p.participacao.mencao,
-        'Observações para certificado': p.participacao.obs||''
-      });
+      var row = {'N.º processo': '', 'Nome do aluno': '(sem alunos registados)'};
+      Object.assign(row, base); rows.push(row);
     }
   });
   var ws = XLSX.utils.json_to_sheet(rows);
-  ws['!cols'] = [
-    {wch:10},{wch:8},{wch:12},{wch:28},{wch:30},{wch:20},{wch:40},{wch:16},
-    {wch:25},{wch:22},{wch:14},{wch:14},{wch:22},{wch:20},{wch:18},{wch:26},{wch:40}
-  ];
+  ws['!cols'] = [{wch:12},{wch:28},{wch:10},{wch:8},{wch:30},{wch:22},{wch:40},{wch:16},{wch:25},{wch:22},{wch:14},{wch:14},{wch:22},{wch:20},{wch:18},{wch:26},{wch:40}];
   var wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'Participação');
   XLSX.writeFile(wb, 'CD_Templarios_Participacao_2027.xlsx');
 }
 
+// ---- Init ----
+updateTurmas();
+renderDoms();
+verificarPrazo();
 </script>
 </body>
 </html>
