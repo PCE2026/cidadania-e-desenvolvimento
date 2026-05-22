@@ -117,8 +117,14 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#F5F4F0;color:#1a
 
 .empty{text-align:center;padding:2.5rem 1rem;color:#888;font-size:14px}
 .expand-btn{font-size:12px;color:#534AB7;background:transparent;border:1px solid #AFA9EC;padding:6px 13px;border-radius:7px;cursor:pointer;margin-top:10px;font-family:inherit}
+.export-bar{display:flex;gap:10px;margin-bottom:1.25rem;flex-wrap:wrap}
+.btn-export{display:flex;align-items:center;gap:7px;padding:10px 18px;border:none;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:opacity .15s}
+.btn-export:hover{opacity:.85}
+.btn-exp-green{background:#0F6E56;color:#fff}
+.btn-exp-blue{background:#185FA5;color:#fff}
 .expand-btn:hover{background:#EEEDFE}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
 <body>
 <div class="wrap">
@@ -365,6 +371,10 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#F5F4F0;color:#1a
 
   <!-- ===== PAINEL VER TODOS ===== -->
   <div id="panel-todos" class="panel">
+    <div class="export-bar">
+      <button class="btn-export btn-exp-green" onclick="exportProjetos()">⬇ Exportar Projetos (.xlsx)</button>
+      <button class="btn-export btn-exp-blue" onclick="exportParticipacao()">⬇ Exportar Participação (.xlsx)</button>
+    </div>
     <div id="todos-content"></div>
   </div>
 
@@ -738,6 +748,115 @@ function renderTodos() {
 
 updateTurmas();
 renderDoms();
+
+/* ===== EXPORTAR EXCEL ===== */
+function exportProjetos() {
+  if (!projetos.length) { alert('Não há projetos para exportar.'); return; }
+  var rows = [];
+  projetos.forEach(function(p) {
+    var alunosStr = p.alunos.map(function(a){ return (a.proc?a.proc+' - ':'')+a.nome; }).join(' | ');
+    var matsStr = p.mats.map(function(m){ return (m.qt?m.qt+' × ':'')+m.prod; }).join(' | ');
+    var domsStr = p.dominios.map(function(d){ return domNomes[d]||d; }).join(', ');
+    rows.push({
+      'Ano': p.ano+'.º ano',
+      'Turma': p.turma,
+      'Tipo de curso': cursoLabel[p.curso]||p.curso,
+      'Nome da atividade': p.nome,
+      'Tipo de atividade': p.tipo,
+      'Domínios C&D': domsStr,
+      'Data de realização': p.data,
+      'Descrição': p.desc,
+      'Prof. facilitador(a)': p.prof||'',
+      'Email contacto': p.contactoEmail||'',
+      'Telemóvel contacto': p.contactoTelm||'',
+      'N.º alunos': p.alunos.length,
+      'Alunos (proc - nome)': alunosStr,
+      'Espaço': p.espaco||'',
+      'Detalhe espaço': p.espacoDet||'',
+      'Materiais': matsStr,
+      'Abertura': aberLabel[p.abertura]||'',
+      'Anos abrangidos': p.anosAbr||'',
+      'Convidado / entidade': p.convidado ? p.convidado.nome : '',
+      'Tipo convidado': p.convidado ? p.convidado.tipo : '',
+      'Obs. convidado': p.convidado ? p.convidado.obs : '',
+      'Estado participação': p.participacao ? p.participacao.mencao : 'Por registar'
+    });
+  });
+  var ws = XLSX.utils.json_to_sheet(rows);
+  /* Column widths */
+  ws['!cols'] = [
+    {wch:10},{wch:8},{wch:22},{wch:30},{wch:20},{wch:40},{wch:16},{wch:40},
+    {wch:25},{wch:28},{wch:18},{wch:10},{wch:40},{wch:22},{wch:25},{wch:35},
+    {wch:28},{wch:20},{wch:28},{wch:25},{wch:30},{wch:22}
+  ];
+  var wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Projetos');
+  XLSX.writeFile(wb, 'CD_Templarios_Projetos_2027.xlsx');
+}
+
+function exportParticipacao() {
+  var comPartic = projetos.filter(function(p){ return p.participacao; });
+  if (!comPartic.length) { alert('Ainda não há registos de participação para exportar.'); return; }
+  var rows = [];
+  var critLabels = {part:'Participação', emp:'Empenho', comp:'Competências', trab:'Qualidade trabalho', ref:'Reflexão crítica'};
+  var scoreLabels = {1:'Insuficiente', 2:'Suficiente', 3:'Bom', 4:'Muito Bom'};
+  comPartic.forEach(function(p) {
+    var sc = p.participacao.scores || {};
+    /* Uma linha por aluno */
+    if (p.alunos.length) {
+      p.alunos.forEach(function(a) {
+        rows.push({
+          'Ano': p.ano+'.º ano',
+          'Turma': p.turma,
+          'N.º processo': a.proc||'',
+          'Nome do aluno': a.nome||'',
+          'Nome da atividade': p.nome,
+          'Tipo de atividade': p.tipo,
+          'Domínios C&D': p.dominios.map(function(d){ return domNomes[d]||d; }).join(', '),
+          'Data de realização': p.data,
+          'Prof. facilitador(a)': p.prof||'',
+          'Tipo de curso': cursoLabel[p.curso]||p.curso,
+          'Participação': scoreLabels[sc.part]||'',
+          'Empenho': scoreLabels[sc.emp]||'',
+          'Competências de cidadania': scoreLabels[sc.comp]||'',
+          'Qualidade do trabalho': scoreLabels[sc.trab]||'',
+          'Reflexão crítica': scoreLabels[sc.ref]||'',
+          'Menção global': p.participacao.mencao,
+          'Observações para certificado': p.participacao.obs||''
+        });
+      });
+    } else {
+      rows.push({
+        'Ano': p.ano+'.º ano',
+        'Turma': p.turma,
+        'N.º processo': '',
+        'Nome do aluno': '(sem alunos registados)',
+        'Nome da atividade': p.nome,
+        'Tipo de atividade': p.tipo,
+        'Domínios C&D': p.dominios.map(function(d){ return domNomes[d]||d; }).join(', '),
+        'Data de realização': p.data,
+        'Prof. facilitador(a)': p.prof||'',
+        'Tipo de curso': cursoLabel[p.curso]||p.curso,
+        'Participação': scoreLabels[sc.part]||'',
+        'Empenho': scoreLabels[sc.emp]||'',
+        'Competências de cidadania': scoreLabels[sc.comp]||'',
+        'Qualidade do trabalho': scoreLabels[sc.trab]||'',
+        'Reflexão crítica': scoreLabels[sc.ref]||'',
+        'Menção global': p.participacao.mencao,
+        'Observações para certificado': p.participacao.obs||''
+      });
+    }
+  });
+  var ws = XLSX.utils.json_to_sheet(rows);
+  ws['!cols'] = [
+    {wch:10},{wch:8},{wch:12},{wch:28},{wch:30},{wch:20},{wch:40},{wch:16},
+    {wch:25},{wch:22},{wch:14},{wch:14},{wch:22},{wch:20},{wch:18},{wch:26},{wch:40}
+  ];
+  var wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Participação');
+  XLSX.writeFile(wb, 'CD_Templarios_Participacao_2027.xlsx');
+}
+
 </script>
 </body>
 </html>
