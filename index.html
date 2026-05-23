@@ -377,6 +377,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#F5F4F0;color:#1a
 // CONFIGURAÇÕES — ALTERAR AQUI
 // =====================================================
 var PASSWORD_GESTAO = 'templarios2027';
+var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyeACZY3U28O8TyXqw1_mhrMTgPmy_8Xcqo1cwvR1wB96kEyjuodVNGkzemWw9HG99-3w/exec';
 var DATA_LIMITE_REGISTO = '2027-03-15'; // AAAA-MM-DD
 
 // Passwords dos Diretores de Turma — formato: 'turma': 'password'
@@ -592,7 +593,7 @@ function submitProjeto(){
     if(!cnome){alert('Indica o nome do convidado ou empresa.');return;}
     convidado={nome:cnome,tipo:document.getElementById('conv-tipo').value,obs:document.getElementById('conv-obs').value.trim()};
   }
-  projetos.push({
+  var proj = {
     id:Date.now(),nome:nome,tipo:tipo,turma:turma,desc:desc,curso:curso,
     ano:anoAtual,data:data,prof:document.getElementById('prof').value.trim(),
     contactoEmail:email,contactoTelm:telm,alunos:alunos,mats:getMats(),
@@ -600,9 +601,13 @@ function submitProjeto(){
     espacoDet:document.getElementById('espaco-det').value.trim(),
     abertura:selAbertura,anosAbr:document.getElementById('anos-abr').value.trim(),
     dominios:doms,convidado:convidado,participacao:null
+  };
+  projetos.push(proj);
+  enviarParaSheet('projeto', proj, function(ok){
+    if(ok){ alert('✅ Projeto registado e guardado na Google Sheet!'); }
+    else   { alert('✅ Projeto registado localmente.\n⚠️ Não foi possível guardar na Google Sheet — verifica a ligação.'); }
+    resetForm();
   });
-  alert('✅ Projeto registado com sucesso!');
-  resetForm();
 }
 function resetForm(){
   ['nome-ativ','descricao','prof','contacto-email','contacto-telm','anos-abr','outra-data','espaco-det','conv-nome','conv-obs'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
@@ -704,10 +709,15 @@ function savePartic(pid){
   if(!mencaoMap[pid]){alert('Seleciona a menção global de participação.');return;}
   var proj=projetos.find(function(p){return p.id===pid;});
   proj.participacao={scores:JSON.parse(JSON.stringify(scoresMap[pid]||{})),obs:document.getElementById('obs-'+pid).value,mencao:mencaoMap[pid]};
-  alert('✅ Registo guardado — '+mencaoMap[pid]);
-  // refresh whichever panel is active
-  if(dtTurmaAtual) renderDT();
-  if(gestaoAuthed) renderGestao();
+  // include turma do DT que avaliou
+  var projComDT = JSON.parse(JSON.stringify(proj));
+  projComDT.turmaDT = dtTurmaAtual || proj.turma;
+  enviarParaSheet('participacao', projComDT, function(ok){
+    if(ok){ alert('✅ Participação registada e guardada na Google Sheet!'); }
+    else   { alert('✅ Participação registada localmente.\n⚠️ Não foi possível guardar na Google Sheet — verifica a ligação.'); }
+    if(dtTurmaAtual) renderDT();
+    if(gestaoAuthed) renderGestao();
+  });
 }
 
 // ---- Render DT ----
@@ -828,6 +838,24 @@ function exportParticipacao(){
   var wb=XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb,ws,'Participação');
   XLSX.writeFile(wb,'CD_Templarios_Participacao_2027.xlsx');
+}
+
+// ---- Enviar para Google Sheet ----
+function enviarParaSheet(tipo, projeto, callback){
+  try {
+    fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({tipo: tipo, projeto: projeto})
+    }).then(function(){
+      callback(true);
+    }).catch(function(){
+      callback(false);
+    });
+  } catch(e) {
+    callback(false);
+  }
 }
 
 // ---- Init ----
