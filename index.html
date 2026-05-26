@@ -101,6 +101,19 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#F5F4F0;color:#1a
 .btn-export:hover{opacity:.85}
 .btn-exp-green{background:#0F6E56;color:#fff}
 .btn-exp-blue{background:#185FA5;color:#fff}
+/* DT Alunos table */
+.alunos-tbl{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+.alunos-tbl th{font-size:11px;font-weight:600;color:#fff;text-align:left;padding:7px 10px;background:#534AB7;letter-spacing:.4px}
+.alunos-tbl td{padding:7px 10px;border-bottom:1px solid #E0DED6;vertical-align:top}
+.alunos-tbl tr:last-child td{border-bottom:none}
+.alunos-tbl tr:nth-child(even) td{background:#F5F4F0}
+.secao-titulo{font-size:12px;font-weight:700;color:#534AB7;text-transform:uppercase;letter-spacing:.6px;margin:1.25rem 0 8px;padding-bottom:5px;border-bottom:2px solid #EEEDFE}
+/* Ver todos list */
+.todos-tbl{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+.todos-tbl th{font-size:11px;font-weight:600;color:#fff;text-align:left;padding:7px 10px;background:#1a1a18;letter-spacing:.4px}
+.todos-tbl td{padding:8px 10px;border-bottom:1px solid #E0DED6;vertical-align:middle}
+.todos-tbl tr:last-child td{border-bottom:none}
+.todos-tbl tr:hover td{background:#F5F4F0}
 /* Prazo */
 .prazo-box{background:#FFF8E6;border:1px solid #F5D98A;border-radius:9px;padding:10px 14px;font-size:13px;color:#7A4D00;margin-bottom:1rem}
 .prazo-encerrado{background:#FCEBEB;border:1px solid #F09595;border-radius:9px;padding:14px;font-size:14px;color:#A32D2D;text-align:center;font-weight:500;margin-bottom:1rem}
@@ -378,7 +391,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#F5F4F0;color:#1a
 // =====================================================
 var PASSWORD_GESTAO = 'templarios2027';
 var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyeACZY3U28O8TyXqw1_mhrMTgPmy_8Xcqo1cwvR1wB96kEyjuodVNGkzemWw9HG99-3w/exec';
-var DATA_LIMITE_REGISTO = '2027-01-30'; // AAAA-MM-DD
+var DATA_LIMITE_REGISTO = '2027-03-15'; // AAAA-MM-DD
 
 // Passwords dos Diretores de Turma — formato: 'turma': 'password'
 var PASSWORDS_DT = {
@@ -720,19 +733,116 @@ function savePartic(pid){
   });
 }
 
-// ---- Render DT ----
+// ---- Render DT (carrega da Google Sheet) ----
 function renderDT(){
   var t=dtTurmaAtual;
-  var ps=projetos.filter(function(p){return p.turma===t;});
   document.getElementById('dt-turma-title').textContent='Turma '+t;
+  document.getElementById('dt-turma-stats').innerHTML='<span>A carregar...</span>';
+  var cont=document.getElementById('dt-content');
+  cont.innerHTML='<div class="empty" style="padding:2rem">⏳ A carregar dados da Google Sheet...</div>';
+
+  // Fetch Projetos sheet
+  var urlProjetos = APPS_SCRIPT_URL + '?acao=getProjetos&turma=' + encodeURIComponent(t);
+  var urlPartic   = APPS_SCRIPT_URL + '?acao=getParticipacao&turma=' + encodeURIComponent(t);
+
+  Promise.all([
+    fetch(urlProjetos).then(function(r){return r.json();}).catch(function(){return {ok:false,dados:[]};}),
+    fetch(urlPartic).then(function(r){return r.json();}).catch(function(){return {ok:false,dados:[]};})
+  ]).then(function(results){
+    var dadosProjetos = results[0].dados || [];
+    var dadosPartic   = results[1].dados || [];
+    renderDTComDados(t, dadosProjetos, dadosPartic);
+  }).catch(function(){
+    // fallback: usa dados locais
+    var ps=projetos.filter(function(p){return p.turma===t;});
+    renderDTLocal(t, ps);
+  });
+}
+
+function renderDTComDados(t, projList, particList){
+  var done = projList.filter(function(p){return p.mencao && p.mencao !== 'Por registar';}).length;
+  document.getElementById('dt-turma-stats').innerHTML=
+    '<span>'+projList.length+' projeto(s)</span><span>'+done+' avaliado(s)</span><span>'+(projList.length-done)+' por avaliar</span>';
+  var cont=document.getElementById('dt-content');
+  if(!projList.length){
+    cont.innerHTML='<div class="empty">Ainda não há projetos registados para a turma '+t+'.</div>';return;
+  }
+
+  var h='';
+
+  // --- Secção 1: Projetos da turma ---
+  h+='<div class="secao-titulo">📋 Projetos registados</div>';
+  h+='<div class="proj-list">';
+  // merge local projetos for eval form
+  var localPs=projetos.filter(function(p){return p.turma===t;});
+  projList.forEach(function(row){
+    // try match local
+    var local=localPs.find(function(p){return String(p.id)===String(row.id);});
+    if(local){ h+=cardHTML(local,true,t); }
+    else {
+      // read-only card from sheet data
+      h+='<div class="pcard">';
+      h+='<div class="ph"><div>';
+      h+='<div class="ptitle">'+(row.nome||'')+'</div>';
+      h+='<div class="pmeta">'+(row.turma||t)+' · '+(row.data||'')+' · '+(row.curso||'')+'</div>';
+      h+='<div class="pmeta" style="margin-top:4px"><span class="ptag">'+(row.tipo||'')+'</span></div>';
+      h+='</div><span class="sbadge '+(row.mencao&&row.mencao!=='Por registar'?'sd':'sp')+'">'+(row.mencao||'Por registar')+'</span></div>';
+      if(row.desc){h+='<div style="margin-top:8px;font-size:13px;color:#555">'+row.desc+'</div>';}
+      h+='</div>';
+    }
+  });
+  h+='</div>';
+
+  // --- Secção 2: Lista de alunos com observações ---
+  h+='<div class="secao-titulo" style="margin-top:2rem">👥 Alunos — registo para certificado</div>';
+  if(!particList.length){
+    h+='<div style="font-size:13px;color:#888;padding:10px 0">Ainda não há registos de participação avaliados para esta turma.</div>';
+  } else {
+    h+='<div style="overflow-x:auto"><table class="alunos-tbl">';
+    h+='<thead><tr><th>N.º Processo</th><th>Nome do aluno</th><th>Atividade</th><th>Menção global</th><th>Observações para certificado</th></tr></thead><tbody>';
+    particList.forEach(function(row){
+      h+='<tr>';
+      h+='<td>'+(row.proc||'—')+'</td>';
+      h+='<td><strong>'+(row.nome||'')+'</strong></td>';
+      h+='<td>'+(row.atividade||'')+'</td>';
+      h+='<td><span class="sbadge sd" style="font-size:11px">'+(row.mencao||'')+'</span></td>';
+      h+='<td style="font-style:italic;color:#444">'+(row.obs||'—')+'</td>';
+      h+='</tr>';
+    });
+    h+='</tbody></table></div>';
+  }
+
+  cont.innerHTML=h;
+}
+
+function renderDTLocal(t, ps){
   var done=ps.filter(function(p){return p.participacao;}).length;
   document.getElementById('dt-turma-stats').innerHTML=
     '<span>'+ps.length+' projeto(s)</span><span>'+done+' avaliado(s)</span><span>'+(ps.length-done)+' por avaliar</span>';
   var cont=document.getElementById('dt-content');
   if(!ps.length){cont.innerHTML='<div class="empty">Ainda não há projetos registados para a turma '+t+'.</div>';return;}
-  var h='<div class="proj-list">';
-  ps.forEach(function(p){ h+=cardHTML(p,true,t); });
+
+  var h='<div class="secao-titulo">📋 Projetos (dados locais — sem ligação à Sheet)</div>';
+  h+='<div class="proj-list">';
+  ps.forEach(function(p){h+=cardHTML(p,true,t);});
   h+='</div>';
+
+  // Alunos com participação local
+  var comPartic=ps.filter(function(p){return p.participacao;});
+  if(comPartic.length){
+    h+='<div class="secao-titulo" style="margin-top:2rem">👥 Alunos — registo para certificado</div>';
+    h+='<div style="overflow-x:auto"><table class="alunos-tbl">';
+    h+='<thead><tr><th>N.º Processo</th><th>Nome do aluno</th><th>Atividade</th><th>Menção global</th><th>Observações para certificado</th></tr></thead><tbody>';
+    comPartic.forEach(function(p){
+      p.alunos.forEach(function(a){
+        h+='<tr><td>'+(a.proc||'—')+'</td><td><strong>'+(a.nome||'')+'</strong></td>';
+        h+='<td>'+p.nome+'</td>';
+        h+='<td><span class="sbadge sd" style="font-size:11px">'+p.participacao.mencao+'</span></td>';
+        h+='<td style="font-style:italic;color:#444">'+(p.participacao.obs||'—')+'</td></tr>';
+      });
+    });
+    h+='</tbody></table></div>';
+  }
   cont.innerHTML=h;
 }
 
@@ -761,8 +871,42 @@ function renderGestao(){
   cont.innerHTML=h;
 }
 
-// ---- Ver todos (público) ----
+// ---- Ver todos (público) — carrega da Sheet ----
 function renderTodos(){
+  var cont=document.getElementById('todos-content');
+  cont.innerHTML='<div class="empty">⏳ A carregar projetos...</div>';
+  fetch(APPS_SCRIPT_URL+'?acao=getTodos')
+    .then(function(r){return r.json();})
+    .then(function(res){ renderTodosComDados(res.dados||[]); })
+    .catch(function(){ renderTodosLocal(); });
+}
+
+function renderTodosComDados(lista){
+  var cont=document.getElementById('todos-content');
+  if(!lista.length){cont.innerHTML='<div class="empty">📁 Ainda não há projetos registados.</div>';return;}
+  var totAl=lista.reduce(function(a,r){return a+(parseInt(r.nalunos)||0);},0);
+  var h='<div class="summary">';
+  h+='<div class="stat"><div class="snum">'+lista.length+'</div><div class="slbl">Projetos</div></div>';
+  h+='<div class="stat"><div class="snum">'+totAl+'</div><div class="slbl">Alunos</div></div>';
+  h+='<div class="stat"><div class="snum">'+lista.filter(function(r){return r.mencao&&r.mencao!=='Por registar';}).length+'</div><div class="slbl">Avaliados</div></div>';
+  h+='</div>';
+  h+='<div style="overflow-x:auto"><table class="todos-tbl">';
+  h+='<thead><tr><th>Turma</th><th>Nome da atividade</th><th>Tipo</th><th>Data</th><th style="text-align:center">N.º alunos</th><th>Estado</th></tr></thead><tbody>';
+  lista.forEach(function(r){
+    h+='<tr>';
+    h+='<td><strong>'+r.turma+'</strong></td>';
+    h+='<td>'+r.nome+'</td>';
+    h+='<td>'+r.tipo+'</td>';
+    h+='<td>'+r.data+'</td>';
+    h+='<td style="text-align:center"><span class="sbadge" style="background:#EEEDFE;color:#3C3489">'+r.nalunos+'</span></td>';
+    h+='<td><span class="sbadge '+(r.mencao&&r.mencao!=='Por registar'?'sd':'sp')+'">'+r.mencao+'</span></td>';
+    h+='</tr>';
+  });
+  h+='</tbody></table></div>';
+  cont.innerHTML=h;
+}
+
+function renderTodosLocal(){
   var cont=document.getElementById('todos-content');
   if(!projetos.length){cont.innerHTML='<div class="empty">📁 Ainda não há projetos registados.</div>';return;}
   var totAl=projetos.reduce(function(a,p){return a+(p.alunos.length||0);},0);
@@ -770,9 +914,20 @@ function renderTodos(){
   h+='<div class="stat"><div class="snum">'+projetos.length+'</div><div class="slbl">Projetos</div></div>';
   h+='<div class="stat"><div class="snum">'+totAl+'</div><div class="slbl">Alunos</div></div>';
   h+='<div class="stat"><div class="snum">'+projetos.filter(function(p){return p.participacao;}).length+'</div><div class="slbl">Avaliados</div></div>';
-  h+='</div><div class="proj-list">';
-  projetos.forEach(function(p){h+=cardHTML(p,false,null);});
   h+='</div>';
+  h+='<div style="overflow-x:auto"><table class="todos-tbl">';
+  h+='<thead><tr><th>Turma</th><th>Nome da atividade</th><th>Tipo</th><th>Data</th><th style="text-align:center">N.º alunos</th><th>Estado</th></tr></thead><tbody>';
+  projetos.forEach(function(p){
+    h+='<tr>';
+    h+='<td><strong>'+p.turma+'</strong></td>';
+    h+='<td>'+p.nome+'</td>';
+    h+='<td>'+p.tipo+'</td>';
+    h+='<td>'+p.data+'</td>';
+    h+='<td style="text-align:center"><span class="sbadge" style="background:#EEEDFE;color:#3C3489">'+p.alunos.length+'</span></td>';
+    h+='<td><span class="sbadge '+(p.participacao?'sd':'sp')+'">'+( p.participacao?p.participacao.mencao:'Por registar')+'</span></td>';
+    h+='</tr>';
+  });
+  h+='</tbody></table></div>';
   cont.innerHTML=h;
 }
 
