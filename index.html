@@ -226,8 +226,8 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#F5F4F0;color:#1a
         </div>
         <div class="field">
           <label>Telemóvel de contacto</label>
-          <input type="tel" id="contacto-telm" placeholder="Ex: 912345678" maxlength="9" oninput="this.value=this.value.replace(/\D/g,'').slice(0,9)">
-          <div class="hint">9 dígitos, sem espaços</div>
+          <input type="tel" id="contacto-telm" placeholder="Ex: 912345678" maxlength="13" oninput="this.value=this.value.replace(/\D/g,'').slice(0,13)">
+          <div class="hint">Até 13 dígitos, só números</div>
         </div>
       </div>
       <div class="divider"></div>
@@ -235,7 +235,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#F5F4F0;color:#1a
       <div class="box">
         <div id="alunos-lista">
           <div class="arow">
-            <input type="text" placeholder="N.º processo" data-field="proc">
+            <input type="text" placeholder="N.º processo" data-field="proc" oninput="this.value=this.value.replace(/\D/g,'')" inputmode="numeric">
             <input type="text" placeholder="Nome completo" data-field="nome">
             <button class="btn-rm" onclick="rmAluno(this)" title="Remover">✕</button>
           </div>
@@ -558,7 +558,7 @@ function selConvOpt(val){
 function showAnos(show){document.getElementById('anos-f').style.display=show?'block':'none';}
 function addAluno(){
   var d=document.createElement('div'); d.className='arow';
-  d.innerHTML='<input type="text" placeholder="N.º processo" data-field="proc"><input type="text" placeholder="Nome completo" data-field="nome"><button class="btn-rm" onclick="rmAluno(this)" title="Remover">✕</button>';
+  d.innerHTML='<input type="text" placeholder="N.º processo" data-field="proc" oninput="this.value=this.value.replace(/\\D/g,\'\')" inputmode="numeric"><input type="text" placeholder="Nome completo" data-field="nome"><button class="btn-rm" onclick="rmAluno(this)" title="Remover">✕</button>';
   document.getElementById('alunos-lista').appendChild(d);
 }
 function rmAluno(btn){if(document.querySelectorAll('.arow').length>1)btn.closest('.arow').remove();}
@@ -598,7 +598,7 @@ function submitProjeto(){
   var semNome=alunos.filter(function(a){return !a.nome;});
   if(semNome.length){alert('Preenche o nome de todos os alunos adicionados.');return;}
   var telm=document.getElementById('contacto-telm').value.replace(/\D/g,'');
-  if(telm&&telm.length!==9){alert('O telemóvel deve ter exatamente 9 dígitos.');return;}
+  if(telm&&telm.length>13){alert('O telemóvel deve ter no máximo 13 dígitos.');return;}
   var data=selDate==='outra'?(document.getElementById('outra-data').value||'Data a definir'):selDate;
   var convidado=null;
   if(selConvVal==='sim'){
@@ -733,7 +733,27 @@ function savePartic(pid){
   });
 }
 
-// ---- Render DT (carrega da Google Sheet) ----
+// ---- JSONP helper ----
+function jsonpCall(url, callback){
+  var cbName = 'cb_'+Date.now()+'_'+Math.floor(Math.random()*1e6);
+  window[cbName] = function(data){
+    delete window[cbName];
+    var el = document.getElementById('jsonp-'+cbName);
+    if(el) el.remove();
+    callback(data);
+  };
+  var s = document.createElement('script');
+  s.id = 'jsonp-'+cbName;
+  s.src = url + '&callback=' + cbName;
+  s.onerror = function(){
+    delete window[cbName];
+    s.remove();
+    callback({ok:false, dados:[]});
+  };
+  document.head.appendChild(s);
+}
+
+// ---- Render DT (carrega da Google Sheet via JSONP) ----
 function renderDT(){
   var t=dtTurmaAtual;
   document.getElementById('dt-turma-title').textContent='Turma '+t;
@@ -741,21 +761,19 @@ function renderDT(){
   var cont=document.getElementById('dt-content');
   cont.innerHTML='<div class="empty" style="padding:2rem">⏳ A carregar dados da Google Sheet...</div>';
 
-  // Fetch Projetos sheet
-  var urlProjetos = APPS_SCRIPT_URL + '?acao=getProjetos&turma=' + encodeURIComponent(t);
-  var urlPartic   = APPS_SCRIPT_URL + '?acao=getParticipacao&turma=' + encodeURIComponent(t);
+  var dadosProjetos=[], dadosPartic=[], pending=2;
+  function done(){
+    pending--;
+    if(pending===0) renderDTComDados(t, dadosProjetos, dadosPartic);
+  }
 
-  Promise.all([
-    fetch(urlProjetos).then(function(r){return r.json();}).catch(function(){return {ok:false,dados:[]};}),
-    fetch(urlPartic).then(function(r){return r.json();}).catch(function(){return {ok:false,dados:[]};})
-  ]).then(function(results){
-    var dadosProjetos = results[0].dados || [];
-    var dadosPartic   = results[1].dados || [];
-    renderDTComDados(t, dadosProjetos, dadosPartic);
-  }).catch(function(){
-    // fallback: usa dados locais
-    var ps=projetos.filter(function(p){return p.turma===t;});
-    renderDTLocal(t, ps);
+  jsonpCall(APPS_SCRIPT_URL+'?acao=getProjetos&turma='+encodeURIComponent(t), function(res){
+    dadosProjetos = (res&&res.dados) ? res.dados : [];
+    done();
+  });
+  jsonpCall(APPS_SCRIPT_URL+'?acao=getParticipacao&turma='+encodeURIComponent(t), function(res){
+    dadosPartic = (res&&res.dados) ? res.dados : [];
+    done();
   });
 }
 
@@ -871,14 +889,17 @@ function renderGestao(){
   cont.innerHTML=h;
 }
 
-// ---- Ver todos (público) — carrega da Sheet ----
+// ---- Ver todos (público) — carrega da Sheet via JSONP ----
 function renderTodos(){
   var cont=document.getElementById('todos-content');
   cont.innerHTML='<div class="empty">⏳ A carregar projetos...</div>';
-  fetch(APPS_SCRIPT_URL+'?acao=getTodos')
-    .then(function(r){return r.json();})
-    .then(function(res){ renderTodosComDados(res.dados||[]); })
-    .catch(function(){ renderTodosLocal(); });
+  jsonpCall(APPS_SCRIPT_URL+'?acao=getTodos', function(res){
+    if(res&&res.dados&&res.dados.length){
+      renderTodosComDados(res.dados);
+    } else {
+      renderTodosLocal();
+    }
+  });
 }
 
 function renderTodosComDados(lista){
