@@ -733,27 +733,26 @@ function savePartic(pid){
   });
 }
 
-// ---- JSONP helper ----
-function jsonpCall(url, callback){
-  var cbName = 'cb_'+Date.now()+'_'+Math.floor(Math.random()*1e6);
-  window[cbName] = function(data){
-    delete window[cbName];
-    var el = document.getElementById('jsonp-'+cbName);
-    if(el) el.remove();
-    callback(data);
-  };
-  var s = document.createElement('script');
-  s.id = 'jsonp-'+cbName;
-  s.src = url + '&callback=' + cbName;
-  s.onerror = function(){
-    delete window[cbName];
-    s.remove();
-    callback({ok:false, dados:[]});
-  };
-  document.head.appendChild(s);
+// ---- Fetch com fallback robusto ----
+function sheetGet(acao, turma, callback){
+  var url = APPS_SCRIPT_URL + '?acao=' + acao + (turma ? '&turma=' + encodeURIComponent(turma) : '');
+  fetch(url, {method:'GET', redirect:'follow'})
+    .then(function(r){
+      if(!r.ok) throw new Error('HTTP '+r.status);
+      return r.text();
+    })
+    .then(function(txt){
+      // Apps Script pode devolver texto vazio ou HTML de erro
+      if(!txt || txt.trim().charAt(0)!=='{' && txt.trim().charAt(0)!=='['){
+        throw new Error('resposta invalida');
+      }
+      return JSON.parse(txt);
+    })
+    .then(function(data){ callback(data); })
+    .catch(function(){ callback({ok:false, dados:[]}); });
 }
 
-// ---- Render DT (carrega da Google Sheet via JSONP) ----
+// ---- Render DT ----
 function renderDT(){
   var t=dtTurmaAtual;
   document.getElementById('dt-turma-title').textContent='Turma '+t;
@@ -762,18 +761,44 @@ function renderDT(){
   cont.innerHTML='<div class="empty" style="padding:2rem">⏳ A carregar dados da Google Sheet...</div>';
 
   var dadosProjetos=[], dadosPartic=[], pending=2;
-  function done(){
+  function checkDone(){
     pending--;
-    if(pending===0) renderDTComDados(t, dadosProjetos, dadosPartic);
+    if(pending===0){
+      // Se ambos falharam, usa dados locais
+      if(!dadosProjetos.length && !dadosPartic.length){
+        var ps=projetos.filter(function(p){return p.turma===t;});
+        renderDTLocal(t,ps);
+      } else {
+        renderDTComDados(t, dadosProjetos, dadosPartic);
+      }
+    }
   }
 
-  jsonpCall(APPS_SCRIPT_URL+'?acao=getProjetos&turma='+encodeURIComponent(t), function(res){
-    dadosProjetos = (res&&res.dados) ? res.dados : [];
-    done();
+  sheetGet('getProjetos', t, function(res){
+    dadosProjetos=(res&&res.dados&&res.dados.length)?res.dados:[];
+    // Se falhou Sheet, usa dados locais para projetos
+    if(!dadosProjetos.length){
+      dadosProjetos=projetos.filter(function(p){return p.turma===t;}).map(function(p){
+        return {id:String(p.id),turma:p.turma,curso:p.curso,nome:p.nome,tipo:p.tipo,
+                data:p.data,desc:p.desc,prof:p.prof,nalunos:p.alunos.length,
+                mencao:p.participacao?p.participacao.mencao:'Por registar',_local:true,_proj:p};
+      });
+    }
+    checkDone();
   });
-  jsonpCall(APPS_SCRIPT_URL+'?acao=getParticipacao&turma='+encodeURIComponent(t), function(res){
-    dadosPartic = (res&&res.dados) ? res.dados : [];
-    done();
+
+  sheetGet('getParticipacao', t, function(res){
+    dadosPartic=(res&&res.dados&&res.dados.length)?res.dados:[];
+    // Se falhou Sheet, constrói lista de alunos a partir de dados locais
+    if(!dadosPartic.length){
+      projetos.filter(function(p){return p.turma===t&&p.participacao;}).forEach(function(p){
+        p.alunos.forEach(function(a){
+          dadosPartic.push({proc:a.proc,nome:a.nome,atividade:p.nome,
+                            mencao:p.participacao.mencao,obs:p.participacao.obs||''});
+        });
+      });
+    }
+    checkDone();
   });
 }
 
@@ -889,11 +914,11 @@ function renderGestao(){
   cont.innerHTML=h;
 }
 
-// ---- Ver todos (público) — carrega da Sheet via JSONP ----
+// ---- Ver todos (público) ----
 function renderTodos(){
   var cont=document.getElementById('todos-content');
   cont.innerHTML='<div class="empty">⏳ A carregar projetos...</div>';
-  jsonpCall(APPS_SCRIPT_URL+'?acao=getTodos', function(res){
+  sheetGet('getTodos', '', function(res){
     if(res&&res.dados&&res.dados.length){
       renderTodosComDados(res.dados);
     } else {
