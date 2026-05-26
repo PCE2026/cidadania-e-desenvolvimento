@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- CD Templários 2027 — v4 — 2026-05-26 20:48 -->
 <html lang="pt">
 <head>
 <meta charset="UTF-8">
@@ -740,6 +741,11 @@ function savePartic(pid){
   });
 }
 
+// ---- UI helpers ----
+function togVisivel(el){
+  el.style.display = el.style.display==='block' ? 'none' : 'block';
+}
+
 // ---- Fetch com fallback robusto ----
 function sheetGet(acao, turma, callback){
   var url = APPS_SCRIPT_URL + '?acao=' + acao + (turma ? '&turma=' + encodeURIComponent(turma) : '');
@@ -802,7 +808,7 @@ function renderDT(){
       // Descrição expandível
       if(row.desc){
         h+='<div style="margin-top:8px">';
-        h+='<button class="expand-toggle" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">+ Ver descrição</button>';
+        h+='<button class="expand-toggle" onclick="togVisivel(this.nextElementSibling)">+ Ver descrição</button>';
         h+='<div style="display:none;margin-top:8px;font-size:13px;color:#555;line-height:1.6">'+row.desc+'</div>';
         h+='</div>';
       }
@@ -851,7 +857,7 @@ function avalFormSheet(row){
   var pid='sh_'+row.id;
   if(!scoresMap[pid]){scoresMap[pid]={};criterios.forEach(function(c){scoresMap[pid][c.id]=null;});}
   var h='<div style="margin-top:10px">';
-  h+='<button class="btn-aval" onclick="togEvalSheet(''+pid+'')">📋 Avaliação</button>';
+  h+='<button class="btn-aval" onclick="togEvalBox(this)">📋 Avaliação</button>';
   h+='</div>';
   h+='<div class="eval-box" id="ef-'+pid+'" style="display:none">';
   h+='<h3>Registo de participação — '+(row.nome||'')+'</h3>';
@@ -859,7 +865,7 @@ function avalFormSheet(row){
   criterios.forEach(function(c){
     h+='<div class="crit-row"><span class="crit-lbl">'+c.label+'</span><div class="sbtns" id="sc-'+pid+'-'+c.id+'">';
     ['Insuficiente','Suficiente','Bom','Muito Bom'].forEach(function(l,i){
-      h+='<button class="sb" data-val="'+(i+1)+'" onclick="setScore(''+pid+'',''+c.id+'','+(i+1)+')">'+l+'</button>';
+      h+='<button class="sb" data-val="'+(i+1)+'" onclick="setScore(\''+pid+'\',\''+c.id+'\','+(i+1)+')">'+l+'</button>';
     });
     h+='</div></div>';
   });
@@ -867,38 +873,14 @@ function avalFormSheet(row){
   h+='<textarea id="obs-'+pid+'" placeholder="Descreve a participação do grupo..."></textarea></div>';
   h+='<div class="field"><label style="font-size:13px;font-weight:500;color:#555;display:block;margin-bottom:6px">Menção global <span class="req">*</span></label>';
   h+='<div class="rgroup" id="men-'+pid+'">';
-  mencoes.forEach(function(m){h+='<label class="ropt" onclick="selMencao(this,''+pid+'',''+m+'')"><input type="radio" name="men-'+pid+'"> '+m+'</label>';});
+  mencoes.forEach(function(m){ h += '<label class="ropt" onclick="selMencaoInline(this)"><input type="radio" name="men-'+pid+'"> '+m+'</label>'; });
   h+='</div></div>';
-  h+='<button class="eval-save" onclick="saveParticSheet(''+pid+'','+JSON.stringify(row)+')">✓ Guardar participação</button>';
+  h+='<button class="eval-save" data-pid="'+pid+'" onclick="saveParticInline(this)">✓ Guardar participação</button>';
   h+='</div>';
   return h;
 }
 
-function togEvalSheet(pid){
-  var el=document.getElementById('ef-'+pid);
-  if(el) el.style.display=el.style.display==='none'?'block':'none';
-}
 
-function saveParticSheet(pid, row){
-  if(!mencaoMap[pid]){alert('Seleciona a menção global de participação.');return;}
-  // Build a minimal project object from sheet row data
-  var proxyProj={
-    id:row.id, nome:row.nome, tipo:row.tipo, turma:row.turma, ano:(row.ano||'').replace('.º ano',''),
-    data:row.data, prof:row.prof||'', curso:row.curso&&row.curso.indexOf('rofissional')>-1?'prof':'ch',
-    dominios:[], alunos:[], mats:[], turmaDT:dtTurmaAtual||row.turma,
-    participacao:{
-      scores:JSON.parse(JSON.stringify(scoresMap[pid]||{})),
-      obs:document.getElementById('obs-'+pid).value,
-      mencao:mencaoMap[pid]
-    }
-  };
-  // Send to sheet
-  enviarParaSheet('participacao', proxyProj, function(ok){
-    if(ok){ alert('✅ Participação registada na Google Sheet!'); }
-    else   { alert('✅ Participação registada.\n⚠️ Verifique a ligação à Google Sheet.'); }
-    renderDT();
-  });
-}
 
 // ---- Render Gestão — carrega SEMPRE da Google Sheet ----
 function renderGestao(){
