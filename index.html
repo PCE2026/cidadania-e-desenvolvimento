@@ -615,8 +615,15 @@ function submitProjeto(){
     abertura:selAbertura,anosAbr:document.getElementById('anos-abr').value.trim(),
     dominios:doms,convidado:convidado,participacao:null
   };
+  // Desativar botão para evitar duplo registo
+  var btnSub = document.querySelector('.btn-sub');
+  btnSub.disabled = true;
+  btnSub.textContent = '⏳ A registar...';
+
   projetos.push(proj);
   enviarParaSheet('projeto', proj, function(ok){
+    btnSub.disabled = false;
+    btnSub.textContent = '➤ Registar projeto';
     if(ok){ alert('✅ Projeto registado e guardado na Google Sheet!'); }
     else   { alert('✅ Projeto registado localmente.\n⚠️ Não foi possível guardar na Google Sheet — verifica a ligação.'); }
     resetForm();
