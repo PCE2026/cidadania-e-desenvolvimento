@@ -765,6 +765,17 @@ function sheetGet(acao, turma, callback){
     .catch(function(){ callback({ok:false, dados:[]}); });
 }
 
+// ---- Formatar data (remove T00:00:00.000Z) ----
+function formatData(d){
+  if(!d) return '';
+  // Remove ISO timestamp suffix
+  var s = String(d).replace(/T\d{2}:\d{2}:\d{2}\.?\d*Z?$/,'').trim();
+  // If it's a date object serialized, convert YYYY-MM-DD to DD/MM/YYYY
+  var m = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if(m) return m[3]+'/'+m[2]+'/'+m[1];
+  return s;
+}
+
 // ---- Render DT — carrega SEMPRE da Google Sheet ----
 function renderDT(){
   var t=dtTurmaAtual;
@@ -795,21 +806,41 @@ function renderDT(){
     // Secção 1 — Projetos
     h+='<div class="secao-titulo">📋 Projetos registados</div>';
     h+='<div class="proj-list">';
+    // Enrich projects with alunos list from participacao data
+    dadosProjetos.forEach(function(proj){
+      proj.alunosLista = dadosPartic
+        .filter(function(a){ return String(a.idProjeto)===String(proj.id); })
+        .map(function(a){ return {proc:a.proc, nome:a.nome}; });
+    });
+
     dadosProjetos.forEach(function(row){
       var avaliado=row.mencao&&row.mencao!=='Por registar';
       h+='<div class="pcard">';
       h+='<div class="ph"><div>';
       h+='<div class="ptitle">'+(row.nome||'')+'</div>';
-      h+='<div class="pmeta">'+(row.turma||t)+' · '+(row.data||'')+(row.prof?' · Prof. '+row.prof:'')+'</div>';
+      h+='<div class="pmeta">'+(row.turma||t)+' · '+formatData(row.data)+(row.prof?' · Prof. '+row.prof:'')+'</div>';
       h+='<div class="pmeta" style="margin-top:4px"><span class="ptag">'+(row.tipo||'')+'</span>'+(row.doms?'&nbsp;<span style="font-size:11px;color:#666">'+row.doms+'</span>':'')+'</div>';
       h+='</div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">';
       h+='<span class="sbadge '+(avaliado?'sd':'sp')+'">'+(row.mencao||'Por registar')+'</span>';
+      h+='<span style="font-size:11px;color:#888">'+(row.nalunos||0)+' aluno(s)</span>';
       h+='</div></div>';
+      // Alunos do projeto (vêm da folha Participação se avaliado, ou do campo nalunos)
+      if(row.alunosLista && row.alunosLista.length){
+        h+='<div style="margin-top:8px;border-top:1px solid #E0DED6;padding-top:8px">';
+        h+='<div style="font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Alunos</div>';
+        row.alunosLista.forEach(function(a){
+          h+='<div style="font-size:12px;color:#555;padding:1px 0">'+(a.proc?'<strong>'+a.proc+'</strong> — ':'')+a.nome+'</div>';
+        });
+        h+='</div>';
+      }
       // Descrição expandível
       if(row.desc){
         h+='<div style="margin-top:8px">';
-        h+='<button class="expand-toggle" onclick="togVisivel(this.nextElementSibling)">+ Ver descrição</button>';
-        h+='<div style="display:none;margin-top:8px;font-size:13px;color:#555;line-height:1.6">'+row.desc+'</div>';
+        h+='<button class="expand-toggle" onclick="togVisivel(this.nextElementSibling)">+ Ver descrição e domínios</button>';
+        h+='<div style="display:none;margin-top:8px;font-size:13px;color:#555;line-height:1.6">';
+        h+='<strong>Descrição:</strong> '+row.desc;
+        if(row.doms) h+='<br><strong>Domínios:</strong> '+row.doms;
+        h+='</div>';
         h+='</div>';
       }
       // Botão avaliação (só se não estiver avaliado)
@@ -916,7 +947,7 @@ function renderGestao(){
         h+='<td><strong>'+r.turma+'</strong></td>';
         h+='<td>'+r.nome+'</td>';
         h+='<td>'+r.tipo+'</td>';
-        h+='<td>'+r.data+'</td>';
+        h+='<td>'+formatData(r.data)+'</td>';
         h+='<td style="text-align:center"><span class="sbadge" style="background:#EEEDFE;color:#3C3489">'+r.nalunos+'</span></td>';
         h+='<td><span class="sbadge '+(r.mencao&&r.mencao!=='Por registar'?'sd':'sp')+'">'+r.mencao+'</span></td>';
         h+='</tr>';
@@ -947,9 +978,10 @@ function renderTodosComDados(lista){
   var done=lista.filter(function(r){return r.mencao&&r.mencao!=='Por registar';}).length;
 
   // Agrupar por ano e depois por turma
+  // Turma format: "10.º A", "11.º B", etc — extract first 2 chars
   var anos={};
   lista.forEach(function(r){
-    var ano=r.turma?r.turma.charAt(0):'?';
+    var ano = r.turma ? r.turma.replace(/[^0-9].*/,'').trim() : '?';
     if(!anos[ano])anos[ano]={projetos:0,alunos:0,turmas:{}};
     anos[ano].projetos++;
     anos[ano].alunos+=(parseInt(r.nalunos)||0);
@@ -992,7 +1024,7 @@ function renderTodosComDados(lista){
         h+='<td>'+r.turma+'</td>';
         h+='<td><strong>'+r.nome+'</strong></td>';
         h+='<td>'+r.tipo+'</td>';
-        h+='<td>'+r.data+'</td>';
+        h+='<td>'+formatData(r.data)+'</td>';
         h+='<td style="text-align:center"><span class="sbadge" style="background:#EEEDFE;color:#3C3489">'+r.nalunos+'</span></td>';
         h+='<td><span class="sbadge '+(r.mencao&&r.mencao!=='Por registar'?'sd':'sp')+'">'+r.mencao+'</span></td>';
         h+='</tr>';
