@@ -741,6 +741,58 @@ function savePartic(pid){
   });
 }
 
+// ---- Funções do formulário de avaliação inline ----
+function togEvalBox(btn){
+  var box = btn.parentElement.nextElementSibling;
+  if(!box) return;
+  box.style.display = box.style.display === 'none' ? 'block' : 'none';
+  btn.textContent = box.style.display === 'none' ? '📋 Avaliação' : '🔼 Fechar avaliação';
+}
+
+function setSbInline(btn){
+  var pid = btn.dataset.pid;
+  var crit = btn.dataset.crit;
+  var val = parseInt(btn.dataset.val);
+  if(!scoresMap[pid]) scoresMap[pid] = {};
+  scoresMap[pid][crit] = val;
+  document.querySelectorAll('#sc-'+pid+'-'+crit+' .sb').forEach(function(b){
+    b.classList.toggle('act', parseInt(b.dataset.val) === val);
+  });
+}
+
+function selMencaoInline(el){
+  el.closest('.rgroup').querySelectorAll('.ropt').forEach(function(r){ r.classList.remove('chk'); });
+  el.classList.add('chk');
+}
+
+function saveParticInline(btn){
+  var pid = btn.dataset.pid;
+  var row = window._avalRows && window._avalRows[pid];
+  if(!row){ alert('Erro: dados do projeto não encontrados. Tente recarregar a página.'); return; }
+  var mencaoEl = document.querySelector('#men-'+pid+' .ropt.chk');
+  if(!mencaoEl){ alert('Seleciona a menção global de participação.'); return; }
+  var mencao = mencaoEl.textContent.trim();
+  var obsEl = document.getElementById('obs-'+pid);
+  var obs = obsEl ? obsEl.value : '';
+  var portaria = (row.curso && row.curso.indexOf('rofissional') > -1) ? 'prof' : 'ch';
+  var anoLimpo = (row.ano||'').replace(/[^0-9]/g,'');
+  var proxyProj = {
+    id: row.id, nome: row.nome||'', tipo: row.tipo||'', turma: row.turma||'',
+    ano: anoLimpo, data: row.data||'', prof: row.prof||'', curso: portaria,
+    dominios: [], alunos: [], mats: [], turmaDT: dtTurmaAtual || row.turma,
+    participacao: { scores: scoresMap[pid]||{}, obs: obs, mencao: mencao }
+  };
+  btn.disabled = true;
+  btn.textContent = '⏳ A guardar...';
+  enviarParaSheet('participacao', proxyProj, function(ok){
+    btn.disabled = false;
+    btn.textContent = '✓ Guardar participação';
+    if(ok){ alert('✅ Participação registada na Google Sheet!'); }
+    else   { alert('✅ Participação registada.\n⚠️ Verifique a ligação.'); }
+    renderDT();
+  });
+}
+
 // ---- UI helpers ----
 function togVisivel(el){
   el.style.display = el.style.display==='block' ? 'none' : 'block';
