@@ -162,10 +162,10 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#F5F4F0;color:#1a
       <div class="stitle">Data de realização</div>
       <div class="field"><label>Escolhe a data <span class="req">*</span></label>
         <div class="chips" id="r-data-chips">
-          <div class="chip" onclick="selData(this,'22 mar 2027')">22 março 2027</div>
-          <div class="chip" onclick="selData(this,'23 mar 2027')">23 março 2027</div>
-          <div class="chip" onclick="selData(this,'24 mar 2027')">24 março 2027</div>
-          <div class="chip" onclick="selData(this,'outra')">Outra data</div>
+          <div class="chip" onclick="pickData(this,'22 mar 2027')">22 março 2027</div>
+          <div class="chip" onclick="pickData(this,'23 mar 2027')">23 março 2027</div>
+          <div class="chip" onclick="pickData(this,'24 mar 2027')">24 março 2027</div>
+          <div class="chip" onclick="pickData(this,'outra')">Outra data</div>
         </div>
       </div>
       <div class="field" id="r-outra-f" style="display:none"><label>Especificar data</label><input type="date" id="r-outra"></div>
@@ -339,6 +339,12 @@ function fmtData(d){
   return m ? m[3]+'/'+m[2]+'/'+m[1] : s;
 }
 function showEl(id, show){ var el=document.getElementById(id); if(el) el.style.display=show?'block':'none'; }
+function pickData(el, val){
+  document.querySelectorAll('#r-data-chips .chip').forEach(function(c){ c.classList.remove('sel'); });
+  el.classList.add('sel');
+  selDataVal = val;
+  showEl('r-outra-f', val==='outra');
+}
 function selRopt(el, name){
   document.querySelectorAll('[name="'+name+'"]').forEach(function(r){ r.closest('.ropt').classList.remove('chk'); });
   el.classList.add('chk');
@@ -801,12 +807,7 @@ function exportParticipacao(){
   });
 }
 
-// ---- Chip data helper ----
-function selData(el, val){
-  document.querySelectorAll('#r-data-chips .chip').forEach(function(c){ c.classList.remove('sel'); });
-  el.classList.add('sel'); selDataVal=val;
-  showEl('r-outra-f', val==='outra');
-}
+
 
 // ---- Init ----
 selAno(document.querySelector('.ytab.act'), '10');
