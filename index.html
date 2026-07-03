@@ -327,7 +327,7 @@ var MENCOES = ['Participou com distinção','Participou','Participou satisfatori
 var SCORE_L = {1:'Insuficiente',2:'Suficiente',3:'Bom',4:'Muito Bom'};
 
 var anoAtual = '10';
-var selData = '';
+var selDataVal = '';
 var dtTurma = null;
 var gestaoOk = false;
 
@@ -416,11 +416,7 @@ function renderDoms(){
 }
 function togDom(el){ el.classList.toggle('sel-d'); }
 function getDoms(){ return Array.from(document.querySelectorAll('.dchip.sel-d')).map(function(e){ return e.dataset.id; }); }
-function selData2(el,val){
-  document.querySelectorAll('#r-data-chips .chip').forEach(function(c){ c.classList.remove('sel'); });
-  el.classList.add('sel'); selData=val;
-  showEl('r-outra-f', val==='outra');
-}
+
 
 // ---- Alunos/Mats ----
 function addAluno(){
@@ -465,12 +461,12 @@ function submitProjeto(){
   var email=document.getElementById('r-email').value.trim();
   var doms=getDoms();
   var alunos=getAlunos();
-  if(!nome||!tipo||!turma||!desc||!selData||!curso||!email||!doms.length){
+  if(!nome||!tipo||!turma||!desc||!selDataVal||!curso||!email||!doms.length){
     alert('Preenche todos os campos obrigatórios (*) e seleciona pelo menos um domínio.'); return;
   }
   if(!alunos.length){ alert('Adiciona pelo menos um aluno.'); return; }
   var telm=document.getElementById('r-telm').value.replace(/\D/g,'');
-  var data=selData==='outra'?(document.getElementById('r-outra').value||'Data a definir'):selData;
+  var data=selDataVal==='outra'?(document.getElementById('r-outra').value||'Data a definir'):selDataVal;
   var aberturaEl=document.querySelector('#r-abertura .ropt.chk');
   var abertura=aberturaEl?aberturaEl.querySelector('input').value:'';
   var convSimEl=document.getElementById('conv-sim');
@@ -506,7 +502,7 @@ function resetForm(){
   showEl('r-outra-f',false); showEl('r-anos-f',false); showEl('r-conv-det',false);
   document.getElementById('r-alunos').innerHTML='<div class="arow"><input type="text" placeholder="N.º processo" data-f="proc" oninput="this.value=this.value.replace(/\\D/g,\'\')" inputmode="numeric"><input type="text" placeholder="Nome completo" data-f="nome"><button class="btn-rm" onclick="rmAluno(this)">✕</button></div>';
   document.getElementById('r-mats').innerHTML='<tr><td><input type="text" placeholder="Ex: 30 unidades"></td><td><input type="text" placeholder="Ex: Folhas A4"></td><td><button class="btn-rm" onclick="rmMat(this)">✕</button></td></tr>';
-  selData='';
+  selDataVal='';
   renderDoms();
 }
 
@@ -808,7 +804,7 @@ function exportParticipacao(){
 // ---- Chip data helper ----
 function selData(el, val){
   document.querySelectorAll('#r-data-chips .chip').forEach(function(c){ c.classList.remove('sel'); });
-  el.classList.add('sel'); selData=val;
+  el.classList.add('sel'); selDataVal=val;
   showEl('r-outra-f', val==='outra');
 }
 
