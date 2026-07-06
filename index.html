@@ -1,820 +1,1185 @@
 <!DOCTYPE html>
-<!-- CD Templários 2027 — v6 -->
 <html lang="pt">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cidadania e Desenvolvimento 2027 — Templários</title>
+<title>Validador de Notícias — AET</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:system-ui,-apple-system,sans-serif;background:#F5F4F0;color:#1a1a18;font-size:15px}
-.wrap{max-width:740px;margin:0 auto;padding:1.5rem 1rem 3rem}
-.header{text-align:center;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid #E0DED6}
-.badge{display:inline-block;background:#EEEDFE;color:#3C3489;font-size:11px;font-weight:600;padding:3px 12px;border-radius:20px;margin-bottom:10px;letter-spacing:.6px;text-transform:uppercase}
-.header h1{font-size:22px;font-weight:600;margin-bottom:4px}
-.header p{font-size:14px;color:#666}
-.tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:#E8E6E0;border-radius:10px;padding:4px;margin-bottom:1.5rem}
-.tab{padding:10px 8px;font-size:12px;font-weight:500;border:none;background:transparent;border-radius:7px;cursor:pointer;color:#666;transition:all .15s;text-align:center}
-.tab.active{background:#fff;color:#1a1a18;box-shadow:0 1px 3px rgba(0,0,0,.1)}
-.panel{display:none}.panel.active{display:block}
-.stitle{font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.7px;margin:1.5rem 0 10px}
-.stitle:first-child{margin-top:0}
-.field{margin-bottom:13px}
-.field label{display:block;font-size:13px;font-weight:500;color:#555;margin-bottom:5px}
-.req{color:#D85A30;margin-left:2px}
-.field input,.field select,.field textarea{width:100%;padding:8px 11px;border:1px solid #D5D3CB;border-radius:8px;font-size:14px;font-family:inherit;background:#fff;color:#1a1a18;transition:border-color .15s}
-.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:#534AB7}
-.field textarea{min-height:70px;resize:vertical}
-.hint{font-size:11px;color:#999;margin-top:3px}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.divider{border:none;border-top:1px solid #E0DED6;margin:1.25rem 0}
-.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:5px}
-.chip{padding:6px 12px;border:1px solid #C8C6BE;border-radius:20px;font-size:12px;cursor:pointer;background:#fff;color:#555;transition:all .15s;white-space:nowrap}
-.chip.sel{background:#EEEDFE;border-color:#534AB7;color:#3C3489;font-weight:500}
-.rgroup{display:flex;gap:6px;flex-wrap:wrap}
-.ropt{display:flex;align-items:center;gap:7px;padding:7px 12px;border:1px solid #C8C6BE;border-radius:20px;cursor:pointer;font-size:13px;transition:all .15s;background:#fff}
-.ropt.chk{background:#EEEDFE;border-color:#534AB7;color:#3C3489}
-.ropt input{accent-color:#534AB7;width:14px;height:14px}
-.ytabs{display:flex;gap:6px;margin-bottom:1rem}
-.ytab{padding:8px 20px;border:1px solid #C8C6BE;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;background:#fff;color:#555;transition:all .15s}
-.ytab.act{background:#534AB7;border-color:#534AB7;color:#fff}
-.box{background:#F0EDE8;border-radius:10px;padding:.9rem}
-.arow{display:grid;grid-template-columns:140px 1fr auto;gap:8px;align-items:center;margin-bottom:7px}
-.arow:last-child{margin-bottom:0}
-.btn-rm{width:30px;height:30px;border:1px solid #C8C6BE;background:#fff;border-radius:7px;cursor:pointer;font-size:15px;color:#888;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.btn-rm:hover{background:#FCEBEB;border-color:#F09595;color:#A32D2D}
-.btn-add{font-size:12px;color:#534AB7;background:transparent;border:1px dashed #AFA9EC;padding:7px 12px;border-radius:7px;cursor:pointer;margin-top:8px;width:100%;font-family:inherit}
-.btn-sub{width:100%;padding:12px;background:#534AB7;color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer;margin-top:1.25rem;font-family:inherit}
-.mat-wrap{overflow-x:auto}
-.mat-tbl{width:100%;border-collapse:collapse;font-size:13px}
-.mat-tbl th{font-size:11px;font-weight:600;color:#888;text-align:left;padding:6px 8px;background:#E8E6E0;border-bottom:1px solid #D5D3CB;text-transform:uppercase}
-.mat-tbl td{padding:4px 6px;vertical-align:middle}
-.mat-tbl td input{font-size:13px;padding:6px 8px}
-.dom-sec{margin-bottom:8px}
-.dom-lbl{font-size:11px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
-.dom-chips{display:flex;flex-wrap:wrap;gap:5px}
-.dchip{padding:6px 12px;border:1px solid #9FE1CB;border-radius:20px;font-size:12px;cursor:pointer;background:#E1F5EE;color:#085041;transition:all .15s;font-weight:500}
-.dchip.sel-d{background:#0F6E56;border-color:#0F6E56;color:#fff}
-.prazo-box{background:#FFF8E6;border:1px solid #F5D98A;border-radius:9px;padding:10px 14px;font-size:13px;color:#7A4D00;margin-bottom:1rem}
-.prazo-enc{background:#FCEBEB;border:1px solid #F09595;border-radius:9px;padding:14px;font-size:14px;color:#A32D2D;text-align:center;font-weight:500;margin-bottom:1rem}
-.lock-wrap{background:#fff;border:1px solid #E0DED6;border-radius:12px;padding:2rem;text-align:center;max-width:380px;margin:2rem auto}
-.lock-wrap h2{font-size:18px;font-weight:600;margin-bottom:8px}
-.lock-wrap p{font-size:13px;color:#666;margin-bottom:1.25rem;line-height:1.6}
-.lock-input{width:100%;padding:10px 14px;border:1px solid #D5D3CB;border-radius:8px;font-size:15px;font-family:inherit;text-align:center;margin-bottom:10px}
-.lock-input:focus{outline:none;border-color:#534AB7}
-.lock-btn{width:100%;padding:11px;background:#534AB7;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
-.lock-err{font-size:12px;color:#A32D2D;margin-top:6px;display:none}
-.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.25rem}
-.stat{background:#F0EDE8;border-radius:9px;padding:12px;text-align:center}
-.snum{font-size:24px;font-weight:600}.slbl{font-size:11px;color:#888;margin-top:2px}
-.ano-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.5rem}
-.ano-box{background:#EEEDFE;border-radius:9px;padding:14px;text-align:center}
-.ano-box .snum{color:#534AB7}
-.empty{text-align:center;padding:2.5rem 1rem;color:#888;font-size:14px}
-.pcard{background:#fff;border:1px solid #E0DED6;border-radius:12px;padding:1rem 1.25rem;margin-bottom:10px}
-.ph{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
-.ptitle{font-size:14px;font-weight:600}
-.pmeta{font-size:12px;color:#666;margin-top:3px}
-.ptag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;background:#EEEDFE;color:#3C3489;font-weight:500;white-space:nowrap;margin-right:3px;margin-bottom:2px}
-.sbadge{font-size:11px;padding:3px 9px;border-radius:20px;font-weight:500;white-space:nowrap}
-.sp{background:#FAEEDA;color:#633806}.sd{background:#EAF3DE;color:#27500A}
-.btn-expand{font-size:12px;color:#534AB7;background:transparent;border:1px solid #AFA9EC;padding:5px 12px;border-radius:7px;cursor:pointer;margin-top:10px;font-family:inherit}
-.btn-aval{font-size:12px;color:#fff;background:#0F6E56;border:none;padding:6px 14px;border-radius:7px;cursor:pointer;margin-top:10px;margin-left:8px;font-family:inherit;font-weight:600}
-.detail-box{background:#F5F4F0;border-radius:8px;padding:.875rem;margin-top:10px;font-size:13px;color:#444;line-height:1.7}
-.eval-box{background:#F5F4F0;border-radius:9px;padding:1rem;margin-top:10px}
-.eval-box h3{font-size:14px;font-weight:600;margin-bottom:8px}
-.crit-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;gap:10px}
-.crit-lbl{font-size:13px;flex:1}
-.sbtns{display:flex;gap:4px;flex-shrink:0}
-.sb{padding:5px 9px;border:1px solid #C8C6BE;background:#fff;border-radius:7px;font-size:11px;cursor:pointer;color:#555;font-family:inherit;white-space:nowrap}
-.sb.act{background:#534AB7;border-color:#534AB7;color:#fff;font-weight:500}
-.eval-save{padding:9px 20px;background:#0F6E56;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;margin-top:12px;font-family:inherit}
-.lei-box{background:#E6F1FB;border:1px solid #B5D4F4;border-radius:9px;padding:11px 14px;font-size:12px;color:#0C447C;margin-bottom:1rem;line-height:1.7}
-.export-bar{display:flex;gap:10px;margin-bottom:1.25rem;flex-wrap:wrap}
-.btn-exp{padding:10px 18px;border:none;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;color:#fff}
-.btn-exp-g{background:#0F6E56}.btn-exp-b{background:#185FA5}
-.todos-tbl{width:100%;border-collapse:collapse;font-size:13px}
-.todos-tbl th{font-size:11px;font-weight:600;color:#fff;text-align:left;padding:7px 10px;background:#1a1a18}
-.todos-tbl td{padding:8px 10px;border-bottom:1px solid #E0DED6;vertical-align:middle}
-.todos-tbl .grp-row td{background:#EEEDFE;color:#3C3489;font-weight:600;font-size:12px;padding:6px 10px}
-.alunos-tbl{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
-.alunos-tbl th{font-size:11px;font-weight:600;color:#fff;text-align:left;padding:7px 10px;background:#534AB7}
-.alunos-tbl td{padding:7px 10px;border-bottom:1px solid #E0DED6;vertical-align:top}
-.turma-hdr{background:#534AB7;color:#fff;border-radius:10px;padding:12px 16px;margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
-.turma-hdr h2{font-size:16px;font-weight:600}
-.turma-stats{display:flex;gap:16px;font-size:13px;opacity:.9}
-.secao{font-size:12px;font-weight:700;color:#534AB7;text-transform:uppercase;letter-spacing:.6px;margin:1.5rem 0 8px;padding-bottom:5px;border-bottom:2px solid #EEEDFE}
+:root{
+  --bg:#fff;--bg2:#f6f6f4;--bg3:#efefec;
+  --text:#171715;--text2:#65655f;--text3:#9a9a94;
+  --border:rgba(0,0,0,0.09);--border2:rgba(0,0,0,0.17);
+  --blue:#1a6fc4;--blue-bg:#e8f1fb;--blue-text:#0c4a8a;
+  --green:#1a7a4a;--green-bg:#e5f3ec;--green-text:#0e5230;
+  --red:#c0392b;--red-bg:#fdecea;--red-text:#7d1f17;
+  --amber:#b06000;--amber-bg:#fef3e1;--amber-text:#7a4100;
+  --r:8px;--rl:12px;--font:'Segoe UI',system-ui,sans-serif;
+}
+body{font-family:var(--font);background:#ededeb;color:var(--text);font-size:14px;line-height:1.5;min-height:100vh}
+.wrap{max-width:820px;margin:0 auto;padding:24px 16px}
+
+/* ── home ── */
+.home-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.home-box{background:var(--bg);border:1px solid var(--border);border-radius:var(--rl);padding:40px 36px;max-width:540px;width:100%;text-align:center}
+.home-logo{width:60px;height:60px;border-radius:var(--r);background:var(--blue-bg);display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
+.home-logo svg{width:30px;height:30px;stroke:var(--blue);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.home-box h1{font-size:22px;font-weight:800;margin-bottom:6px}
+.home-box>p{font-size:13px;color:var(--text2);margin-bottom:28px;line-height:1.6}
+.area-grid{display:grid;grid-template-columns:1fr;gap:10px}
+.area-btn{display:flex;align-items:center;gap:14px;padding:16px 18px;border:1.5px solid var(--border);border-radius:var(--rl);background:var(--bg2);cursor:pointer;text-align:left;transition:all .15s;font-family:var(--font)}
+.area-btn:hover{border-color:#7aabdf;background:var(--blue-bg);transform:translateY(-1px)}
+.area-icon{width:44px;height:44px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+.area-text .title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:2px}
+.area-text .sub{font-size:12px;color:var(--text2);line-height:1.4}
+
+/* ── login validar ── */
+.login-box{background:var(--bg);border:1px solid var(--border);border-radius:var(--rl);padding:36px 32px;max-width:500px;width:100%;text-align:center}
+.login-box h2{font-size:18px;font-weight:800;margin-bottom:6px}
+.login-box>p{font-size:13px;color:var(--text2);margin-bottom:24px}
+.login-label{font-size:12px;font-weight:700;color:var(--text2);display:block;text-align:left;margin-bottom:5px;margin-top:14px}
+.login-label:first-of-type{margin-top:0}
+input.inp{width:100%;font-size:14px;padding:10px 12px;border:1.5px solid var(--border2);border-radius:var(--r);font-family:var(--font)}
+input.inp:focus{outline:none;border-color:var(--blue)}
+.grupo-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0 20px}
+.grupo-btn{padding:14px 12px;border:2px solid var(--border);border-radius:var(--r);background:var(--bg2);cursor:pointer;text-align:center;transition:all .15s;font-family:var(--font)}
+.grupo-btn:hover{border-color:#7aabdf;background:var(--blue-bg)}
+.grupo-btn.selected{border-color:var(--blue);background:var(--blue-bg)}
+.gb-icon{font-size:22px;margin-bottom:5px}
+.gb-title{font-size:12px;font-weight:700;color:var(--text);margin-bottom:2px}
+.gb-sub{font-size:10px;color:var(--text2);line-height:1.4}
+
+/* ── gestão password ── */
+.gestao-pass{background:var(--bg);border:1px solid var(--border);border-radius:var(--rl);padding:36px 32px;max-width:400px;width:100%;text-align:center}
+.gestao-pass h2{font-size:18px;font-weight:800;margin-bottom:6px}
+.gestao-pass p{font-size:13px;color:var(--text2);margin-bottom:20px}
+
+/* ── header ── */
+.header{display:flex;align-items:center;gap:14px;margin-bottom:20px}
+.logo{width:44px;height:44px;border-radius:var(--r);background:var(--blue-bg);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo svg{width:22px;height:22px;stroke:var(--blue);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.hb{flex:1}
+.hb h1{font-size:17px;font-weight:800;color:var(--text)}
+.hb p{font-size:12px;color:var(--text2);margin-top:1px}
+.user-pill{display:flex;align-items:center;gap:6px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:12px;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.user-pill:hover{background:var(--bg3)}
+.user-pill svg{width:13px;height:13px;stroke:var(--text2);fill:none;stroke-width:2}
+
+/* ── stats ── */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.sc{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px}
+.sv{font-size:22px;font-weight:800;color:var(--text);line-height:1}
+.sl{font-size:11px;color:var(--text2);margin-top:4px}
+
+/* ── card ── */
+.card{background:var(--bg);border:1px solid var(--border);border-radius:var(--rl);padding:20px;margin-bottom:14px}
+
+/* ── import box ── */
+.import-box{background:var(--bg);border:1.5px dashed #aab8cc;border-radius:var(--rl);padding:18px 20px;margin-bottom:16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.import-box svg{width:26px;height:26px;stroke:#7a9abc;fill:none;stroke-width:1.5;flex-shrink:0}
+.import-text h3{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px}
+.import-text p{font-size:12px;color:var(--text2)}
+.file-label{display:inline-flex;align-items:center;gap:7px;padding:8px 16px;background:var(--blue-bg);color:var(--blue-text);border-radius:var(--r);font-size:12px;font-weight:700;cursor:pointer;border:1px solid #7aabdf;white-space:nowrap;flex-shrink:0}
+.file-label:hover{background:#d8ebf9}
+.file-label svg{width:14px;height:14px;stroke:var(--blue);fill:none;stroke-width:2}
+.file-label input{display:none}
+
+/* ── lista notícias ── */
+.li{padding:12px 0;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:11px;cursor:pointer;transition:all .1s}
+.li:last-child{border-bottom:none;padding-bottom:0}
+.li:hover{background:var(--bg2);margin:0 -10px;padding:12px 10px;border-radius:var(--r)}
+.li:hover .li-t{color:var(--blue)}
+.li-ico{width:34px;height:34px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.li-b{flex:1;min-width:0}
+.li-t{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .15s}
+.li-s{font-size:11px;color:var(--text2)}
+.li-r{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
+.badge{display:inline-flex;align-items:center;gap:3px;font-size:10px;padding:2px 9px;border-radius:20px;font-weight:700;white-space:nowrap}
+.b-pend{background:var(--amber-bg);color:var(--amber-text)}
+.b-pub{background:var(--green-bg);color:var(--green-text)}
+.b-corr{background:var(--blue-bg);color:var(--blue-text)}
+.b-val{background:#f0e8ff;color:#5a1a8a}
+
+/* ── detalhe validação ── */
+.ntitle{font-size:19px;font-weight:800;color:var(--text);margin-bottom:8px;line-height:1.3}
+.meta-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;padding:10px 12px;background:var(--bg2);border-radius:var(--r)}
+.mi{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2)}
+.mi svg{width:12px;height:12px;stroke:var(--text3);fill:none;stroke-width:2;flex-shrink:0}
+.nivel-badge{display:inline-flex;align-items:center;gap:5px;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;margin-bottom:10px}
+.nivel-a{background:#fff3e0;color:#7a4000;border:1px solid #f0c070}
+.nivel-b{background:#e8f0fe;color:#1a3a7a;border:1px solid #90b0e8}
+.cat-pill{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:2px 9px;font-size:11px;color:var(--text2)}
+.sec{font-size:10px;font-weight:800;color:var(--text2);text-transform:uppercase;letter-spacing:.07em;margin:14px 0 7px}
+.nbody{font-size:14px;color:var(--text);line-height:1.75;white-space:pre-wrap;padding:14px;background:var(--bg2);border-radius:var(--r);margin-bottom:6px}
+.nbody.empty{color:var(--text2);font-style:italic}
+.prog-wrap{height:5px;background:var(--bg3);border-radius:3px;margin:5px 0 2px}
+.prog-bar{height:5px;border-radius:3px}
+.char-info{display:flex;justify-content:space-between;font-size:11px;color:var(--text2)}
+.mpill{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:5px 10px;font-size:12px;display:flex;align-items:center;gap:5px}
+.mpill svg{width:13px;height:13px;stroke:var(--text2);fill:none;stroke-width:2;flex-shrink:0}
+.mpill a{color:var(--blue);text-decoration:none}
+.dest-img{width:100%;max-height:220px;object-fit:cover;border-radius:var(--r);border:1px solid var(--border);display:block;margin-bottom:8px;cursor:pointer}
+.dest-img:hover{opacity:.88}
+
+/* ── verificação jornalística ── */
+.check-block{background:linear-gradient(135deg,#f0f6ff,#f4f0ff);border:1px solid #c5d5f0;border-radius:var(--rl);padding:14px 16px;margin:14px 0}
+.check-hd{font-size:10px;font-weight:800;color:#4a5a80;text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.check-hd svg{width:14px;height:14px;stroke:#4a5a80;fill:none;stroke-width:2}
+.check-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.check-item{display:flex;align-items:flex-start;gap:7px;padding:7px 10px;border-radius:var(--r);font-size:12px;line-height:1.4}
+.check-ok{background:#e8f5ee;color:#1a5c35}
+.check-warn{background:#fff8e1;color:#7a4100}
+.check-fail{background:#fdecea;color:#7d1f17}
+.check-ico{font-size:14px;flex-shrink:0;margin-top:1px}
+.check-score{display:flex;align-items:center;gap:10px;margin-top:10px;padding:8px 12px;border-radius:var(--r);font-size:12px;font-weight:700}
+.score-ok{background:#e8f5ee;color:#1a5c35}
+.score-warn{background:#fff8e1;color:#7a4100}
+.score-fail{background:#fdecea;color:#7d1f17}
+
+/* ── ai ── */
+.spinner{display:inline-block;width:13px;height:13px;border:2px solid #c8d0e8;border-top-color:#5570c0;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── decisão ── */
+.resp-banner{background:var(--amber-bg);border:1px solid #e8c070;border-radius:var(--r);padding:14px 16px;margin-bottom:16px;font-size:13px;color:var(--amber-text);line-height:1.65}
+.resp-banner strong{display:block;font-size:14px;margin-bottom:4px}
+.decisao-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
+.dec-btn{padding:14px 10px;border-radius:var(--rl);border:2px solid var(--border);background:var(--bg2);cursor:pointer;text-align:center;transition:all .15s;font-family:var(--font)}
+.dec-btn:hover{transform:translateY(-2px)}
+.dec-btn.selected{transform:translateY(-2px)}
+.dec-btn .di{font-size:24px;margin-bottom:6px}
+.dec-btn .dt{font-size:12px;font-weight:700;margin-bottom:2px}
+.dec-btn .ds{font-size:11px;color:var(--text2);line-height:1.3}
+.dec-pub{border-color:#90d4a8}.dec-pub.selected{background:var(--green-bg);border-color:var(--green)}
+.dec-corr{border-color:#90b0e8}.dec-corr.selected{background:var(--blue-bg);border-color:var(--blue)}
+
+.pub-row{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 14px}
+.pub-lbl{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;cursor:pointer;padding:8px 16px;background:var(--bg2);border-radius:var(--r);border:1px solid var(--border);transition:all .15s;user-select:none}
+.pub-lbl.on{border-color:var(--green);background:var(--green-bg);color:var(--green-text)}
+.pub-lbl input{width:14px;height:14px;accent-color:var(--green);cursor:pointer}
+
+textarea.obs,textarea.nota{width:100%;font-size:13px;resize:vertical;padding:9px 11px;border:1.5px solid var(--border2);border-radius:var(--r);font-family:var(--font)}
+textarea.obs:focus,textarea.nota:focus{outline:none;border-color:var(--blue)}
+.obs{min-height:65px}
+.nota{min-height:90px;border-color:#90b0e8}
+
+/* ── email modal ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9000;align-items:center;justify-content:center;padding:16px}
+.modal-overlay.show{display:flex}
+.modal{background:var(--bg);border-radius:var(--rl);padding:26px;max-width:560px;width:100%;box-shadow:0 8px 40px rgba(0,0,0,.18);max-height:90vh;overflow-y:auto}
+.modal h2{font-size:16px;font-weight:800;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.modal h2 svg{width:18px;height:18px;stroke:var(--blue);fill:none;stroke-width:2}
+.modal .sub{font-size:12px;color:var(--text2);margin-bottom:14px}
+.ef{margin-bottom:12px}
+.ef label{font-size:11px;font-weight:700;color:var(--text2);display:block;margin-bottom:4px}
+.ef input,.ef textarea{width:100%;font-size:13px;padding:8px 11px;border:1px solid var(--border2);border-radius:var(--r);font-family:var(--font)}
+.ef textarea{min-height:220px;resize:vertical;line-height:1.6}
+.modal-btns{display:flex;gap:8px;margin-top:14px}
+
+/* ── buttons ── */
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+button.btn{padding:9px 16px;border-radius:var(--r);font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;border:none;font-family:var(--font);transition:filter .15s}
+button.btn:hover{filter:brightness(.93)}
+button.btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.btn-full{width:100%;justify-content:center}
+.btn-apro{background:var(--green-bg);color:var(--green-text)}
+.btn-corr{background:var(--blue-bg);color:var(--blue-text)}
+.btn-sec{background:var(--bg2);color:var(--text2);border:1px solid var(--border2)!important}
+.btn-pri{background:var(--blue-bg);color:var(--blue-text)}
+
+/* ── filter chips ── */
+.filter-row{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.chip{padding:5px 13px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--bg2);color:var(--text2);transition:all .15s}
+.chip.active{background:var(--blue-bg);color:var(--blue-text);border-color:var(--blue)}
+
+.empty{text-align:center;padding:36px 16px;color:var(--text2)}
+.empty svg{width:36px;height:36px;stroke:var(--text3);fill:none;stroke-width:1.5;margin:0 auto 10px;display:block}
+.empty p{font-size:13px;line-height:1.6}
+.toast{position:fixed;bottom:20px;right:20px;background:var(--bg);border:1px solid var(--border2);border-radius:var(--rl);padding:10px 14px;font-size:13px;color:var(--text);display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.13);z-index:9999;transform:translateY(60px);opacity:0;transition:all .25s;max-width:320px}
+.toast.show{transform:translateY(0);opacity:1}
+.toast svg{width:16px;height:16px;fill:none;stroke-width:2;stroke-linecap:round;flex-shrink:0}
+.loading{display:none;position:fixed;inset:0;background:rgba(255,255,255,.82);z-index:8888;flex-direction:column;align-items:center;justify-content:center;gap:12px}
+.loading.show{display:flex}
+.loading .sp{width:28px;height:28px;border:3px solid #dde;border-top-color:#5570c0;border-radius:50%;animation:spin .7s linear infinite}
+.loading p{font-size:13px;color:var(--text2)}
+@media(max-width:600px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .decisao-grid{grid-template-columns:1fr}
+  .tab span{display:none}
+  .grupo-grid{grid-template-columns:1fr}
+}
 </style>
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
 <body>
-<div class="wrap">
-  <div class="header">
-    <div class="badge">Agrupamento de Escolas Templários</div>
-    <h1>Cidadania e Desenvolvimento 2027</h1>
-    <p>Registo e avaliação de projetos de cidadania</p>
-    <p style="font-size:10px;color:#aaa;margin-top:4px">v6</p>
-  </div>
-  <div class="tabs">
-    <button class="tab active" onclick="switchTab('registo')" id="tab-registo">✏️ Alunos registam o seu projeto de cidadania</button>
-    <button class="tab" onclick="switchTab('dt')" id="tab-dt">🏫 Área do Diretor de Turma</button>
-    <button class="tab" onclick="switchTab('gestao')" id="tab-gestao">🔒 Gestão</button>
-    <button class="tab" onclick="switchTab('todos')" id="tab-todos">📁 Ver todos</button>
-  </div>
 
-  <!-- REGISTO -->
-  <div id="panel-registo" class="panel active">
-    <div id="prazo-aviso"></div>
-    <div id="registo-form">
-      <div class="stitle">Ano de escolaridade</div>
-      <div class="ytabs">
-        <button class="ytab act" onclick="selAno(this,'10')">10.º ano</button>
-        <button class="ytab" onclick="selAno(this,'11')">11.º ano</button>
-        <button class="ytab" onclick="selAno(this,'12')">12.º ano</button>
-      </div>
-      <div class="g2">
-        <div class="field"><label>Turma <span class="req">*</span></label><select id="r-turma"></select></div>
-        <div class="field"><label>Tipo de curso <span class="req">*</span></label>
-          <select id="r-curso">
-            <option value="">Selecionar...</option>
-            <option value="ch">Científico-humanístico (P. 226-A/2018)</option>
-            <option value="prof">Profissional (P. 235-A/2018)</option>
-          </select>
-        </div>
-      </div>
-      <div class="divider"></div>
-      <div class="stitle">Identificação da atividade</div>
-      <div class="field"><label>Nome da atividade <span class="req">*</span></label><input type="text" id="r-nome" placeholder="Ex: Direitos Humanos na nossa escola"></div>
-      <div class="field"><label>Tipo de atividade <span class="req">*</span></label>
-        <select id="r-tipo">
-          <option value="">Selecionar...</option>
-          <option>Palestra</option><option>Workshop</option><option>Jogo</option>
-          <option>Prova de orientação</option><option>Peddy paper</option>
-          <option>Escape room</option><option>Demonstração de experiências</option>
-          <option>Exposição</option><option>Debate</option>
-          <option>Artes performativas / Teatro / Dança</option><option>Outro</option>
-        </select>
-      </div>
-      <div class="field"><label>Descrição da atividade <span class="req">*</span></label><textarea id="r-desc" placeholder="Descreve o que vais fazer, os objetivos e como vai decorrer..."></textarea></div>
-      <div class="divider"></div>
-      <div class="stitle">Domínio de Cidadania e Desenvolvimento <span class="req">*</span></div>
-      <div id="r-doms"></div>
-      <div class="divider"></div>
-      <div class="stitle">Data de realização</div>
-      <div class="field"><label>Escolhe a data <span class="req">*</span></label>
-        <div class="chips" id="r-data-chips">
-          <div class="chip" onclick="pickData(this,'22 mar 2027')">22 março 2027</div>
-          <div class="chip" onclick="pickData(this,'23 mar 2027')">23 março 2027</div>
-          <div class="chip" onclick="pickData(this,'24 mar 2027')">24 março 2027</div>
-          <div class="chip" onclick="pickData(this,'outra')">Outra data</div>
-        </div>
-      </div>
-      <div class="field" id="r-outra-f" style="display:none"><label>Especificar data</label><input type="date" id="r-outra"></div>
-      <div class="divider"></div>
-      <div class="stitle">Professor(a) facilitador(a)</div>
-      <div class="field"><label>Nome do(a) professor(a) facilitador(a)</label><input type="text" id="r-prof" placeholder="Nome completo (opcional)"><div class="hint">Preenche apenas se houver um(a) docente que acompanha o projeto</div></div>
-      <div class="divider"></div>
-      <div class="stitle">Contacto do projeto</div>
-      <div class="g2">
-        <div class="field"><label>Email de contacto <span class="req">*</span></label><input type="email" id="r-email" placeholder="Ex: nome@escola.pt"></div>
-        <div class="field"><label>Telemóvel de contacto</label><input type="tel" id="r-telm" placeholder="Ex: 912345678" maxlength="13" oninput="this.value=this.value.replace(/\D/g,'').slice(0,13)"><div class="hint">Até 13 dígitos</div></div>
-      </div>
-      <div class="divider"></div>
-      <div class="stitle">Alunos envolvidos <span class="req">*</span></div>
-      <div class="box">
-        <div id="r-alunos">
-          <div class="arow"><input type="text" placeholder="N.º processo" data-f="proc" oninput="this.value=this.value.replace(/\D/g,'')" inputmode="numeric"><input type="text" placeholder="Nome completo" data-f="nome"><button class="btn-rm" onclick="rmAluno(this)">✕</button></div>
-        </div>
-        <button class="btn-add" onclick="addAluno()">+ Adicionar aluno(a)</button>
-      </div>
-      <div class="divider"></div>
-      <div class="stitle">Logística e espaço</div>
-      <div class="g2">
-        <div class="field"><label>Espaço necessário <span class="req">*</span></label>
-          <select id="r-espaco">
-            <option value="">Selecionar...</option>
-            <option>Sala de aula</option><option>Sala polivalente</option>
-            <option>Anfiteatro</option><option>Auditório da Jácome</option>
-            <option>Ginásio</option><option>Laboratório</option>
-            <option>Espaço exterior (recreio / campo)</option>
-            <option>Biblioteca</option><option>Corredor / átrio</option><option>Outro</option>
-          </select>
-        </div>
-        <div class="field"><label>Especificação</label><input type="text" id="r-espaco-det" placeholder="Ex: com projetor, 60 lugares..."></div>
-      </div>
-      <div class="field"><label>Materiais necessários</label>
-        <div class="box">
-          <div class="mat-wrap">
-            <table class="mat-tbl">
-              <thead><tr><th style="width:150px">Quantidade</th><th>Material / Produto</th><th style="width:38px"></th></tr></thead>
-              <tbody id="r-mats"><tr><td><input type="text" placeholder="Ex: 30 unidades"></td><td><input type="text" placeholder="Ex: Folhas A4"></td><td><button class="btn-rm" onclick="rmMat(this)">✕</button></td></tr></tbody>
-            </table>
-          </div>
-          <button class="btn-add" onclick="addMat()">+ Adicionar material</button>
-        </div>
-      </div>
-      <div class="field"><label>A atividade é aberta a outras turmas?</label>
-        <div class="rgroup" id="r-abertura">
-          <label class="ropt" onclick="selRopt(this,'abertura');showEl('r-anos-f',false)"><input type="radio" name="abertura"> Aberta a todas as turmas</label>
-          <label class="ropt" onclick="selRopt(this,'abertura');showEl('r-anos-f',true)"><input type="radio" name="abertura"> Aberta a alguns anos</label>
-          <label class="ropt" onclick="selRopt(this,'abertura');showEl('r-anos-f',false)"><input type="radio" name="abertura"> Só para a nossa turma</label>
-        </div>
-      </div>
-      <div class="field" id="r-anos-f" style="display:none"><label>Quais os anos abrangidos?</label><input type="text" id="r-anos" placeholder="Ex: 10.º e 11.º anos"></div>
-      <div class="divider"></div>
-      <div class="stitle">Convidado ou entidade externa</div>
-      <div class="box">
-        <div class="field" style="margin-bottom:10px"><label>Nome do convidado ou empresa</label>
-          <div class="rgroup" id="r-conv">
-            <label class="ropt" id="conv-nao" onclick="selRopt(this,'conv');showEl('r-conv-det',false)"><input type="radio" name="conv"> Não há convidado</label>
-            <label class="ropt" id="conv-sim" onclick="selRopt(this,'conv');showEl('r-conv-det',true)"><input type="radio" name="conv"> Sim, há convidado / empresa</label>
-          </div>
-        </div>
-        <div id="r-conv-det" style="display:none">
-          <div class="g2">
-            <div class="field"><label>Nome / entidade <span class="req">*</span></label><input type="text" id="r-conv-nome" placeholder="Nome ou organização"></div>
-            <div class="field"><label>Tipo de participação</label>
-              <select id="r-conv-tipo">
-                <option value="">Selecionar...</option>
-                <option>Palestrante / orador(a)</option><option>Facilitador(a) de workshop</option>
-                <option>Empresa / organização parceira</option><option>Especialista / técnico(a)</option><option>Outro</option>
-              </select>
-            </div>
-          </div>
-          <div class="field"><label>Observações</label><input type="text" id="r-conv-obs" placeholder="Área de especialidade, contacto, etc."></div>
-        </div>
-      </div>
-      <button class="btn-sub" id="btn-registar" onclick="submitProjeto()">➤ Registar projeto</button>
+<!-- HOME -->
+<div class="home-screen" id="home-screen">
+  <div class="home-box">
+    <div class="home-logo">
+      <svg viewBox="0 0 24 24"><path d="M4 22V4a2 2 0 012-2h12a2 2 0 012 2v18l-4-2-4 2-4-2-4 2z"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/></svg>
     </div>
-  </div>
-
-  <!-- DT -->
-  <div id="panel-dt" class="panel">
-    <div id="dt-lock" class="lock-wrap">
-      <div style="font-size:36px;margin-bottom:12px">🏫</div>
-      <h2>Área do Diretor de Turma</h2>
-      <p>Introduz a tua password para acederes aos projetos e registos de participação da tua turma.</p>
-      <input class="lock-input" type="password" id="dt-pwd" placeholder="Password da turma" onkeydown="if(event.key==='Enter')loginDT()">
-      <button class="lock-btn" onclick="loginDT()">Entrar</button>
-      <div class="lock-err" id="dt-err">Password incorreta. Tenta novamente.</div>
-    </div>
-    <div id="dt-area" style="display:none">
-      <div class="turma-hdr">
-        <h2 id="dt-titulo">Turma</h2>
-        <div class="turma-stats" id="dt-stats"></div>
-        <button onclick="logoutDT()" style="padding:6px 12px;border:1px solid rgba(255,255,255,.4);background:transparent;color:#fff;border-radius:7px;cursor:pointer;font-size:12px;font-family:inherit">Sair</button>
+    <h1>Validador de Notícias</h1>
+    <p>Agrupamento de Escolas Templários de Tomar</p>
+    <div class="area-grid">
+      <div class="area-btn" onclick="irPara('login-validar')">
+        <div class="area-icon" style="background:var(--amber-bg)">✅</div>
+        <div class="area-text"><div class="title">Validar Notícias</div><div class="sub">Área dos professores validadores</div></div>
       </div>
-      <div id="dt-content"><div class="empty">⏳ A carregar...</div></div>
-    </div>
-  </div>
-
-  <!-- GESTÃO -->
-  <div id="panel-gestao" class="panel">
-    <div id="gestao-lock" class="lock-wrap">
-      <div style="font-size:36px;margin-bottom:12px">🔒</div>
-      <h2>Área de Gestão</h2>
-      <p>Acesso reservado à equipa de gestão.</p>
-      <input class="lock-input" type="password" id="gestao-pwd" placeholder="Password de gestão" onkeydown="if(event.key==='Enter')loginGestao()">
-      <button class="lock-btn" onclick="loginGestao()">Entrar</button>
-      <div class="lock-err" id="gestao-err">Password incorreta.</div>
-    </div>
-    <div id="gestao-area" style="display:none">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;gap:12px">
-        <div class="lei-box" style="margin:0;flex:1;font-size:12px"><strong>Portaria n.º 226-A/2018</strong> (científico-humanísticos) e <strong>235-A/2018</strong> (profissionais) — C&amp;D não tem avaliação sumativa.</div>
-        <button onclick="logoutGestao()" style="padding:7px 14px;border:1px solid #C8C6BE;background:#fff;border-radius:8px;cursor:pointer;font-size:12px;white-space:nowrap;font-family:inherit">🔓 Sair</button>
+      <div class="area-btn" onclick="irPara('login-gestao')">
+        <div class="area-icon" style="background:var(--green-bg)">📊</div>
+        <div class="area-text"><div class="title">Gestão — Ver Todas</div><div class="sub">Panorama total e importação de notícias</div></div>
       </div>
-      <div class="export-bar">
-        <button class="btn-exp btn-exp-g" onclick="exportProjetos()">⬇ Exportar Projetos (.xlsx)</button>
-        <button class="btn-exp btn-exp-b" onclick="exportParticipacao()">⬇ Exportar Participação (.xlsx)</button>
-      </div>
-      <div id="gestao-content"><div class="empty">⏳ A carregar...</div></div>
     </div>
-  </div>
-
-  <!-- VER TODOS -->
-  <div id="panel-todos" class="panel">
-    <div id="todos-content"><div class="empty">⏳ A carregar...</div></div>
   </div>
 </div>
 
+<!-- LOGIN VALIDAR -->
+<div class="home-screen" id="screen-login-validar" style="display:none">
+  <div class="login-box">
+    <h2>Área de Validação</h2>
+    <p>Identifica-te para ver as notícias do teu grupo.</p>
+    <label class="login-label">Nome completo *</label>
+    <input class="inp" type="text" id="login-nome" placeholder="Ex: Ana Martins" autocomplete="name">
+    <label class="login-label" style="margin-bottom:8px">Grupo de ensino *</label>
+    <div class="grupo-grid">
+      <div class="grupo-btn" id="gbtn-A" onclick="selecionarGrupo('A')">
+        <div class="gb-icon">🏫</div>
+        <div class="gb-title">Pré-escolar e 1.º Ciclo</div>
+        <div class="gb-sub">Escolas Básicas/JI e Centros Escolares</div>
+      </div>
+      <div class="grupo-btn" id="gbtn-B" onclick="selecionarGrupo('B')">
+        <div class="gb-icon">🎓</div>
+        <div class="gb-title">2.º/3.º Ciclo e Secundário</div>
+        <div class="gb-sub">EBI Santa Iria · EB Gualdim Pais · ES Jácome Ratton</div>
+      </div>
+    </div>
+    <button class="btn btn-apro btn-full" onclick="fazerLogin()">
+      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Entrar
+    </button>
+    <button class="btn btn-sec btn-full" onclick="irPara('home')" style="margin-top:8px">Voltar</button>
+    <hr style="border:none;border-top:1px solid var(--border);margin:20px 0">
+    <button class="btn btn-sec btn-full" onclick="irPara('login-gestao')" style="font-size:12px">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Aceder à área de Gestão
+    </button>
+  </div>
+</div>
+
+<!-- LOGIN GESTÃO -->
+<div class="home-screen" id="screen-login-gestao" style="display:none">
+  <div class="gestao-pass">
+    <h2>Gestão</h2>
+    <p>Introduz a password de acesso.</p>
+    <input class="inp" type="password" id="gestao-pass" placeholder="Password" onkeydown="if(event.key==='Enter')entrarGestao()">
+    <button class="btn btn-apro btn-full" onclick="entrarGestao()" style="margin-top:12px">
+      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Entrar
+    </button>
+    <button class="btn btn-sec btn-full" onclick="irPara('home')" style="margin-top:8px">Voltar</button>
+  </div>
+</div>
+
+<!-- ÁREA: VALIDAR -->
+<div id="screen-validar" style="display:none">
+<div class="wrap">
+  <div class="header">
+    <div class="logo"><svg viewBox="0 0 24 24"><path d="M4 22V4a2 2 0 012-2h12a2 2 0 012 2v18l-4-2-4 2-4-2-4 2z"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/></svg></div>
+    <div class="hb"><h1>Validar Notícias</h1><p id="hdr-validar-sub"></p></div>
+    <div style="display:flex;gap:6px;align-items:center;flex-shrink:0">
+      <div class="user-pill" onclick="atualizarNoticiasValidador()" title="Atualizar">
+        <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+        <span>Atualizar</span>
+      </div>
+      <div class="user-pill" onclick="sairValidador()">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span id="user-pill-nome"></span>
+      </div>
+    </div>
+  </div>
+  <div class="stats" id="stats-validar"></div>
+  <div id="content-validar"></div>
+</div>
+</div>
+
+<!-- ÁREA: GESTÃO -->
+<div id="screen-gestao" style="display:none">
+<div class="wrap">
+  <div class="header">
+    <div class="logo"><svg viewBox="0 0 24 24"><path d="M4 22V4a2 2 0 012-2h12a2 2 0 012 2v18l-4-2-4 2-4-2-4 2z"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/></svg></div>
+    <div class="hb"><h1>Gestão — Ver Todas</h1><p>Panorama total · importação semanal do Excel</p></div>
+    <div class="user-pill" onclick="irPara('home')">
+      <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Sair
+    </div>
+  </div>
+
+  <!-- IMPORT BOX -->
+  <div class="import-box">
+    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/></svg>
+    <div class="import-text">
+      <h3>Importar respostas do Excel</h3>
+      <p>Descarrega o <a href="https://aetemplarios-my.sharepoint.com/:x:/g/personal/pce_aetemplarios_pt/IQDPMod9VEGtQ6p1W-YDsBBVASYZpvq_udqBDQrykQ0tcwA" target="_blank" style="color:var(--blue);font-weight:600">Notícias 1.xlsx</a> do OneDrive → Ficheiro → Transferir uma cópia → carrega aqui</p>
+    </div>
+    <label class="file-label">
+      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      Carregar Excel
+      <input type="file" accept=".xlsx,.xls" onchange="importarExcel(this)">
+    </label>
+    <button class="btn btn-pri" onclick="sincronizarTudo()" style="font-size:12px">
+      <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+      Sincronizar com Google Sheets
+    </button>
+    <span id="import-status" style="font-size:12px;color:var(--text2)"></span>
+  </div>
+
+  <div class="stats" id="stats-gestao"></div>
+  <div class="filter-row" id="filter-row-gestao"></div>
+  <div class="card"><div id="lista-gestao"></div></div>
+</div>
+</div>
+
+<!-- MODAL EMAIL -->
+<div class="modal-overlay" id="email-modal">
+  <div class="modal">
+    <h2><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22 6 12 13 2 6"/></svg>Email para o proponente</h2>
+    <p class="sub">Revê e ajusta antes de copiar.</p>
+    <div class="ef"><label>Assunto</label><input type="text" id="email-assunto"></div>
+    <div class="ef"><label>Mensagem</label><textarea id="email-corpo"></textarea></div>
+    <div class="modal-btns">
+      <button class="btn btn-pri" onclick="copiarEmail()" style="flex:1;justify-content:center">
+        <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copiar mensagem
+      </button>
+      <button class="btn btn-sec" onclick="fecharEmailModal()">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="loading" id="loading"><div class="sp"></div><p id="load-msg">A processar…</p></div>
+
 <script>
-// ============================================================
-// CD TEMPLÁRIOS v6 — verifica se esta versão está ativa
-console.log('CD Templários v6 carregado — pickData:', typeof pickData);
-// CONFIGURAÇÕES
-// ============================================================
-var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzCpp9RFOEQ2npzJ_phrmgysE893e_5RK7jgjJBHjNFl0PKeW3rzJgN0yRA4GWyGSNGZg/exec';
-var PWD_GESTAO = 'templarios2027';
-var DATA_LIMITE = '2027-03-15';
-var PWD_DT = {
-  '10.º A':'dt10a','10.º B':'dt10b','10.º C':'dt10c','10.º D':'dt10d','10.º E':'dt10e',
-  '10.º F':'dt10f','10.º G':'dt10g','10.º H':'dt10h','10.º I':'dt10i','10.º J':'dt10j',
-  '10.º K':'dt10k','10.º L':'dt10l','10.º M':'dt10m','10.º N':'dt10n','10.º O':'dt10o','10.º P':'dt10p',
-  '11.º A':'dt11a','11.º B':'dt11b','11.º C':'dt11c','11.º D':'dt11d','11.º E':'dt11e',
-  '11.º F':'dt11f','11.º G':'dt11g','11.º H':'dt11h','11.º I':'dt11i','11.º J':'dt11j',
-  '11.º K':'dt11k','11.º L':'dt11l','11.º M':'dt11m','11.º N':'dt11n','11.º O':'dt11o','11.º P':'dt11p',
-  '12.º A':'dt12a','12.º B':'dt12b','12.º C':'dt12c','12.º D':'dt12d','12.º E':'dt12e',
-  '12.º F':'dt12f','12.º G':'dt12g','12.º H':'dt12h','12.º I':'dt12i','12.º J':'dt12j',
-  '12.º K':'dt12k','12.º L':'dt12l','12.º M':'dt12m','12.º N':'dt12n','12.º O':'dt12o','12.º P':'dt12p'
+// ═══════════════════════════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════════════════════════
+const API_URL = 'https://script.google.com/macros/s/AKfycbxbhxJiKUzRDCAZUOZxrh709EPPcineRZLUFgkwvOM4Xn93adzAd3AGNpUEUqmEY3qCmA/exec';
+const PASS_GESTAO = 'templarios2027'; // mesma do projeto Cidadania
+
+const GRUPOS = {
+  A:{label:'Pré-escolar e 1.º Ciclo',
+     esc:['valdonas','serra','carvalhos de figueiredo','curvaceiras','junceira','olalhas','templários','d. pedro iv','são pedro','casais']},
+  B:{label:'2.º/3.º Ciclo e Secundário',
+     esc:['santa iria','gualdim','jácome','jacome','ratton']}
 };
-// ============================================================
 
-var LETRAS = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P'];
-var DOMS_BASE = [{id:'dh',l:'Direitos Humanos'},{id:'dem',l:'Democracia e Instituições Políticas'},{id:'ds',l:'Desenvolvimento Sustentável'},{id:'lf',l:'Literacia Financeira e Empreendedorismo'}];
-var DOMS_EXTRA = {'10':[{id:'sau',l:'Saúde'},{id:'media',l:'Media'}],'11':[{id:'risco',l:'Risco'},{id:'seg',l:'Segurança Rodoviária'}],'12':[{id:'plur',l:'Pluralismo e Diversidade Cultural'}]};
-var DOM_NOMES = {dh:'Direitos Humanos',dem:'Democracia e Inst. Políticas',ds:'Desenvolvimento Sustentável',lf:'Literacia Financeira/Empreend.',sau:'Saúde',media:'Media',risco:'Risco',seg:'Segurança Rodoviária',plur:'Pluralismo e Diversidade Cultural'};
-var CURSO_L = {ch:'Científico-humanístico',prof:'Profissional'};
-var ABER_L = {aberta:'Aberta a todas as turmas',parcial:'Aberta a alguns anos',propria:'Só para a turma'};
-var CRITERIOS = [{id:'part',l:'Nível de participação'},{id:'emp',l:'Empenho e responsabilidade'},{id:'comp',l:'Competências de cidadania'},{id:'trab',l:'Qualidade do trabalho'},{id:'ref',l:'Reflexão crítica'}];
-var MENCOES = ['Participou com distinção','Participou','Participou satisfatoriamente','Não participou'];
-var SCORE_L = {1:'Insuficiente',2:'Suficiente',3:'Bom',4:'Muito Bom'};
+// ═══════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════
+let noticias   = JSON.parse(localStorage.getItem('aet_noticias5')||'[]');
+let validacoes = {}; // chave → {validador,estado,meios,nota,dataValidacao}
+let sessao     = null;
+let grupoSel   = null;
+let noticiaAtual = null;
+let decisaoAtual = null;
+let filtroGestao = 'todas';
+let emailNotId   = null;
 
-var anoAtual = '10';
-var selDataVal = '';
-var dtTurma = null;
-var gestaoOk = false;
+function saveNoticias(){ try{localStorage.setItem('aet_noticias5',JSON.stringify(noticias));}catch(e){} }
 
-// ---- Util ----
-function fmtData(d){
-  if(!d) return '';
-  var s = String(d).replace(/T\d{2}:\d{2}:\d{2}.*$/,'').trim();
-  var m = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-  return m ? m[3]+'/'+m[2]+'/'+m[1] : s;
+// ═══════════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════════
+function norm(s){return(s||'').toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[,.]/g,'').trim();}
+function escolaGrupo(escola){
+  const e=norm(escola);
+  if(GRUPOS.B.esc.some(s=>e.includes(norm(s))))return 'B';
+  if(GRUPOS.A.esc.some(s=>e.includes(norm(s))))return 'A';
+  return null;
 }
-function showEl(id, show){ var el=document.getElementById(id); if(el) el.style.display=show?'block':'none'; }
-function pickData(el, val){
-  document.querySelectorAll('#r-data-chips .chip').forEach(function(c){ c.classList.remove('sel'); });
-  el.classList.add('sel');
-  selDataVal = val;
-  showEl('r-outra-f', val==='outra');
-}
-function selRopt(el, name){
-  document.querySelectorAll('[name="'+name+'"]').forEach(function(r){ r.closest('.ropt').classList.remove('chk'); });
-  el.classList.add('chk');
-}
+function chave(n){ return norm(n.titulo)+'|'+norm(n.proponente); }
 
-// ---- Sheet GET ----
-function sheetGet(acao, turma, cb){
-  var url = SCRIPT_URL + '?acao=' + acao + (turma ? '&turma=' + encodeURIComponent(turma) : '');
-  fetch(url, {redirect:'follow'})
-    .then(function(r){ return r.text(); })
-    .then(function(txt){
-      txt = txt.trim();
-      if(!txt || (txt[0]!=='{' && txt[0]!=='[')) throw new Error('bad response');
-      cb(JSON.parse(txt));
-    })
-    .catch(function(){ cb({ok:false,dados:[]}); });
+function showLoad(msg){document.getElementById('load-msg').textContent=msg||'A processar…';document.getElementById('loading').classList.add('show');}
+function hideLoad(){document.getElementById('loading').classList.remove('show');}
+function toast(msg,type='info'){
+  const t=document.getElementById('toast');
+  const s={success:`<svg viewBox="0 0 24 24" style="stroke:var(--green)"><polyline points="20 6 9 17 4 12"/></svg>`,
+    error:`<svg viewBox="0 0 24 24" style="stroke:var(--red)"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`,
+    warning:`<svg viewBox="0 0 24 24" style="stroke:var(--amber)"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>`,
+    info:`<svg viewBox="0 0 24 24" style="stroke:var(--blue)"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg>`};
+  t.innerHTML=(s[type]||s.info)+msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3500);
 }
 
-// ---- Sheet POST ----
-function sheetPost(tipo, projeto, cb){
-  fetch(SCRIPT_URL, {
-    method:'POST', mode:'no-cors',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({tipo:tipo, projeto:projeto})
-  }).then(function(){ cb(true); }).catch(function(){ cb(false); });
+// ═══════════════════════════════════════════════════════════════
+// API — só GET (sem CORS)
+// ═══════════════════════════════════════════════════════════════
+async function apiListar(){
+  const url = API_URL+'?action=listar&t='+Date.now();
+  const data = await apiFetch_(url);
+  if(!data.ok) throw new Error(data.error||'Erro');
+  return data;
 }
 
-// ---- Tabs ----
-function switchTab(t){
-  document.querySelectorAll('.tab').forEach(function(b){ b.classList.remove('active'); });
-  document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('active'); });
-  document.getElementById('tab-'+t).classList.add('active');
-  document.getElementById('panel-'+t).classList.add('active');
-  if(t==='todos') carregarTodos();
-  if(t==='gestao' && gestaoOk) carregarGestao();
-  if(t==='dt' && dtTurma) carregarDT();
-}
-
-// ---- Prazo ----
-function verificarPrazo(){
-  var el = document.getElementById('prazo-aviso');
-  var form = document.getElementById('registo-form');
-  var enc = new Date() > new Date(DATA_LIMITE+'T23:59:59');
-  if(enc){
-    el.className='prazo-enc';
-    el.innerHTML='⛔ O prazo de registo terminou em '+DATA_LIMITE.split('-').reverse().join('/')+'.';
-    form.style.display='none';
-  } else {
-    var dias=Math.ceil((new Date(DATA_LIMITE+'T23:59:59')-new Date())/864e5);
-    el.className='prazo-box';
-    el.innerHTML='📅 Prazo de registo: até <strong>'+DATA_LIMITE.split('-').reverse().join('/')+'</strong> — faltam '+dias+' dia(s).';
-  }
-}
-
-// ---- Ano/turma/domínios ----
-function selAno(btn,ano){
-  document.querySelectorAll('.ytab').forEach(function(b){ b.classList.remove('act'); });
-  btn.classList.add('act'); anoAtual=ano;
-  var sel=document.getElementById('r-turma');
-  sel.innerHTML='<option value="">Selecionar turma...</option>';
-  LETRAS.forEach(function(l){ var o=document.createElement('option'); o.value=ano+'.º '+l; o.textContent=ano+'.º '+l; sel.appendChild(o); });
-  renderDoms();
-}
-function renderDoms(){
-  var h='<div class="dom-sec"><div class="dom-lbl">Todos os anos</div><div class="dom-chips">';
-  DOMS_BASE.forEach(function(d){ h+='<div class="dchip" data-id="'+d.id+'" onclick="togDom(this)">'+d.l+'</div>'; });
-  h+='</div></div>';
-  var ex=DOMS_EXTRA[anoAtual]||[];
-  if(ex.length){
-    h+='<div class="dom-sec" style="margin-top:8px"><div class="dom-lbl">'+anoAtual+'.º ano</div><div class="dom-chips">';
-    ex.forEach(function(d){ h+='<div class="dchip" data-id="'+d.id+'" onclick="togDom(this)">'+d.l+'</div>'; });
-    h+='</div></div>';
-  }
-  document.getElementById('r-doms').innerHTML=h;
-}
-function togDom(el){ el.classList.toggle('sel-d'); }
-function getDoms(){ return Array.from(document.querySelectorAll('.dchip.sel-d')).map(function(e){ return e.dataset.id; }); }
-
-
-// ---- Alunos/Mats ----
-function addAluno(){
-  var d=document.createElement('div'); d.className='arow';
-  d.innerHTML='<input type="text" placeholder="N.º processo" data-f="proc" oninput="this.value=this.value.replace(/\\D/g,\'\')" inputmode="numeric"><input type="text" placeholder="Nome completo" data-f="nome"><button class="btn-rm" onclick="rmAluno(this)">✕</button>';
-  document.getElementById('r-alunos').appendChild(d);
-}
-function rmAluno(btn){ var rows=document.querySelectorAll('.arow'); if(rows.length>1) btn.closest('.arow').remove(); }
-function addMat(){
-  var tr=document.createElement('tr');
-  tr.innerHTML='<td><input type="text" placeholder="Ex: 10 unidades"></td><td><input type="text" placeholder="Material / produto"></td><td><button class="btn-rm" onclick="rmMat(this)">✕</button></td>';
-  document.getElementById('r-mats').appendChild(tr);
-}
-function rmMat(btn){ var rows=document.querySelectorAll('#r-mats tr'); if(rows.length>1) btn.closest('tr').remove(); }
-function getAlunos(){
-  var al=[];
-  document.querySelectorAll('.arow').forEach(function(r){
-    var proc=r.querySelector('[data-f=proc]').value.trim();
-    var nome=r.querySelector('[data-f=nome]').value.trim();
-    if(proc||nome) al.push({proc:proc,nome:nome});
+// JSONP — única forma de contornar CORS com Apps Script sem licença Premium
+function jsonpFetch_(url){
+  return new Promise((resolve, reject)=>{
+    const cbName = 'cb_'+Date.now()+'_'+Math.floor(Math.random()*9999);
+    const script = document.createElement('script');
+    const timer = setTimeout(()=>{
+      cleanup();
+      reject(new Error('Timeout'));
+    }, 10000);
+    function cleanup(){
+      clearTimeout(timer);
+      delete window[cbName];
+      if(script.parentNode) script.parentNode.removeChild(script);
+    }
+    window[cbName] = function(data){
+      cleanup();
+      resolve(data);
+    };
+    script.src = url + '&callback=' + cbName;
+    script.onerror = ()=>{ cleanup(); reject(new Error('Script error')); };
+    document.head.appendChild(script);
   });
-  return al;
-}
-function getMats(){
-  var mats=[];
-  document.querySelectorAll('#r-mats tr').forEach(function(r){
-    var inputs=r.querySelectorAll('input');
-    var qt=inputs[0].value.trim(), prod=inputs[1].value.trim();
-    if(qt||prod) mats.push({qt:qt,prod:prod});
-  });
-  return mats;
 }
 
-// ---- Submit projeto ----
-function submitProjeto(){
-  if(new Date()>new Date(DATA_LIMITE+'T23:59:59')){ alert('O prazo de registo terminou.'); return; }
-  var nome=document.getElementById('r-nome').value.trim();
-  var tipo=document.getElementById('r-tipo').value;
-  var turma=document.getElementById('r-turma').value;
-  var desc=document.getElementById('r-desc').value.trim();
-  var curso=document.getElementById('r-curso').value;
-  var email=document.getElementById('r-email').value.trim();
-  var doms=getDoms();
-  var alunos=getAlunos();
-  if(!nome||!tipo||!turma||!desc||!selDataVal||!curso||!email||!doms.length){
-    alert('Preenche todos os campos obrigatórios (*) e seleciona pelo menos um domínio.'); return;
-  }
-  if(!alunos.length){ alert('Adiciona pelo menos um aluno.'); return; }
-  var telm=document.getElementById('r-telm').value.replace(/\D/g,'');
-  var data=selDataVal==='outra'?(document.getElementById('r-outra').value||'Data a definir'):selDataVal;
-  var aberturaEl=document.querySelector('#r-abertura .ropt.chk');
-  var abertura=aberturaEl?aberturaEl.querySelector('input').value:'';
-  var convSimEl=document.getElementById('conv-sim');
-  var convidado=null;
-  if(convSimEl&&convSimEl.classList.contains('chk')){
-    var cnome=document.getElementById('r-conv-nome').value.trim();
-    if(!cnome){ alert('Indica o nome do convidado ou empresa.'); return; }
-    convidado={nome:cnome,tipo:document.getElementById('r-conv-tipo').value,obs:document.getElementById('r-conv-obs').value.trim()};
-  }
-  var btn=document.getElementById('btn-registar');
-  btn.disabled=true; btn.textContent='⏳ A registar...';
-  var proj={
-    id:Date.now(), nome:nome, tipo:tipo, turma:turma, desc:desc, curso:curso,
-    ano:anoAtual, data:data, prof:document.getElementById('r-prof').value.trim(),
-    contactoEmail:email, contactoTelm:telm, alunos:alunos, mats:getMats(),
-    espaco:document.getElementById('r-espaco').value,
-    espacoDet:document.getElementById('r-espaco-det').value.trim(),
-    abertura:abertura, anosAbr:document.getElementById('r-anos').value.trim(),
-    dominios:doms, convidado:convidado
+async function apiFetch_(url){
+  return await jsonpFetch_(url);
+}
+
+async function apiGuardar(n, estado, meios, nota){
+  const dados = {
+    chave: chave(n),
+    titulo: n.titulo,
+    proponente: n.proponente,
+    escola: n.escola||'',
+    validador: sessao.nome,
+    estado,
+    meios: Object.keys(meios).filter(k=>meios[k]).join(';'),
+    nota: nota||'',
+    dataValidacao: new Date().toISOString().slice(0,10)
   };
-  sheetPost('projeto', proj, function(ok){
-    btn.disabled=false; btn.textContent='➤ Registar projeto';
-    alert(ok?'✅ Projeto registado na Google Sheet!':'✅ Projeto registado.\n⚠️ Verifique a ligação à Google Sheet.');
-    resetForm();
+  const url = API_URL+'?action=guardarValidacao&chave='+encodeURIComponent(dados.chave)
+    +'&dados='+encodeURIComponent(JSON.stringify(dados))+'&t='+Date.now();
+  const data = await apiFetch_(url);
+  validacoes[dados.chave] = dados;
+  return data;
+}
+
+async function apiGuardarNoticia(n){
+  const dados = {
+    chave: chave(n),
+    timestamp: n.data||new Date().toISOString().slice(0,10),
+    proponente: n.proponente||'',
+    emailProponente: n.emailProponente||'',
+    titulo: n.titulo||'',
+    categorias: (n.categorias||[]).join(';'),
+    escola: n.escola||'',
+    corpo: n.corpo||'',
+    imgDestaque: n.imgDestaque||'',
+    outrasFotos: (n.outrasFotos||[]).join(';'),
+    video: n.video||'',
+    links: n.links||''
+  };
+  const url = API_URL+'?action=guardarNoticia&dados='+encodeURIComponent(JSON.stringify(dados))+'&t='+Date.now();
+  return await apiFetch_(url);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// NAVEGAÇÃO
+// ═══════════════════════════════════════════════════════════════
+function irPara(area){
+  ['home-screen','screen-login-validar','screen-login-gestao','screen-validar','screen-gestao']
+    .forEach(id=>{ const el=document.getElementById(id); if(el)el.style.display='none'; });
+  const mapa = {
+    'home':'home-screen','login-validar':'screen-login-validar',
+    'login-gestao':'screen-login-gestao','validar':'screen-validar','gestao':'screen-gestao'
+  };
+  const el = document.getElementById(mapa[area]);
+  if(el) el.style.display = (area==='home'||area==='login-validar'||area==='login-gestao') ? 'flex' : 'block';
+  if(area==='gestao') renderGestao();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// LOGIN
+// ═══════════════════════════════════════════════════════════════
+function selecionarGrupo(g){
+  grupoSel=g;
+  document.querySelectorAll('.grupo-btn').forEach(b=>b.classList.remove('selected'));
+  document.getElementById('gbtn-'+g).classList.add('selected');
+}
+
+async function fazerLogin(){
+  const nome=document.getElementById('login-nome').value.trim();
+  if(!nome){toast('Escreve o teu nome completo','warning');return;}
+  if(!grupoSel){toast('Seleciona o teu grupo','warning');return;}
+  sessao={nome,grupo:grupoSel};
+  document.getElementById('user-pill-nome').textContent=nome;
+  document.getElementById('hdr-validar-sub').textContent=GRUPOS[grupoSel].label+' · a validar notícias do teu grupo';
+  irPara('validar');
+  showLoad('A carregar notícias do servidor…');
+  try{
+    const data=await apiListar();
+    const localMap={};
+    noticias.forEach(n=>{ localMap[chave(n)]={_meios:n._meios}; });
+    let nextId=1;
+    const fromSheets=(data.noticias||[]).map(n=>{
+      const ck=norm(n.titulo)+'|'+norm(n.proponente);
+      const loc=localMap[ck]||{};
+      return {
+        _id:nextId++, proponente:n.proponente, titulo:n.titulo,
+        categorias:(n.categorias||'').split(';').map(s=>s.trim()).filter(Boolean),
+        escola:n.escola, data:(n.timestamp||'').slice(0,10),
+        corpo:n.corpo, imgDestaque:n.imgDestaque,
+        outrasFotos:(n.outrasFotos||'').split(';').map(s=>s.trim()).filter(Boolean),
+        video:n.video, links:n.links,
+        _meios:loc._meios||{site:false,fb:false,ig:false,tiktok:false},
+      };
+    });
+    if(fromSheets.length>0){ noticias=fromSheets; saveNoticias(); }
+    validacoes=data.validacoes||{};
+    hideLoad();
+    toast((noticias.length||0)+' notícia(s) carregada(s).','success');
+  }catch(e){
+    hideLoad();
+    toast('Sem ligação ao servidor. A mostrar dados locais.','warning');
+  }
+  renderValidar();
+}
+
+async function atualizarNoticiasValidador(){
+  if(!sessao)return;
+  noticiaAtual=null; decisaoAtual=null;
+  showLoad('A atualizar…');
+  try{
+    const data=await apiListar();
+    const localMap={};
+    noticias.forEach(n=>{ localMap[chave(n)]={_meios:n._meios}; });
+    let nextId=1;
+    const fromSheets=(data.noticias||[]).map(n=>{
+      const ck=norm(n.titulo)+'|'+norm(n.proponente);
+      const loc=localMap[ck]||{};
+      return {
+        _id:nextId++, proponente:n.proponente, titulo:n.titulo,
+        categorias:(n.categorias||'').split(';').map(s=>s.trim()).filter(Boolean),
+        escola:n.escola, data:(n.timestamp||'').slice(0,10),
+        corpo:n.corpo, imgDestaque:n.imgDestaque,
+        outrasFotos:(n.outrasFotos||'').split(';').map(s=>s.trim()).filter(Boolean),
+        video:n.video, links:n.links,
+        _meios:loc._meios||{site:false,fb:false,ig:false,tiktok:false},
+      };
+    });
+    if(fromSheets.length>0){ noticias=fromSheets; saveNoticias(); }
+    validacoes=data.validacoes||{};
+    hideLoad();
+    toast(noticias.length+' notícia(s) carregada(s).','success');
+  }catch(e){ hideLoad(); toast('Erro: '+e.message,'warning'); }
+  renderValidar();
+}
+
+
+
+
+function sairValidador(){
+  if(!confirm('Tens a certeza que queres sair?'))return;
+  sessao=null;grupoSel=null;noticiaAtual=null;decisaoAtual=null;
+  document.getElementById('login-nome').value='';
+  document.querySelectorAll('.grupo-btn').forEach(b=>b.classList.remove('selected'));
+  irPara('home');
+}
+
+function entrarGestao(){
+  const pass=document.getElementById('gestao-pass').value;
+  if(pass!==PASS_GESTAO){toast('Password incorreta','error');return;}
+  document.getElementById('gestao-pass').value='';
+  irPara('gestao');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// RENDER: VALIDAR
+// ═══════════════════════════════════════════════════════════════
+function filaGrupo(){
+  return noticias.filter(n=>{
+    const g=escolaGrupo(n.escola);
+    return !g||g===sessao.grupo;
   });
 }
-function resetForm(){
-  ['r-nome','r-desc','r-prof','r-email','r-telm','r-espaco-det','r-conv-nome','r-conv-obs','r-anos','r-outra'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
-  ['r-tipo','r-turma','r-espaco','r-curso','r-conv-tipo'].forEach(function(id){ document.getElementById(id).value=''; });
-  document.querySelectorAll('.chip').forEach(function(c){ c.classList.remove('sel'); });
-  document.querySelectorAll('.ropt').forEach(function(r){ r.classList.remove('chk'); });
-  document.querySelectorAll('.dchip').forEach(function(d){ d.classList.remove('sel-d'); });
-  showEl('r-outra-f',false); showEl('r-anos-f',false); showEl('r-conv-det',false);
-  document.getElementById('r-alunos').innerHTML='<div class="arow"><input type="text" placeholder="N.º processo" data-f="proc" oninput="this.value=this.value.replace(/\\D/g,\'\')" inputmode="numeric"><input type="text" placeholder="Nome completo" data-f="nome"><button class="btn-rm" onclick="rmAluno(this)">✕</button></div>';
-  document.getElementById('r-mats').innerHTML='<tr><td><input type="text" placeholder="Ex: 30 unidades"></td><td><input type="text" placeholder="Ex: Folhas A4"></td><td><button class="btn-rm" onclick="rmMat(this)">✕</button></td></tr>';
-  selDataVal='';
-  renderDoms();
+
+function estadoNoticia(n){
+  const v=validacoes[chave(n)];
+  if(!v)return{estado:'pendente'};
+  return v;
 }
 
-// ---- DT Login ----
-function loginDT(){
-  var pwd=document.getElementById('dt-pwd').value;
-  var turma=null;
-  for(var t in PWD_DT){ if(PWD_DT[t]===pwd){ turma=t; break; } }
-  if(turma){
-    dtTurma=turma;
-    document.getElementById('dt-lock').style.display='none';
-    document.getElementById('dt-area').style.display='block';
-    document.getElementById('dt-titulo').textContent='Turma '+turma;
-    carregarDT();
-  } else {
-    document.getElementById('dt-err').style.display='block';
-    document.getElementById('dt-pwd').value='';
-  }
-}
-function logoutDT(){
-  dtTurma=null;
-  document.getElementById('dt-area').style.display='none';
-  document.getElementById('dt-lock').style.display='block';
-  document.getElementById('dt-pwd').value='';
-  document.getElementById('dt-err').style.display='none';
+function renderStats(){
+  const minha=filaGrupo();
+  const pend=minha.filter(n=>estadoNoticia(n).estado==='pendente').length;
+  const pub=minha.filter(n=>estadoNoticia(n).estado==='pode_publicar').length;
+  const corr=minha.filter(n=>estadoNoticia(n).estado==='enviado_correcao').length;
+  const val=minha.filter(n=>estadoNoticia(n).estado==='em_validacao').length;
+  document.getElementById('stats-validar').innerHTML=`
+    <div class="sc"><div class="sv">${minha.length}</div><div class="sl">Total</div></div>
+    <div class="sc"><div class="sv" style="color:var(--amber)">${pend}</div><div class="sl">Pendentes</div></div>
+    <div class="sc"><div class="sv" style="color:var(--green)">${pub}</div><div class="sl">A publicar</div></div>
+    <div class="sc"><div class="sv" style="color:var(--blue)">${corr+val}</div><div class="sl">Em processo</div></div>`;
 }
 
-function carregarDT(){
-  var cont=document.getElementById('dt-content');
-  cont.innerHTML='<div class="empty">⏳ A carregar dados da Google Sheet...</div>';
-  var projList=[], particList=[], pending=2;
-  function checkDone(){
-    pending--;
-    if(pending!==0) return;
-    renderDT(projList, particList);
-  }
-  sheetGet('getProjetos', dtTurma, function(res){ projList=(res&&res.dados)||[]; checkDone(); });
-  sheetGet('getParticipacao', dtTurma, function(res){ particList=(res&&res.dados)||[]; checkDone(); });
-}
+function renderValidar(){
+  renderStats();
+  const el=document.getElementById('content-validar');
+  const minha=filaGrupo();
 
-function renderDT(projList, particList){
-  var cont=document.getElementById('dt-content');
-  var done=projList.filter(function(p){ return p.mencao&&p.mencao!=='Por registar'; }).length;
-  document.getElementById('dt-stats').innerHTML=
-    '<span>'+projList.length+' projeto(s)</span><span>'+done+' avaliado(s)</span><span>'+(projList.length-done)+' por avaliar</span>';
-
-  if(!projList.length){
-    cont.innerHTML='<div class="empty">Ainda não há projetos registados para a turma '+dtTurma+'.</div>';
+  if(!noticias.length){
+    el.innerHTML=`<div class="card"><div class="empty">
+      <svg viewBox="0 0 24 24"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z"/></svg>
+      <p>Ainda não há notícias importadas.<br>Pede à gestão para importar o Excel do OneDrive.</p>
+    </div></div>`;
     return;
   }
 
-  var h='<div class="secao">📋 Projetos registados</div>';
-  projList.forEach(function(row){
-    var avaliado=row.mencao&&row.mencao!=='Por registar';
-    var pid='ev_'+row.id;
-    // get alunos from partic
-    var alunosList=particList.filter(function(a){ return String(a.idProjeto)===String(row.id); });
-    h+='<div class="pcard">';
-    h+='<div class="ph"><div>';
-    h+='<div class="ptitle">'+(row.nome||'')+'</div>';
-    h+='<div class="pmeta">'+fmtData(row.data)+(row.prof?' · Prof. '+row.prof:'')+'</div>';
-    h+='<div class="pmeta" style="margin-top:3px"><span class="ptag">'+(row.tipo||'')+'</span></div>';
-    h+='</div>';
-    h+='<span class="sbadge '+(avaliado?'sd':'sp')+'">'+(row.mencao||'Por registar')+'</span>';
-    h+='</div>';
-    // alunos
-    if(alunosList.length){
-      h+='<div style="margin-top:8px;border-top:1px solid #E0DED6;padding-top:8px">';
-      h+='<div style="font-size:11px;font-weight:600;color:#888;margin-bottom:5px;text-transform:uppercase">'+alunosList.length+' aluno(s)</div>';
-      alunosList.forEach(function(a){
-        h+='<div style="font-size:12px;color:#555;padding:1px 0">'+(a.proc?'<strong>'+a.proc+'</strong> — ':'')+a.nome+'</div>';
-      });
-      h+='</div>';
+  if(!minha.length){
+    el.innerHTML=`<div class="card"><div class="empty">
+      <svg viewBox="0 0 24 24"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z"/></svg>
+      <p>Não há notícias para o teu grupo.</p>
+    </div></div>`;
+    return;
+  }
+
+  if(noticiaAtual){
+    el.innerHTML=buildDetalhe(noticiaAtual);
+    return;
+  }
+
+  // Lista de notícias do grupo
+  const listaHtml=minha.map(n=>{
+    const v=estadoNoticia(n);
+    const est=v.estado||'pendente';
+    const bmap={pendente:'b-pend',pode_publicar:'b-pub',enviado_correcao:'b-corr',em_validacao:'b-val'};
+    const lmap={pendente:'Pendente',pode_publicar:'✓ Pode publicar',enviado_correcao:'✉ Enviada para correção',em_validacao:'Em validação'};
+    const bgmap={pendente:'var(--bg2)',pode_publicar:'var(--green-bg)',enviado_correcao:'var(--blue-bg)',em_validacao:'#f0e8ff'};
+    const icmap={pendente:'var(--text2)',pode_publicar:'var(--green-text)',enviado_correcao:'var(--blue-text)',em_validacao:'#5a1a8a'};
+    return `<div class="li" onclick="abrirNoticia(${n._id})">
+      <div class="li-ico" style="background:${bgmap[est]}">
+        <svg viewBox="0 0 24 24" width="16" height="16" style="stroke:${icmap[est]};fill:none;stroke-width:1.8"><path d="M4 22V4a2 2 0 012-2h12a2 2 0 012 2v18l-4-2-4 2-4-2-4 2z"/></svg>
+      </div>
+      <div class="li-b">
+        <div class="li-t">${n.titulo}</div>
+        <div class="li-s">${n.proponente||'—'} · ${n.escola||'—'} · ${n.data||'—'}</div>
+      </div>
+      <div class="li-r">
+        <span class="badge ${bmap[est]||'b-pend'}">${lmap[est]||est}</span>
+        ${v.validador?`<span style="font-size:10px;color:var(--text2)">${v.validador}</span>`:''}
+      </div>
+    </div>`;
+  }).join('');
+
+  el.innerHTML=`<div class="card"><div>${listaHtml}</div></div>`;
+}
+
+function abrirNoticia(id){
+  noticiaAtual=noticias.find(n=>n._id===id)||null;
+  decisaoAtual=null;
+  renderValidar();
+}
+function voltarLista(){noticiaAtual=null;decisaoAtual=null;renderValidar();}
+
+// ═══════════════════════════════════════════════════════════════
+// DETALHE DA NOTÍCIA
+// ═══════════════════════════════════════════════════════════════
+function getNivelBadge(escola){
+  const g=escolaGrupo(escola);
+  if(g==='A')return`<span class="nivel-badge nivel-a">🏫 Pré-escolar / 1.º Ciclo</span>`;
+  if(g==='B')return`<span class="nivel-badge nivel-b">🎓 2.º/3.º Ciclo / Secundário</span>`;
+  return'';
+}
+
+function buildDetalhe(n){
+  const v=estadoNoticia(n);
+  const chars=n.corpo?n.corpo.length:0;
+  const pct=Math.min(100,Math.round((chars/2200)*100));
+  const cc=chars>2200?'var(--red)':chars>1800?'var(--amber)':'var(--green)';
+
+  const cats=(n.categorias||[]).length
+    ?(n.categorias||[]).map(c=>`<span class="cat-pill">${c}</span>`).join('')
+    :'';
+
+  const imgHtml=n.imgDestaque
+    ?`<img class="dest-img" src="${n.imgDestaque}" alt="Imagem de destaque" onclick="window.open('${n.imgDestaque}','_blank')" onerror="this.style.display='none'">`
+    :`<div style="background:var(--bg2);border-radius:var(--r);padding:10px 12px;font-size:12px;color:var(--text2);margin-bottom:8px">Sem imagem de destaque</div>`;
+
+  const outrosHtml=(n.outrasFotos&&n.outrasFotos.length)
+    ?`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">${n.outrasFotos.map((f,i)=>`<div class="mpill"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Foto ${i+1}: <a href="${f}" target="_blank">${f.length>35?f.slice(0,35)+'…':f}</a></div>`).join('')}</div>`
+    :'';
+
+  const videoHtml=n.video
+    ?`<div class="mpill" style="margin-bottom:8px"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg><a href="${n.video}" target="_blank">${n.video.length>45?n.video.slice(0,45)+'…':n.video}</a></div>`
+    :'';
+
+  const linksHtml=n.links
+    ?`<div class="mpill" style="margin-bottom:8px"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg><a href="${n.links}" target="_blank">${n.links.length>55?n.links.slice(0,55)+'…':n.links}</a></div>`
+    :'';
+
+  // Decisão
+  const meios=n._meios||{site:false,fb:false,ig:false,tiktok:false};
+  const pubHtml=`<div class="pub-row">
+    ${['Site','Facebook','Instagram','TikTok'].map(m=>{
+      const k=m.toLowerCase();
+      return`<label class="pub-lbl ${meios[k]?'on':''}" id="pub-${n._id}-${k}">
+        <input type="checkbox" ${meios[k]?'checked':''} onchange="toggleMeio(${n._id},'${k}',this.checked)">${m}
+      </label>`;
+    }).join('')}
+  </div>`;
+
+  const jaValidado=v.estado&&v.estado!=='pendente';
+
+  return`
+  <button class="btn btn-sec" onclick="voltarLista()" style="margin-bottom:14px;font-size:12px">
+    <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>Voltar à lista
+  </button>
+
+  <div class="card">
+    <div class="ntitle">${n.titulo}</div>
+    ${getNivelBadge(n.escola)}
+    <div class="meta-row">
+      <div class="mi"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>${n.proponente||'—'}</div>
+      <div class="mi"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>${n.escola||'—'}</div>
+      <div class="mi"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>${n.data||'—'}</div>
+    </div>
+    ${cats?`<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px">${cats}</div>`:''}
+
+    <div class="sec">Imagem de destaque</div>
+    ${imgHtml}
+    ${outrosHtml}${videoHtml}
+    ${linksHtml?`<div class="sec">Links</div>${linksHtml}`:''}
+
+    <div class="sec">Texto da notícia</div>
+    <div class="nbody ${!n.corpo?'empty':''}">${n.corpo||'(sem texto)'}</div>
+    <div class="char-info"><span>Comprimento</span><span style="color:${cc};font-weight:700">${chars} / 2200</span></div>
+    <div class="prog-wrap"><div class="prog-bar" style="width:${pct}%;background:${cc}"></div></div>
+    </div>
+  </div>
+
+  ${buildVerificacao(n)}
+
+  <div class="card">
+    ${jaValidado?`
+    <div style="background:var(--bg2);border-radius:var(--r);padding:12px 14px;margin-bottom:14px;font-size:13px;color:var(--text2)">
+      ✓ Já validado por <strong>${v.validador}</strong> em ${v.dataValidacao||'—'} — Estado: <strong>${{pode_publicar:'Pode publicar',enviado_correcao:'Enviado para correção',em_validacao:'Em validação'}[v.estado]||v.estado}</strong>
+    </div>`:''}
+    <div style="font-size:13px;font-weight:700;margin-bottom:12px">Decisão de validação</div>
+    <div class="decisao-grid">
+      <div class="dec-btn dec-pub" onclick="selecionarDecisao('pode_publicar')">
+        <div class="di">✅</div>
+        <div class="dt">Pode publicar</div>
+        <div class="ds">A notícia está aprovada para publicação</div>
+      </div>
+      <div class="dec-btn dec-corr" onclick="selecionarDecisao('enviado_correcao')">
+        <div class="di">✉️</div>
+        <div class="dt">Enviar para correção</div>
+        <div class="ds">Notificar o autor com indicações</div>
+      </div>
+    </div>
+
+    <div id="panel-pub" style="display:none">
+      <div class="sec" style="margin-top:0">Publicar em</div>
+      ${pubHtml}
+      <div class="btn-row">
+        <button class="btn btn-apro btn-full" onclick="submeterDecisao()">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Confirmar — Pode publicar
+        </button>
+      </div>
+    </div>
+
+    <div id="panel-corr" style="display:none">
+      <div class="sec" style="margin-top:0">Nota para o proponente *</div>
+      <textarea class="nota" id="nota-corr" placeholder="Descreve o que precisa de ser corrigido ou melhorado…"></textarea>
+      <div class="btn-row">
+        <button class="btn btn-corr btn-full" onclick="submeterDecisao()">
+          <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22 6 12 13 2 6"/></svg>Gerar email e registar
+        </button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function selecionarDecisao(d){
+  decisaoAtual=d;
+  document.querySelectorAll('.dec-btn').forEach(b=>b.classList.remove('selected'));
+  const sel=document.querySelector('.dec-btn.dec-'+(d==='pode_publicar'?'pub':'corr'));
+  if(sel)sel.classList.add('selected');
+  const panelPub=document.getElementById('panel-pub');
+  const panelCorr=document.getElementById('panel-corr');
+  if(panelPub)panelPub.style.display=d==='pode_publicar'?'block':'none';
+  if(panelCorr)panelCorr.style.display=d==='enviado_correcao'?'block':'none';
+}
+
+function toggleMeio(id,k,v){
+  const n=noticias.find(x=>x._id===id);
+  if(!n)return;
+  if(!n._meios)n._meios={site:false,fb:false,ig:false,tiktok:false};
+  n._meios[k]=v;
+  const l=document.getElementById(`pub-${id}-${k}`);
+  if(l){v?l.classList.add('on'):l.classList.remove('on');}
+}
+
+async function submeterDecisao(){
+  const n=noticiaAtual;
+  if(!n||!decisaoAtual)return;
+  const meios=n._meios||{site:false,fb:false,ig:false,tiktok:false};
+  let nota='';
+
+  if(decisaoAtual==='enviado_correcao'){
+    nota=(document.getElementById('nota-corr')||{}).value||'';
+    if(!nota.trim()){toast('Escreve uma nota para o proponente','warning');return;}
+  }
+
+  showLoad('A guardar decisão…');
+  try{
+    await apiGuardar(n,decisaoAtual,meios,nota);
+    hideLoad();
+    if(decisaoAtual==='pode_publicar'){
+      toast('Notícia aprovada para publicação!','success');
+      noticiaAtual=null;decisaoAtual=null;
+      renderValidar();
+    } else {
+      // Abre modal de email
+      hideLoad();
+      abrirEmailModal(n,nota);
     }
-    // desc expandível
-    if(row.desc||row.doms){
-      h+='<div style="margin-top:8px">';
-      h+='<button class="btn-expand" onclick="var d=this.nextElementSibling;d.style.display=d.style.display===\'none\'?\'block\':\'none\'">+ Ver detalhes</button>';
-      h+='<div class="detail-box" style="display:none">';
-      if(row.desc) h+='<div><strong>Descrição:</strong> '+row.desc+'</div>';
-      if(row.doms) h+='<div style="margin-top:4px"><strong>Domínios:</strong> '+row.doms+'</div>';
-      h+='</div></div>';
-    }
-    // botão avaliação
-    if(!avaliado){
-      h+='<div style="margin-top:10px">';
-      h+='<button class="btn-aval" onclick="abrirAval(this)">📋 Avaliação</button>';
-      h+='</div>';
-      h+='<div class="eval-box" style="display:none" data-pid="'+pid+'" data-rowid="'+row.id+'" data-nome="'+encodeURIComponent(row.nome||'')+'" data-curso="'+(row.curso||'')+'">';
-      h+='<h3>Registo de participação</h3>';
-      h+='<p style="font-size:12px;color:#666;margin-bottom:12px">C&amp;D não tem avaliação sumativa. Portaria n.º '+(row.curso&&row.curso.indexOf('rofissional')>-1?'235-A/2018':'226-A/2018')+'.</p>';
-      CRITERIOS.forEach(function(c){
-        h+='<div class="crit-row"><span class="crit-lbl">'+c.l+'</span><div class="sbtns">';
-        [1,2,3,4].forEach(function(v){
-          h+='<button class="sb" data-crit="'+c.id+'" data-val="'+v+'" onclick="setSb(this)">'+SCORE_L[v]+'</button>';
+  }catch(e){
+    hideLoad();
+    toast('Erro ao guardar: '+e.message,'error');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// AI
+// ═══════════════════════════════════════════════════════════════
+
+
+// ═══════════════════════════════════════════════════════════════
+// VERIFICAÇÃO JORNALÍSTICA
+// ═══════════════════════════════════════════════════════════════
+function verificarNoticia(n){
+  const texto = (n.corpo||'').toLowerCase();
+  const titulo = (n.titulo||'');
+  const checks = [];
+
+  // Título — verificar comprimento e evitar acrónimos/siglas
+  const tituloSigla = /^[A-Z0-9\s\-\.]{2,}$/.test(titulo.trim()) && titulo.trim().split(' ').every(w=>w===w.toUpperCase()&&w.length<=5);
+  const tituloMuitoCurto = titulo.length < 5;
+  const tituloSoPalavrasGrandes = titulo.trim().split(' ').filter(w=>w.length>1).every(w=>w===w.toUpperCase());
+  if(tituloMuitoCurto)
+    checks.push({ok:false, label:'Título ausente ou muito curto', detalhe:'Mínimo 5 caracteres'});
+  else if(tituloSigla||tituloSoPalavrasGrandes)
+    checks.push({ok:'warn', label:'Título parece um acrónimo ou sigla', detalhe:'"'+titulo+'" — o título deve ser descritivo e legível'});
+  else
+    checks.push({ok:true, label:'Título adequado', detalhe:titulo.slice(0,50)+(titulo.length>50?'…':'')});
+
+  // Imagem de destaque
+  if(n.imgDestaque)
+    checks.push({ok:true, label:'Imagem de destaque', detalhe:'Presente'});
+  else
+    checks.push({ok:false, label:'Sem imagem de destaque', detalhe:'Recomendada para publicação'});
+
+  // Comprimento do texto
+  const chars = (n.corpo||'').length;
+  if(chars >= 150)
+    checks.push({ok:true, label:'Texto suficiente', detalhe:chars+' caracteres'});
+  else if(chars >= 50)
+    checks.push({ok:'warn', label:'Texto curto', detalhe:chars+' caracteres (mínimo recomendado: 150)'});
+  else
+    checks.push({ok:false, label:'Texto insuficiente', detalhe:chars+' caracteres — muito curto'});
+
+  // QUEM
+  const quem = /(alunos?|professores?|escola|turma|agrupamento|diretor|equipa|clube|grupo|comunidade|estudantes?)/.test(texto);
+  checks.push({ok:quem, label:'Quem — intervenientes', detalhe:quem?'Identificados no texto':'Quem participou ou organizou?'});
+
+  // O QUÊ
+  const oque = chars > 30;
+  checks.push({ok:oque, label:'O quê — ação/evento', detalhe:oque?'Descrito no texto':'Descreve o que aconteceu'});
+
+  // QUANDO — data, mês, época, trimestre, ano letivo
+  const quando = /(\d{1,2}[\/\-]\d{1,2}|\d{4}|janeiro|fevereiro|março|abril|maio|junho|julho|agosto|setembro|outubro|novembro|dezembro|esta semana|este mês|hoje|ontem|recentemente|no início|no final|no fim|em meados|início do ano|final do ano|ano letivo|primeiro trimestre|segundo trimestre|terceiro trimestre|período|natal|páscoa|carnaval|verão|inverno|outono|primavera|festas|fim de ano|início de ano)/.test(texto);
+  checks.push({ok:quando, label:'Quando — data/período', detalhe:quando?'Referência temporal presente':'Indica quando ocorreu: data, mês, época ou trimestre'});
+
+  // ONDE
+  const onde = /(escola|biblioteca|pavilhão|sala|auditório|ginásio|campo|tomar|aetemplários|santa iria|gualdim|jácome|ratton|valdonas|junceira|curvaceiras)/.test(texto);
+  checks.push({ok:onde, label:'Onde — local', detalhe:onde?'Local identificado':'Onde aconteceu?'});
+
+  // PORQUÊ / COMO
+  const porque = /(para|porque|com o objetivo|no âmbito|inserido|celebrar|assinalar|promover|sensibilizar|desenvolver|participar|comemorar)/.test(texto);
+  checks.push({ok:porque?true:'warn', label:'Porquê/Como — contexto', detalhe:porque?'Contexto presente':'Qual o objetivo ou razão?'});
+
+  // Categoria
+  if(n.categorias&&n.categorias.length>0)
+    checks.push({ok:true, label:'Categoria', detalhe:n.categorias.join(', ')});
+  else
+    checks.push({ok:'warn', label:'Sem categoria', detalhe:'Recomendado selecionar uma categoria'});
+
+  const total = checks.length;
+  const ok = checks.filter(c=>c.ok===true).length;
+  const warn = checks.filter(c=>c.ok==='warn').length;
+  const score = Math.round((ok + warn*0.5) / total * 100);
+
+  return {checks, score, ok, warn, fail: total-ok-warn};
+}
+
+function buildVerificacao(n){
+  const {checks, score, ok, warn, fail} = verificarNoticia(n);
+  const scoreClass = score>=80?'score-ok':score>=50?'score-warn':'score-fail';
+  const scoreEmoji = score>=80?'✅':score>=50?'⚠️':'❌';
+
+  const itemsHtml = checks.map(ch=>{
+    const cls = ch.ok===true?'check-ok':ch.ok==='warn'?'check-warn':'check-fail';
+    const ico = ch.ok===true?'✅':ch.ok==='warn'?'⚠️':'❌';
+    return `<div class="check-item ${cls}">
+      <span class="check-ico">${ico}</span>
+      <div><strong>${ch.label}</strong><br>${ch.detalhe}</div>
+    </div>`;
+  }).join('');
+
+  return `<div class="check-block">
+    <div class="check-hd">
+      <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+      Verificação jornalística automática
+    </div>
+    <div class="check-grid">${itemsHtml}</div>
+    <div class="check-score ${scoreClass}">
+      ${scoreEmoji} Pontuação: ${score}% &nbsp;·&nbsp; ${ok} OK · ${warn} atenção · ${fail} em falta
+    </div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// EMAIL MODAL
+// ═══════════════════════════════════════════════════════════════
+function abrirEmailModal(n,nota){
+  emailNotId=n._id;
+  const assunto=`Notícia "${n.titulo}" — sugestões de melhoria antes da publicação`;
+  const corpo=`Olá ${n.proponente||''},\n\nObrigado/a pela submissão da notícia "${n.titulo}".\n\nApresentamos algumas sugestões de melhoria antes da publicação:\n\n${nota}\n\nApós realizar as correções, pedimos que nos envie a versão atualizada diretamente para este email.\n\nObrigado pela colaboração!\n${sessao.nome}\nEquipa de Comunicação — AET`;
+  document.getElementById('email-assunto').value=assunto;
+  document.getElementById('email-corpo').value=corpo;
+  document.getElementById('email-modal').classList.add('show');
+}
+function fecharEmailModal(){document.getElementById('email-modal').classList.remove('show');}
+async function copiarEmail(){
+  const texto='Assunto: '+document.getElementById('email-assunto').value+'\n\n'+document.getElementById('email-corpo').value;
+  try{
+    await navigator.clipboard.writeText(texto);
+    toast('Mensagem copiada! Cola no teu email.','success');
+    fecharEmailModal();
+    noticiaAtual=null;decisaoAtual=null;
+    renderValidar();
+  }catch(e){toast('Seleciona e copia manualmente.','warning');}
+}
+
+// ═══════════════════════════════════════════════════════════════
+// EXCEL IMPORT
+// ═══════════════════════════════════════════════════════════════
+function importarExcel(input){
+  const file=input.files[0];
+  if(!file)return;
+  const st=document.getElementById('import-status');
+  st.textContent='A ler ficheiro…';
+  showLoad('A importar notícias do Excel…');
+  const reader=new FileReader();
+  reader.onload=async function(e){
+    try{
+      const wb=XLSX.read(new Uint8Array(e.target.result),{type:'array',cellDates:true});
+      const ws=wb.Sheets[wb.SheetNames[0]];
+      const rows=XLSX.utils.sheet_to_json(ws,{defval:'',raw:false});
+      if(!rows.length){hideLoad();st.textContent='Ficheiro sem dados.';return;}
+
+      const headers=Object.keys(rows[0]);
+      const ci=pats=>headers.find(h=>pats.some(p=>h.toLowerCase().includes(p.toLowerCase())))||null;
+      const COL={
+        ts:   ci(['hora de início','hora da última','submission time','início']),
+        prop: ci(['nome do proponente','proponente']),
+        email:ci(['email','e-mail']),
+        tit:  ci(['título da notícia','titulo da noticia','título (sem','título da not']),
+        cats: ci(['categoria da notícia','categoria','pergunta']),
+        esc:  ci(['estabelecimento']),
+        corp: ci(['texto do tipo','notícia texto','noticia texto','texto da not']),
+        img:  ci(['insira uma fotografia','imagem de destaque','fotografia (inserir 1','fotografia']),
+        fotos:ci(['outras fotos','inserir até']),
+        vid:  ci(['vídeo','video','vídeos']),
+        lnk:  ci(['links','formulários']),
+      };
+
+      const existKeys=new Set(noticias.map(n=>norm(n.titulo)+'|'+norm(n.proponente)));
+      let nextId=Math.max(0,...noticias.map(n=>n._id||0))+1;
+      let imported=0;
+
+      rows.forEach(row=>{
+        const get=col=>col?(row[col]||'').toString().trim():'';
+        const titulo=get(COL.tit);
+        const proponente=get(COL.prop);
+        if(!titulo)return;
+
+        // Ignora linhas que são cabeçalhos repetidos
+        if(headers.some(h=>norm(h)===norm(titulo)))return;
+
+        const key=norm(titulo)+'|'+norm(proponente);
+        if(existKeys.has(key))return;
+
+        let data=new Date().toISOString().slice(0,10);
+        const ts=get(COL.ts);
+        if(ts){try{const d=new Date(ts);if(!isNaN(d))data=d.toISOString().slice(0,10);}catch(_){}}
+
+        noticias.push({
+          _id:nextId++,
+          proponente,titulo,
+          categorias:get(COL.cats).split(/[;,]/).map(s=>s.trim()).filter(Boolean),
+          escola:get(COL.esc),data,corpo:get(COL.corp),
+          imgDestaque:get(COL.img),
+          outrasFotos:get(COL.fotos).split(/[;\n]/).map(s=>s.trim()).filter(Boolean),
+          video:get(COL.vid),links:get(COL.lnk),
+          _meios:{site:false,fb:false,ig:false,tiktok:false}
         });
-        h+='</div></div>';
+        existKeys.add(key);
+        imported++;
       });
-      h+='<div class="field" style="margin-top:12px"><label style="font-size:13px;font-weight:500;color:#555;display:block;margin-bottom:5px">Observações para o certificado</label>';
-      h+='<textarea class="obs-area" placeholder="Descreve a participação do grupo..."></textarea></div>';
-      h+='<div class="field"><label style="font-size:13px;font-weight:500;color:#555;display:block;margin-bottom:6px">Menção global <span class="req">*</span></label>';
-      h+='<div class="menc-group">';
-      MENCOES.forEach(function(m){
-        h+='<label class="ropt" onclick="selMenc(this)"><input type="radio"> '+m+'</label>';
-      });
-      h+='</div></div>';
-      h+='<button class="eval-save" onclick="guardarAval(this)" data-rowid="'+row.id+'" data-turma="'+encodeURIComponent(row.turma||dtTurma)+'" data-ano="'+(row.ano||'').replace(/[^0-9]/g,'')+'" data-nome="'+encodeURIComponent(row.nome||'')+'" data-tipo="'+encodeURIComponent(row.tipo||'')+'" data-data="'+encodeURIComponent(row.data||'')+'" data-prof="'+encodeURIComponent(row.prof||'')+'" data-curso="'+(row.curso||'')+'">✓ Guardar participação</button>';
-      h+='</div>';
+
+      saveNoticias();hideLoad();input.value='';
+      if(imported>0){
+        st.textContent=`✓ ${imported} importada(s) — a sincronizar…`;
+        // Envia para Google Sheets em background
+        const novasNoticias = noticias.slice(-imported);
+        let sincOk=0;
+        for(const n of novasNoticias){
+          try{ const r=await apiGuardarNoticia(n); if(r.ok)sincOk++; }catch(_){}
+        }
+        st.textContent=`✓ ${imported} importada(s) · ${sincOk} sincronizadas com Google Sheets`;
+        toast(`${imported} notícia(s) importada(s) e sincronizadas!`,'success');
+        renderGestao();
+      } else {
+        st.textContent='✓ Sem notícias novas';
+        toast('Sem notícias novas para importar.','info');
+      }
+    }catch(err){
+      hideLoad();
+      st.textContent='Erro: '+err.message;
+      toast('Erro ao ler ficheiro.','error');
     }
-    h+='</div>';
-  });
-
-  // tabela alunos certificado
-  h+='<div class="secao" style="margin-top:2rem">👥 Alunos — registo para certificado</div>';
-  if(!particList.length){
-    h+='<div style="font-size:13px;color:#888;padding:8px 0">Ainda não há participações registadas.</div>';
-  } else {
-    h+='<div style="overflow-x:auto"><table class="alunos-tbl"><thead><tr><th>N.º Processo</th><th>Nome</th><th>Atividade</th><th>Menção</th><th>Observações para certificado</th></tr></thead><tbody>';
-    particList.forEach(function(a){
-      h+='<tr><td>'+(a.proc||'—')+'</td><td><strong>'+(a.nome||'')+'</strong></td><td>'+(a.atividade||'')+'</td><td><span class="sbadge sd" style="font-size:11px">'+(a.mencao||'')+'</span></td><td style="font-style:italic;color:#555">'+(a.obs||'—')+'</td></tr>';
-    });
-    h+='</tbody></table></div>';
-  }
-
-  cont.innerHTML=h;
-}
-
-function abrirAval(btn){
-  var box=btn.parentElement.nextElementSibling;
-  if(!box) return;
-  box.style.display=box.style.display==='none'?'block':'none';
-  btn.textContent=box.style.display==='none'?'📋 Avaliação':'🔼 Fechar avaliação';
-}
-function setSb(btn){
-  var crit=btn.dataset.crit;
-  var box=btn.closest('.eval-box');
-  box.querySelectorAll('.sb[data-crit="'+crit+'"]').forEach(function(b){ b.classList.remove('act'); });
-  btn.classList.add('act');
-}
-function selMenc(el){
-  el.closest('.menc-group').querySelectorAll('.ropt').forEach(function(r){ r.classList.remove('chk'); });
-  el.classList.add('chk');
-}
-function guardarAval(btn){
-  var box=btn.closest('.eval-box');
-  var mencEl=box.querySelector('.menc-group .ropt.chk');
-  if(!mencEl){ alert('Seleciona a menção global de participação.'); return; }
-  var mencao=mencEl.textContent.trim();
-  var obs=box.querySelector('.obs-area').value;
-  var scores={};
-  CRITERIOS.forEach(function(c){
-    var active=box.querySelector('.sb[data-crit="'+c.id+'"].act');
-    scores[c.id]=active?parseInt(active.dataset.val):null;
-  });
-  var proxyProj={
-    id:btn.dataset.rowid,
-    nome:decodeURIComponent(btn.dataset.nome||''),
-    tipo:decodeURIComponent(btn.dataset.tipo||''),
-    turma:decodeURIComponent(btn.dataset.turma||''),
-    ano:btn.dataset.ano||'',
-    data:decodeURIComponent(btn.dataset.data||''),
-    prof:decodeURIComponent(btn.dataset.prof||''),
-    curso:btn.dataset.curso||'',
-    dominios:[], alunos:[], mats:[],
-    turmaDT:dtTurma||'',
-    participacao:{scores:scores, obs:obs, mencao:mencao}
   };
-  btn.disabled=true; btn.textContent='⏳ A guardar...';
-  sheetPost('participacao', proxyProj, function(ok){
-    btn.disabled=false; btn.textContent='✓ Guardar participação';
-    alert(ok?'✅ Participação guardada na Google Sheet!':'✅ Participação guardada.\n⚠️ Verifique a ligação.');
-    carregarDT();
-  });
+  reader.readAsArrayBuffer(file);
 }
 
-// ---- Gestão Login ----
-function loginGestao(){
-  var pwd=document.getElementById('gestao-pwd').value;
-  if(pwd===PWD_GESTAO){
-    gestaoOk=true;
-    document.getElementById('gestao-lock').style.display='none';
-    document.getElementById('gestao-area').style.display='block';
-    carregarGestao();
-  } else {
-    document.getElementById('gestao-err').style.display='block';
-    document.getElementById('gestao-pwd').value='';
+// ═══════════════════════════════════════════════════════════════
+// SINCRONIZAR TUDO
+// ═══════════════════════════════════════════════════════════════
+async function sincronizarTudo(){
+  if(!noticias.length){toast('Não há notícias para sincronizar.','warning');return;}
+  const st=document.getElementById('import-status');
+  showLoad('A sincronizar '+noticias.length+' notícias com Google Sheets…');
+  let ok=0, err=0;
+  for(const n of noticias){
+    try{
+      const r=await apiGuardarNoticia(n);
+      if(r&&r.ok)ok++;
+      else err++;
+    }catch(e){err++;}
   }
+  hideLoad();
+  st.textContent=`✓ ${ok} sincronizadas · ${err} erros`;
+  if(ok>0) toast(`${ok} notícia(s) sincronizadas com Google Sheets!`,'success');
+  else toast('Não foi possível sincronizar. Verifica a ligação.','error');
 }
-function logoutGestao(){
-  gestaoOk=false;
-  document.getElementById('gestao-area').style.display='none';
-  document.getElementById('gestao-lock').style.display='block';
-  document.getElementById('gestao-pwd').value='';
-}
-function carregarGestao(){
-  var cont=document.getElementById('gestao-content');
-  cont.innerHTML='<div class="empty">⏳ A carregar...</div>';
-  sheetGet('getTodos','',function(res){
-    var lista=(res&&res.dados)||[];
-    if(!lista.length){ cont.innerHTML='<div class="empty">Ainda não há projetos registados.</div>'; return; }
-    var totAl=lista.reduce(function(a,r){ return a+(parseInt(r.nalunos)||0); },0);
-    var done=lista.filter(function(r){ return r.mencao&&r.mencao!=='Por registar'; }).length;
-    var h='<div class="summary">';
-    h+='<div class="stat"><div class="snum">'+lista.length+'</div><div class="slbl">Projetos</div></div>';
-    h+='<div class="stat"><div class="snum">'+totAl+'</div><div class="slbl">Alunos</div></div>';
-    h+='<div class="stat"><div class="snum">'+done+'</div><div class="slbl">Avaliados</div></div>';
-    h+='</div>';
-    var turmas={};
-    lista.forEach(function(r){ if(!turmas[r.turma]) turmas[r.turma]=[]; turmas[r.turma].push(r); });
-    h+='<div style="overflow-x:auto"><table class="todos-tbl"><thead><tr><th>Turma</th><th>Nome da atividade</th><th>Tipo</th><th>Data</th><th style="text-align:center">Alunos</th><th>Estado</th></tr></thead><tbody>';
-    Object.keys(turmas).sort().forEach(function(t){
-      var ps=turmas[t];
-      var doneT=ps.filter(function(r){ return r.mencao&&r.mencao!=='Por registar'; }).length;
-      h+='<tr class="grp-row"><td colspan="6">'+t+' — '+ps.length+' projeto(s) · '+doneT+' avaliado(s)</td></tr>';
-      ps.forEach(function(r){
-        h+='<tr><td>'+r.turma+'</td><td><strong>'+r.nome+'</strong></td><td>'+r.tipo+'</td><td>'+fmtData(r.data)+'</td>';
-        h+='<td style="text-align:center"><span class="sbadge" style="background:#EEEDFE;color:#3C3489">'+r.nalunos+'</span></td>';
-        h+='<td><span class="sbadge '+(r.mencao&&r.mencao!=='Por registar'?'sd':'sp')+'">'+r.mencao+'</span></td></tr>';
-      });
+
+// ═══════════════════════════════════════════════════════════════
+// GESTÃO
+// ═══════════════════════════════════════════════════════════════
+async function renderGestao(){
+  showLoad('A carregar do Google Sheets…');
+  try{
+    const data = await apiListar();
+    // Merge notícias do Sheets
+    const chavesLocais = new Set(noticias.map(n=>chave(n)));
+    let nextId = Math.max(0,...noticias.map(n=>n._id||0))+1;
+    (data.noticias||[]).forEach(n=>{
+      const c = norm(n.titulo)+'|'+norm(n.proponente);
+      if(!chavesLocais.has(c)){
+        noticias.push({
+          _id: nextId++,
+          proponente: n.proponente, titulo: n.titulo,
+          categorias: (n.categorias||'').split(';').map(s=>s.trim()).filter(Boolean),
+          escola: n.escola, data: (n.timestamp||'').slice(0,10),
+          corpo: n.corpo, imgDestaque: n.imgDestaque,
+          outrasFotos: (n.outrasFotos||'').split(';').map(s=>s.trim()).filter(Boolean),
+          video: n.video, links: n.links,
+          _meios:{site:false,fb:false,ig:false,tiktok:false}
+        });
+        chavesLocais.add(c);
+      }
     });
-    h+='</tbody></table></div>';
-    cont.innerHTML=h;
-  });
+    saveNoticias();
+    validacoes = data.validacoes || {};
+  }catch(e){
+    // usa dados locais, não interrompe
+  }
+  hideLoad();
+
+  const total=noticias.length;
+  const pend=noticias.filter(n=>!validacoes[chave(n)]||validacoes[chave(n)].estado==='pendente').length;
+  const pub=noticias.filter(n=>(validacoes[chave(n)]||{}).estado==='pode_publicar').length;
+  const corr=noticias.filter(n=>(validacoes[chave(n)]||{}).estado==='enviado_correcao').length;
+
+  document.getElementById('stats-gestao').innerHTML=`
+    <div class="sc"><div class="sv">${total}</div><div class="sl">Total</div></div>
+    <div class="sc"><div class="sv" style="color:var(--amber)">${pend}</div><div class="sl">Pendentes</div></div>
+    <div class="sc"><div class="sv" style="color:var(--green)">${pub}</div><div class="sl">A publicar</div></div>
+    <div class="sc"><div class="sv" style="color:var(--blue)">${corr}</div><div class="sl">Para correção</div></div>`;
+
+  const filtros=['todas','pendente','pode_publicar','enviado_correcao'];
+  const fLabels={todas:`Todas (${total})`,pendente:`Pendentes (${pend})`,pode_publicar:`A publicar (${pub})`,enviado_correcao:`Para correção (${corr})`};
+  document.getElementById('filter-row-gestao').innerHTML=filtros.map(f=>
+    `<div class="chip ${filtroGestao===f?'active':''}" onclick="setFiltroGestao('${f}')">${fLabels[f]}</div>`
+  ).join('');
+
+  renderListaGestao();
 }
 
-// ---- Ver todos ----
-function carregarTodos(){
-  var cont=document.getElementById('todos-content');
-  cont.innerHTML='<div class="empty">⏳ A carregar...</div>';
-  sheetGet('getTodos','',function(res){
-    var lista=(res&&res.dados)||[];
-    if(!lista.length){ cont.innerHTML='<div class="empty">📁 Ainda não há projetos registados.</div>'; return; }
-    var totAl=lista.reduce(function(a,r){ return a+(parseInt(r.nalunos)||0); },0);
-    var done=lista.filter(function(r){ return r.mencao&&r.mencao!=='Por registar'; }).length;
-    var h='<div class="summary">';
-    h+='<div class="stat"><div class="snum">'+lista.length+'</div><div class="slbl">Projetos</div></div>';
-    h+='<div class="stat"><div class="snum">'+totAl+'</div><div class="slbl">Alunos</div></div>';
-    h+='<div class="stat"><div class="snum">'+done+'</div><div class="slbl">Avaliados</div></div>';
-    h+='</div>';
-    // resumo por ano
-    var anos={};
-    lista.forEach(function(r){
-      var ano=String(r.turma||'').match(/^(\d+)/);
-      ano=ano?ano[1]:'?';
-      if(!anos[ano]) anos[ano]={p:0,al:0,turmas:{}};
-      anos[ano].p++;
-      anos[ano].al+=(parseInt(r.nalunos)||0);
-      anos[ano].turmas[r.turma]=true;
+function setFiltroGestao(f){filtroGestao=f;renderGestao();}
+
+function renderListaGestao(){
+  const el=document.getElementById('lista-gestao');
+  let lista=noticias;
+  if(filtroGestao!=='todas'){
+    lista=noticias.filter(n=>{
+      const est=(validacoes[chave(n)]||{}).estado||'pendente';
+      return est===filtroGestao;
     });
-    h+='<div class="ano-grid">';
-    ['10','11','12'].forEach(function(a){
-      var d=anos[a]||{p:0,al:0,turmas:{}};
-      h+='<div class="ano-box"><div class="snum">'+d.p+'</div><div style="font-size:12px;font-weight:600;margin:2px 0">'+a+'.º ano</div><div style="font-size:11px;color:#888">'+Object.keys(d.turmas).length+' turma(s) · '+d.al+' aluno(s)</div></div>';
-    });
-    h+='</div>';
-    // tabela por turma
-    var turmas={};
-    lista.forEach(function(r){ if(!turmas[r.turma]) turmas[r.turma]=[]; turmas[r.turma].push(r); });
-    h+='<div style="overflow-x:auto"><table class="todos-tbl"><thead><tr><th>Turma</th><th>Nome da atividade</th><th>Tipo</th><th>Data</th><th style="text-align:center">Alunos</th><th>Estado</th></tr></thead><tbody>';
-    Object.keys(turmas).sort().forEach(function(t){
-      var ps=turmas[t];
-      var doneT=ps.filter(function(r){ return r.mencao&&r.mencao!=='Por registar'; }).length;
-      h+='<tr class="grp-row"><td colspan="6">'+t+' — '+ps.length+' projeto(s) · '+doneT+' avaliado(s)</td></tr>';
-      ps.forEach(function(r){
-        h+='<tr><td>'+r.turma+'</td><td><strong>'+r.nome+'</strong></td><td>'+r.tipo+'</td><td>'+fmtData(r.data)+'</td>';
-        h+='<td style="text-align:center"><span class="sbadge" style="background:#EEEDFE;color:#3C3489">'+r.nalunos+'</span></td>';
-        h+='<td><span class="sbadge '+(r.mencao&&r.mencao!=='Por registar'?'sd':'sp')+'">'+r.mencao+'</span></td></tr>';
-      });
-    });
-    h+='</tbody></table></div>';
-    cont.innerHTML=h;
-  });
+  }
+
+  if(!lista.length){
+    el.innerHTML=`<div class="empty"><svg viewBox="0 0 24 24"><path d="M21 8v13H3V8"/><rect x="1" y="3" width="22" height="5" rx="1"/><line x1="10" y1="12" x2="14" y2="12"/></svg><p>Sem notícias nesta categoria.</p></div>`;
+    return;
+  }
+
+  const bmap={pendente:'b-pend',pode_publicar:'b-pub',enviado_correcao:'b-corr',em_validacao:'b-val'};
+  const lmap={pendente:'Pendente',pode_publicar:'✓ Pode publicar',enviado_correcao:'✉ Para correção',em_validacao:'Em validação'};
+
+  el.innerHTML=[...lista].reverse().map(n=>{
+    const v=validacoes[chave(n)]||{};
+    const est=v.estado||'pendente';
+    const meiosStr=v.meios?v.meios.split(';').filter(Boolean).map(m=>`<span style="font-size:10px;background:var(--green-bg);color:var(--green-text);padding:1px 6px;border-radius:20px">${m}</span>`).join(''):'';
+    return`<div class="li">
+      <div class="li-ico" style="background:var(--bg2)">
+        <svg viewBox="0 0 24 24" width="16" height="16" style="stroke:var(--text2);fill:none;stroke-width:1.8"><path d="M4 22V4a2 2 0 012-2h12a2 2 0 012 2v18l-4-2-4 2-4-2-4 2z"/></svg>
+      </div>
+      <div class="li-b">
+        <div class="li-t">${n.titulo}</div>
+        <div class="li-s">${n.proponente||'—'} · ${n.escola||'—'} · ${n.data||'—'}${v.validador?' · '+v.validador:''}</div>
+      </div>
+      <div class="li-r">
+        <span class="badge ${bmap[est]||'b-pend'}">${lmap[est]||est}</span>
+        <div style="display:flex;gap:3px;flex-wrap:wrap">${meiosStr}</div>
+      </div>
+    </div>`;
+  }).join('');
 }
-
-// ---- Export Excel ----
-function exportProjetos(){
-  sheetGet('getTodos','',function(res){
-    var lista=(res&&res.dados)||[];
-    if(!lista.length){ alert('Não há projetos para exportar.'); return; }
-    var rows=lista.map(function(r){ return {'Turma':r.turma,'Nome da atividade':r.nome,'Tipo':r.tipo,'Data':fmtData(r.data),'N.º alunos':r.nalunos,'Estado':r.mencao}; });
-    var ws=XLSX.utils.json_to_sheet(rows);
-    var wb=XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb,ws,'Projetos');
-    XLSX.writeFile(wb,'CD_Templarios_Projetos_2027.xlsx');
-  });
-}
-function exportParticipacao(){
-  sheetGet('getParticipacao','',function(res){
-    var lista=(res&&res.dados)||[];
-    if(!lista.length){ alert('Não há participações para exportar.'); return; }
-    var rows=lista.map(function(r){ return {'Turma':r.turma,'Atividade':r.atividade,'N.º Processo':r.proc,'Nome':r.nome,'Menção':r.mencao,'Observações':r.obs}; });
-    var ws=XLSX.utils.json_to_sheet(rows);
-    var wb=XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb,ws,'Participação');
-    XLSX.writeFile(wb,'CD_Templarios_Participacao_2027.xlsx');
-  });
-}
-
-
-
-// ---- Init ----
-selAno(document.querySelector('.ytab.act'), '10');
-verificarPrazo();
 </script>
 </body>
 </html>
