@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cidadania e Desenvolvimento 2027 — Templários</title>
+<title>Cidadania e Desenvolvimento — Templários</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:system-ui,-apple-system,sans-serif;background:#F5F4F0;color:#1a1a18;font-size:15px}
@@ -111,7 +111,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#F5F4F0;color:#1a
 <div class="wrap">
   <div class="header">
     <div class="badge">Agrupamento de Escolas Templários</div>
-    <h1>Cidadania e Desenvolvimento 2027</h1>
+    <h1>Cidadania e Desenvolvimento</h1>
     <p>Registo e avaliação de projetos de cidadania</p>
     <p style="font-size:10px;color:#aaa;margin-top:4px">v6</p>
   </div>
@@ -262,7 +262,10 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#F5F4F0;color:#1a
       <div class="turma-hdr">
         <h2 id="dt-titulo">Turma</h2>
         <div class="turma-stats" id="dt-stats"></div>
-        <button onclick="logoutDT()" style="padding:6px 12px;border:1px solid rgba(255,255,255,.4);background:transparent;color:#fff;border-radius:7px;cursor:pointer;font-size:12px;font-family:inherit">Sair</button>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button onclick="exportDT()" style="padding:6px 12px;border:none;background:#EAF3DE;color:#27500A;border-radius:7px;cursor:pointer;font-size:12px;font-family:inherit;font-weight:600">⬇ Exportar Excel</button>
+          <button onclick="logoutDT()" style="padding:6px 12px;border:1px solid rgba(255,255,255,.4);background:transparent;color:#fff;border-radius:7px;cursor:pointer;font-size:12px;font-family:inherit">Sair</button>
+        </div>
       </div>
       <div id="dt-content"><div class="empty">⏳ A carregar...</div></div>
     </div>
@@ -305,7 +308,7 @@ console.log('CD Templários v6 carregado — pickData:', typeof pickData);
 // ============================================================
 var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzCpp9RFOEQ2npzJ_phrmgysE893e_5RK7jgjJBHjNFl0PKeW3rzJgN0yRA4GWyGSNGZg/exec';
 var PWD_GESTAO = 'templarios2027';
-var DATA_LIMITE = '2027-03-15';
+var DATA_LIMITE = '2027-01-08';
 var PWD_DT = {
   '10.º A':'dt10a','10.º B':'dt10b','10.º C':'dt10c','10.º D':'dt10d','10.º E':'dt10e',
   '10.º F':'dt10f','10.º G':'dt10g','10.º H':'dt10h','10.º I':'dt10i','10.º J':'dt10j',
@@ -513,6 +516,72 @@ function resetForm(){
   document.getElementById('r-mats').innerHTML='<tr><td><input type="text" placeholder="Ex: 30 unidades"></td><td><input type="text" placeholder="Ex: Folhas A4"></td><td><button class="btn-rm" onclick="rmMat(this)">✕</button></td></tr>';
   selDataVal='';
   renderDoms();
+}
+
+// ---- Export DT Excel ----
+function exportDT(){
+  if(!dtTurma){ alert('Sem turma definida.'); return; }
+  var projList = [], particList = [], pending = 2;
+  function checkDone(){
+    pending--;
+    if(pending !== 0) return;
+
+    var scoreLabels = {1:'Insuficiente',2:'Suficiente',3:'Bom',4:'Muito Bom'};
+    var rows = [];
+
+    projList.forEach(function(p){
+      // Get alunos from participacao if available
+      var alunosPartic = particList.filter(function(a){ return String(a.idProjeto)===String(p.id); });
+      var avaliado = p.mencao && p.mencao !== 'Por registar';
+
+      if(alunosPartic.length){
+        // One row per student with participation data
+        alunosPartic.forEach(function(a){
+          rows.push({
+            'N.º Processo': a.proc || '',
+            'Nome do aluno': a.nome || '',
+            'Turma': p.turma || dtTurma,
+            'Nome do projeto': p.nome || '',
+            'Tipo de atividade': p.tipo || '',
+            'Domínios C&D': p.doms || '',
+            'Data de realização': fmtData(p.data),
+            'Prof. facilitador(a)': p.prof || '',
+            'Menção global': a.mencao || 'Por avaliar',
+            'Observações para certificado': a.obs || ''
+          });
+        });
+      } else {
+        // No participation data yet - show project info only
+        rows.push({
+          'N.º Processo': '',
+          'Nome do aluno': '',
+          'Turma': p.turma || dtTurma,
+          'Nome do projeto': p.nome || '',
+          'Tipo de atividade': p.tipo || '',
+          'Domínios C&D': p.doms || '',
+          'Data de realização': fmtData(p.data),
+          'Prof. facilitador(a)': p.prof || '',
+          'Menção global': p.mencao || 'Por avaliar',
+          'Observações para certificado': ''
+        });
+      }
+    });
+
+    if(!rows.length){ alert('Não há projetos para exportar.'); return; }
+
+    var ws = XLSX.utils.json_to_sheet(rows);
+    ws['!cols'] = [
+      {wch:12},{wch:28},{wch:8},{wch:30},{wch:22},{wch:40},
+      {wch:16},{wch:25},{wch:26},{wch:40}
+    ];
+    // Style header row
+    var wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Projetos '+dtTurma);
+    XLSX.writeFile(wb, 'CD_'+dtTurma.replace(/[^a-zA-Z0-9]/g,'_')+'_projetos.xlsx');
+  }
+
+  sheetGet('getProjetos', dtTurma, function(res){ projList=(res&&res.dados)||[]; checkDone(); });
+  sheetGet('getParticipacao', dtTurma, function(res){ particList=(res&&res.dados)||[]; checkDone(); });
 }
 
 // ---- DT Login ----
