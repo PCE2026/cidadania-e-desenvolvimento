@@ -171,8 +171,18 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#F5F4F0;color:#1a
       </div>
       <div class="field" id="r-outra-f" style="display:none"><label>Especificar data</label><input type="date" id="r-outra"></div>
       <div class="divider"></div>
-      <div class="stitle">Professor(a) facilitador(a)</div>
-      <div class="field"><label>Nome do(a) professor(a) facilitador(a)</label><input type="text" id="r-prof" placeholder="Nome completo (opcional)"><div class="hint">Preenche apenas se houver um(a) docente que acompanha o projeto</div></div>
+      <div class="stitle">Facilitador(a)</div>
+      <div class="field">
+        <label>Nome do(a) facilitador(a)</label>
+        <div class="rgroup" id="fac-group" style="margin-bottom:10px">
+          <label class="ropt" onclick="selFac(this,'dt')"><input type="radio" name="facilitador"> Diretor(a) de Turma</label>
+          <label class="ropt" onclick="selFac(this,'prof')"><input type="radio" name="facilitador"> Outro(a) professor(a) da turma</label>
+          <label class="ropt" onclick="selFac(this,'outro')"><input type="radio" name="facilitador"> Outro(a)</label>
+        </div>
+        <div id="fac-nome-f" style="display:none">
+          <input type="text" id="r-prof" placeholder="Nome completo">
+        </div>
+      </div>
       <div class="divider"></div>
       <div class="stitle">Contacto do projeto</div>
       <div class="g2">
@@ -345,6 +355,20 @@ function fmtData(d){
   return m ? m[3]+'/'+m[2]+'/'+m[1] : s;
 }
 function showEl(id, show){ var el=document.getElementById(id); if(el) el.style.display=show?'block':'none'; }
+function selFac(el, tipo){
+  document.querySelectorAll('#fac-group .ropt').forEach(function(r){ r.classList.remove('chk'); });
+  el.classList.add('chk');
+  var nomeF = document.getElementById('fac-nome-f');
+  var nomeI = document.getElementById('r-prof');
+  if(tipo === 'dt'){
+    nomeF.style.display = 'none';
+    nomeI.value = 'Diretor(a) de Turma';
+  } else {
+    nomeF.style.display = 'block';
+    nomeI.value = '';
+    nomeI.placeholder = tipo === 'prof' ? 'Nome do(a) professor(a)' : 'Nome do(a) facilitador(a)';
+  }
+}
 function pickData(el, val){
   document.querySelectorAll('#r-data-chips .chip').forEach(function(c){ c.classList.remove('sel'); });
   el.classList.add('sel');
@@ -401,7 +425,7 @@ function verificarPrazo(){
   } else {
     var dias=Math.ceil((new Date(DATA_LIMITE+'T23:59:59')-new Date())/864e5);
     el.className='prazo-box';
-    el.innerHTML='📅 Prazo de registo: até <strong>'+DATA_LIMITE.split('-').reverse().join('/')+'</strong> — faltam '+dias+' dia(s).';
+    el.innerHTML='📅 Prazo de registo para projetos a apresentar na 12.ª Semana Cultural e que necessitem de materiais: até <strong>'+DATA_LIMITE.split('-').reverse().join('/')+'</strong> — faltam '+dias+' dia(s).';
   }
 }
 
@@ -509,6 +533,8 @@ function resetForm(){
   ['r-nome','r-desc','r-prof','r-email','r-telm','r-espaco-det','r-conv-nome','r-conv-obs','r-anos','r-outra'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
   ['r-tipo','r-turma','r-espaco','r-curso','r-conv-tipo'].forEach(function(id){ document.getElementById(id).value=''; });
   document.querySelectorAll('.chip').forEach(function(c){ c.classList.remove('sel'); });
+  document.querySelectorAll('#fac-group .ropt').forEach(function(r){ r.classList.remove('chk'); });
+  showEl('fac-nome-f', false);
   document.querySelectorAll('.ropt').forEach(function(r){ r.classList.remove('chk'); });
   document.querySelectorAll('.dchip').forEach(function(d){ d.classList.remove('sel-d'); });
   showEl('r-outra-f',false); showEl('r-anos-f',false); showEl('r-conv-det',false);
@@ -544,8 +570,10 @@ function exportDT(){
             'Nome do projeto': p.nome || '',
             'Tipo de atividade': p.tipo || '',
             'Domínios C&D': p.doms || '',
+            'Descrição do projeto': p.desc || '',
             'Data de realização': fmtData(p.data),
-            'Prof. facilitador(a)': p.prof || '',
+            'Facilitador(a)': p.prof || '',
+            'Parceiro / Convidado externo': p.convidado || '',
             'Menção global': a.mencao || 'Por avaliar',
             'Observações para certificado': a.obs || ''
           });
@@ -559,9 +587,11 @@ function exportDT(){
           'Nome do projeto': p.nome || '',
           'Tipo de atividade': p.tipo || '',
           'Domínios C&D': p.doms || '',
+          'Descrição do projeto': p.desc || '',
           'Data de realização': fmtData(p.data),
-          'Prof. facilitador(a)': p.prof || '',
-          'Menção global': p.mencao || 'Por avaliar',
+          'Facilitador(a)': p.prof || '',
+          'Parceiro / Convidado externo': p.convidado || '',
+          'Menção global': p.mencao && p.mencao !== 'Por registar' ? p.mencao : 'Por avaliar',
           'Observações para certificado': ''
         });
       }
@@ -572,7 +602,7 @@ function exportDT(){
     var ws = XLSX.utils.json_to_sheet(rows);
     ws['!cols'] = [
       {wch:12},{wch:28},{wch:8},{wch:30},{wch:22},{wch:40},
-      {wch:16},{wch:25},{wch:26},{wch:40}
+      {wch:40},{wch:16},{wch:28},{wch:30},{wch:26},{wch:40}
     ];
     // Style header row
     var wb = XLSX.utils.book_new();
@@ -644,7 +674,7 @@ function renderDT(projList, particList){
     h+='<div class="pmeta">'+fmtData(row.data)+(row.prof?' · Prof. '+row.prof:'')+'</div>';
     h+='<div class="pmeta" style="margin-top:3px"><span class="ptag">'+(row.tipo||'')+'</span></div>';
     h+='</div>';
-    h+='<span class="sbadge '+(avaliado?'sd':'sp')+'">'+(row.mencao||'Por registar')+'</span>';
+    h+='<span class="sbadge '+(avaliado?'sd':'sp')+'">'+(row.mencao&&row.mencao!=='Por registar'?row.mencao:'Por avaliar')+'</span>';
     h+='</div>';
     // alunos
     if(alunosList.length){
