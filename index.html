@@ -332,7 +332,7 @@ var PWD_DT = {
 };
 // ============================================================
 
-var LETRAS = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P'];
+var LETRAS = {'10':['A','B','E','F','H','I','J','L','P','Q','R'],'11':['A','B','E','F','H','I','J','L','O','P'],'12':['A','B','E','F','G','H','I','J','O','P']};
 var DOMS_BASE = [{id:'dh',l:'Direitos Humanos'},{id:'dem',l:'Democracia e Instituições Políticas'},{id:'ds',l:'Desenvolvimento Sustentável'},{id:'lf',l:'Literacia Financeira e Empreendedorismo'}];
 var DOMS_EXTRA = {'10':[{id:'sau',l:'Saúde'},{id:'media',l:'Media'}],'11':[{id:'risco',l:'Risco'},{id:'seg',l:'Segurança Rodoviária'}],'12':[{id:'plur',l:'Pluralismo e Diversidade Cultural'}]};
 var DOM_NOMES = {dh:'Direitos Humanos',dem:'Democracia e Inst. Políticas',ds:'Desenvolvimento Sustentável',lf:'Literacia Financeira/Empreend.',sau:'Saúde',media:'Media',risco:'Risco',seg:'Segurança Rodoviária',plur:'Pluralismo e Diversidade Cultural'};
@@ -435,7 +435,7 @@ function selAno(btn,ano){
   btn.classList.add('act'); anoAtual=ano;
   var sel=document.getElementById('r-turma');
   sel.innerHTML='<option value="">Selecionar turma...</option>';
-  LETRAS.forEach(function(l){ var o=document.createElement('option'); o.value=ano+'.º '+l; o.textContent=ano+'.º '+l; sel.appendChild(o); });
+  (LETRAS[ano]||[]).forEach(function(l){ var o=document.createElement('option'); o.value=ano+'.º '+l; o.textContent=ano+'.º '+l; sel.appendChild(o); });
   renderDoms();
 }
 function renderDoms(){
