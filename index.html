@@ -668,12 +668,30 @@ function abrirEditarProjeto(id, proc, turma, nome, tipo, data, desc){
   h+='<div class="field"><label>Descrição da atividade</label><textarea id="ed-desc">'+desc+'</textarea></div>';
   h+='<div class="field"><label>Data de realização</label><input type="text" id="ed-data" value="'+data+'"></div>';
   h+='<div class="field"><label>Facilitador(a)</label><input type="text" id="ed-prof" placeholder="Nome do facilitador"></div>';
+  h+='<div class="field"><label>Acrescentar colegas ao grupo</label>';
+  h+='<div class="box" style="padding:.75rem">';
+  h+='<div id="ed-alunos-list">';
+  h+='<div class="arow"><input type="text" placeholder="N.º processo" data-f="proc" oninput="this.value=this.value.replace(/\\D/g,\'\')" inputmode="numeric" style="width:100%"><input type="text" placeholder="Nome completo" data-f="nome" style="width:100%"><button class="btn-rm" onclick="rmEdAluno(this)">✕</button></div>';
+  h+='</div>';
+  h+='<button class="btn-add" onclick="addEdAluno()">+ Adicionar colega</button>';
+  h+='</div></div>';
   h+='<div style="display:flex;gap:10px;margin-top:12px">';
   h+='<button class="btn-sub" style="margin-top:0" onclick="guardarEdicao(\''+id+'\',\''+encodeURIComponent(turma)+'\',\''+encodeURIComponent(proc)+'\')">💾 Guardar alterações</button>';
   h+='<button style="padding:12px 16px;border:1px solid #C8C6BE;background:#fff;border-radius:9px;font-size:14px;cursor:pointer;font-family:inherit" onclick="document.getElementById(\'edit-resultado\').innerHTML=\'\'">Cancelar</button>';
   h+='</div>';
   h+='</div>';
   container.innerHTML=h;
+}
+function addEdAluno(){
+  var list=document.getElementById('ed-alunos-list');
+  var row=document.createElement('div');
+  row.className='arow';
+  row.innerHTML='<input type="text" placeholder="N.º processo" data-f="proc" oninput="this.value=this.value.replace(/\\D/g,\'\')" inputmode="numeric" style="width:100%"><input type="text" placeholder="Nome completo" data-f="nome" style="width:100%"><button class="btn-rm" onclick="rmEdAluno(this)">✕</button>';
+  list.appendChild(row);
+}
+function rmEdAluno(btn){
+  var list=document.getElementById('ed-alunos-list');
+  if(list.querySelectorAll('.arow').length>1) btn.closest('.arow').remove();
 }
 function guardarEdicao(id, turma, proc){
   turma=decodeURIComponent(turma); proc=decodeURIComponent(proc);
@@ -683,7 +701,14 @@ function guardarEdicao(id, turma, proc){
   var data=document.getElementById('ed-data').value.trim();
   var prof=document.getElementById('ed-prof').value.trim();
   if(!nome){ alert('O nome da atividade é obrigatório.'); return; }
-  var edicao={id:id, turma:turma, proc:proc, nome:nome, tipo:tipo, desc:desc, data:data, prof:prof};
+  // Recolher colegas novos (só os preenchidos)
+  var novosAlunos=[];
+  document.querySelectorAll('#ed-alunos-list .arow').forEach(function(row){
+    var p=row.querySelector('[data-f="proc"]').value.trim();
+    var n=row.querySelector('[data-f="nome"]').value.trim();
+    if(p||n) novosAlunos.push({proc:p,nome:n});
+  });
+  var edicao={id:id, turma:turma, proc:proc, nome:nome, tipo:tipo, desc:desc, data:data, prof:prof, novosAlunos:novosAlunos};
   var btns=document.querySelectorAll('.edit-form .btn-sub');
   btns.forEach(function(b){b.disabled=true;b.textContent='⏳ A guardar...';});
   sheetPost('edicaoProjeto', edicao, function(ok){
