@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- CD Templários 2027 — v6 -->
+<!-- CD Templários 2027 — v7 -->
 <html lang="pt">
 <head>
 <meta charset="UTF-8">
@@ -13,7 +13,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#F5F4F0;color:#1a
 .badge{display:inline-block;background:#EEEDFE;color:#3C3489;font-size:11px;font-weight:600;padding:3px 12px;border-radius:20px;margin-bottom:10px;letter-spacing:.6px;text-transform:uppercase}
 .header h1{font-size:22px;font-weight:600;margin-bottom:4px}
 .header p{font-size:14px;color:#666}
-.tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:#E8E6E0;border-radius:10px;padding:4px;margin-bottom:1.5rem}
+.tabs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;background:#E8E6E0;border-radius:10px;padding:4px;margin-bottom:1.5rem}
 .tab{padding:10px 8px;font-size:12px;font-weight:500;border:none;background:transparent;border-radius:7px;cursor:pointer;color:#666;transition:all .15s;text-align:center}
 .tab.active{background:#fff;color:#1a1a18;box-shadow:0 1px 3px rgba(0,0,0,.1)}
 .panel{display:none}.panel.active{display:block}
@@ -78,8 +78,10 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#F5F4F0;color:#1a
 .ptag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;background:#EEEDFE;color:#3C3489;font-weight:500;white-space:nowrap;margin-right:3px;margin-bottom:2px}
 .sbadge{font-size:11px;padding:3px 9px;border-radius:20px;font-weight:500;white-space:nowrap}
 .sp{background:#FAEEDA;color:#633806}.sd{background:#EAF3DE;color:#27500A}
+.sf{background:#E6F0FF;color:#1A4C99}
 .btn-expand{font-size:12px;color:#534AB7;background:transparent;border:1px solid #AFA9EC;padding:5px 12px;border-radius:7px;cursor:pointer;margin-top:10px;font-family:inherit}
 .btn-aval{font-size:12px;color:#fff;background:#0F6E56;border:none;padding:6px 14px;border-radius:7px;cursor:pointer;margin-top:10px;margin-left:8px;font-family:inherit;font-weight:600}
+.btn-assumir{font-size:12px;color:#fff;background:#185FA5;border:none;padding:6px 14px;border-radius:7px;cursor:pointer;margin-top:10px;font-family:inherit;font-weight:600}
 .detail-box{background:#F5F4F0;border-radius:8px;padding:.875rem;margin-top:10px;font-size:13px;color:#444;line-height:1.7}
 .eval-box{background:#F5F4F0;border-radius:9px;padding:1rem;margin-top:10px}
 .eval-box h3{font-size:14px;font-weight:600;margin-bottom:8px}
@@ -92,7 +94,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#F5F4F0;color:#1a
 .lei-box{background:#E6F1FB;border:1px solid #B5D4F4;border-radius:9px;padding:11px 14px;font-size:12px;color:#0C447C;margin-bottom:1rem;line-height:1.7}
 .export-bar{display:flex;gap:10px;margin-bottom:1.25rem;flex-wrap:wrap}
 .btn-exp{padding:10px 18px;border:none;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;color:#fff}
-.btn-exp-g{background:#0F6E56}.btn-exp-b{background:#185FA5}
+.btn-exp-g{background:#0F6E56}.btn-exp-b{background:#185FA5}.btn-exp-o{background:#8A4800}
 .todos-tbl{width:100%;border-collapse:collapse;font-size:13px}
 .todos-tbl th{font-size:11px;font-weight:600;color:#fff;text-align:left;padding:7px 10px;background:#1a1a18}
 .todos-tbl td{padding:8px 10px;border-bottom:1px solid #E0DED6;vertical-align:middle}
@@ -104,6 +106,15 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#F5F4F0;color:#1a
 .turma-hdr h2{font-size:16px;font-weight:600}
 .turma-stats{display:flex;gap:16px;font-size:13px;opacity:.9}
 .secao{font-size:12px;font-weight:700;color:#534AB7;text-transform:uppercase;letter-spacing:.6px;margin:1.5rem 0 8px;padding-bottom:5px;border-bottom:2px solid #EEEDFE}
+.fac-hdr{background:#185FA5;color:#fff;border-radius:10px;padding:12px 16px;margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.fac-hdr h2{font-size:16px;font-weight:600}
+.fac-box{background:#E6F0FF;border:1px solid #B5D4F4;border-radius:9px;padding:10px 14px;font-size:13px;color:#0C447C;margin-bottom:8px}
+.aval-fac-box{background:#F5F4F0;border-radius:9px;padding:1rem;margin-top:10px}
+.aval-fac-box h3{font-size:14px;font-weight:600;margin-bottom:8px}
+.info-box{background:#FFF8E6;border:1px solid #F5D98A;border-radius:9px;padding:10px 14px;font-size:13px;color:#7A4D00;margin-bottom:12px}
+/* Edição alunos */
+.edit-form{background:#fff;border:1px solid #D5D3CB;border-radius:12px;padding:1.25rem;margin-top:1rem}
+.edit-form h3{font-size:15px;font-weight:600;margin-bottom:12px;color:#534AB7}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
@@ -113,11 +124,12 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#F5F4F0;color:#1a
     <div class="badge">Agrupamento de Escolas Templários</div>
     <h1>Cidadania e Desenvolvimento</h1>
     <p>Registo e avaliação de projetos de cidadania</p>
-    <p style="font-size:10px;color:#aaa;margin-top:4px">v6</p>
+    <p style="font-size:10px;color:#aaa;margin-top:4px">v7</p>
   </div>
   <div class="tabs">
     <button class="tab active" onclick="switchTab('registo')" id="tab-registo">✏️ Alunos registam o seu projeto de cidadania</button>
     <button class="tab" onclick="switchTab('dt')" id="tab-dt">🏫 Área do Diretor de Turma</button>
+    <button class="tab" onclick="switchTab('facilitadores')" id="tab-facilitadores">🤝 Área de Facilitadores</button>
     <button class="tab" onclick="switchTab('gestao')" id="tab-gestao">🔒 Gestão</button>
     <button class="tab" onclick="switchTab('todos')" id="tab-todos">📁 Ver todos</button>
   </div>
@@ -180,7 +192,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#F5F4F0;color:#1a
           <label class="ropt" onclick="selFac(this,'outro')"><input type="radio" name="facilitador"> Outro(a), amigo(a), convidado(a) meu(minha) fora do Agrupamento</label>
         </div>
         <div id="fac-nome-f" style="display:none">
-          <p style="font-size:13px;color:#555;margin-bottom:6px">Tens à tua disposição no Agrupamento Artistas e voluntários que funcionam na sala B24.</p>
+          <p style="font-size:13px;color:#555;margin-bottom:6px">Tens também à tua disposição no Agrupamento Artistas e voluntários que funcionam na sala B24.</p>
           <input type="text" id="r-prof" placeholder="Nome completo">
         </div>
       </div>
@@ -255,6 +267,23 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#F5F4F0;color:#1a
           <div class="field"><label>Observações</label><input type="text" id="r-conv-obs" placeholder="Área de especialidade, contacto, etc."></div>
         </div>
       </div>
+
+      <div class="divider"></div>
+      <div class="stitle">Editar projeto já submetido</div>
+      <div class="box" style="background:#F0EDE8">
+        <p style="font-size:13px;color:#555;margin-bottom:10px">Se já submeteste o teu projeto e queres fazer alterações, usa o teu número de processo para o recuperar.</p>
+        <div class="g2" style="align-items:flex-end">
+          <div class="field" style="margin-bottom:0"><label>N.º de processo</label><input type="text" id="edit-proc" placeholder="Ex: 12345" oninput="this.value=this.value.replace(/\D/g,'')" inputmode="numeric"></div>
+          <div class="field" style="margin-bottom:0"><label>Turma</label>
+            <select id="edit-turma">
+              <option value="">Selecionar turma...</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn-sub" style="margin-top:10px;background:#8A4800" onclick="procurarProjeto()">🔍 Procurar projeto</button>
+        <div id="edit-resultado" style="margin-top:12px"></div>
+      </div>
+
       <button class="btn-sub" id="btn-registar" onclick="submitProjeto()">➤ Registar projeto</button>
     </div>
   </div>
@@ -282,6 +311,28 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#F5F4F0;color:#1a
     </div>
   </div>
 
+  <!-- FACILITADORES -->
+  <div id="panel-facilitadores" class="panel">
+    <div id="fac-lock" class="lock-wrap">
+      <div style="font-size:36px;margin-bottom:12px">🤝</div>
+      <h2>Área de Facilitadores</h2>
+      <p>Área para facilitadores, amigos e convidados que apoiam os projetos de Cidadania e Desenvolvimento.</p>
+      <input class="lock-input" type="password" id="fac-pwd" placeholder="Password" onkeydown="if(event.key==='Enter')loginFac()">
+      <button class="lock-btn" onclick="loginFac()">Entrar</button>
+      <div class="lock-err" id="fac-err">Password incorreta.</div>
+    </div>
+    <div id="fac-area" style="display:none">
+      <div class="fac-hdr">
+        <h2>🤝 Área de Facilitadores</h2>
+        <button onclick="logoutFac()" style="padding:6px 12px;border:1px solid rgba(255,255,255,.4);background:transparent;color:#fff;border-radius:7px;cursor:pointer;font-size:12px;font-family:inherit">Sair</button>
+      </div>
+      <div class="info-box">
+        💡 Podes consultar todos os projetos. Para assumires um projeto como facilitador, clica em <strong>Assumir projeto</strong> e preenche os teus dados. Podes depois registar feedback e avaliação de cada aluno.
+      </div>
+      <div id="fac-content"><div class="empty">⏳ A carregar...</div></div>
+    </div>
+  </div>
+
   <!-- GESTÃO -->
   <div id="panel-gestao" class="panel">
     <div id="gestao-lock" class="lock-wrap">
@@ -300,6 +351,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#F5F4F0;color:#1a
       <div class="export-bar">
         <button class="btn-exp btn-exp-g" onclick="exportProjetos()">⬇ Exportar Projetos (.xlsx)</button>
         <button class="btn-exp btn-exp-b" onclick="exportParticipacao()">⬇ Exportar Participação (.xlsx)</button>
+        <button class="btn-exp btn-exp-o" onclick="exportFacilitadores()">⬇ Exportar Facilitadores (.xlsx)</button>
       </div>
       <div id="gestao-content"><div class="empty">⏳ A carregar...</div></div>
     </div>
@@ -313,12 +365,13 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#F5F4F0;color:#1a
 
 <script>
 // ============================================================
-// CD TEMPLÁRIOS v6 — verifica se esta versão está ativa
-console.log('CD Templários v6 carregado — pickData:', typeof pickData);
+// CD TEMPLÁRIOS v7
+console.log('CD Templários v7 carregado');
 // CONFIGURAÇÕES
 // ============================================================
 var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxzNPBwQQ5nmNTRQ6XIgDwibTIx2f9dLIMOfGlRU35wbbCEOPN3Pu_VDVRxOlxB5nwn/exec';
 var PWD_GESTAO = 'templarios2027';
+var PWD_FAC    = '2000';
 var DATA_LIMITE = '2027-01-08';
 var PWD_DT = {
   '10.º A':'dt10a','10.º B':'dt10b','10.º E':'dt10e','10.º F':'dt10f',
@@ -347,6 +400,7 @@ var anoAtual = '10';
 var selDataVal = '';
 var dtTurma = null;
 var gestaoOk = false;
+var facOk = false;
 
 // ---- Util ----
 function fmtData(d){
@@ -412,6 +466,7 @@ function switchTab(t){
   if(t==='todos') carregarTodos();
   if(t==='gestao' && gestaoOk) carregarGestao();
   if(t==='dt' && dtTurma) carregarDT();
+  if(t==='facilitadores' && facOk) carregarFac();
 }
 
 // ---- Prazo ----
@@ -431,6 +486,18 @@ function verificarPrazo(){
 }
 
 // ---- Ano/turma/domínios ----
+function popularTurmasSel(selId){
+  var sel = document.getElementById(selId);
+  sel.innerHTML = '<option value="">Selecionar turma...</option>';
+  ['10','11','12'].forEach(function(ano){
+    (LETRAS[ano]||[]).forEach(function(l){
+      var o = document.createElement('option');
+      o.value = ano+'.º '+l;
+      o.textContent = ano+'.º '+l;
+      sel.appendChild(o);
+    });
+  });
+}
 function selAno(btn,ano){
   document.querySelectorAll('.ytab').forEach(function(b){ b.classList.remove('act'); });
   btn.classList.add('act'); anoAtual=ano;
@@ -545,74 +612,154 @@ function resetForm(){
   renderDoms();
 }
 
+// ---- Edição por alunos (nº processo) ----
+function procurarProjeto(){
+  var proc = document.getElementById('edit-proc').value.trim();
+  var turma = document.getElementById('edit-turma').value;
+  var res = document.getElementById('edit-resultado');
+  if(!proc){ alert('Indica o teu número de processo.'); return; }
+  if(!turma){ alert('Seleciona a tua turma.'); return; }
+  res.innerHTML = '<div style="font-size:13px;color:#888;padding:8px 0">⏳ A procurar...</div>';
+  sheetGet('getProjetos', turma, function(data){
+    var projetos = (data && data.dados) || [];
+    // encontrar projetos que contenham este aluno (precisa de getProjetoCompleto que devolver alunos)
+    // Como getProjetos devolve info resumida, enviamos para o script um pedido específico
+    sheetGet('getProjetosPorProc&proc='+encodeURIComponent(proc)+'&turma2='+encodeURIComponent(turma), '', function(res2){
+      // fallback: filtra por turma e mostra todos (aluno escolhe o seu)
+      if(!projetos.length){
+        res.innerHTML='<div style="font-size:13px;color:#888;padding:8px 0">Não foram encontrados projetos para a turma '+turma+'.</div>';
+        return;
+      }
+      renderEditarProjetos(projetos, proc, turma, res);
+    });
+  });
+}
+function renderEditarProjetos(projetos, proc, turma, container){
+  if(!projetos.length){
+    container.innerHTML='<div style="font-size:13px;color:#888;padding:8px 0">Não foram encontrados projetos para esta turma.</div>';
+    return;
+  }
+  var h='<div style="font-size:13px;font-weight:600;color:#555;margin-bottom:8px">Projetos da turma '+turma+' — identifica o teu projeto:</div>';
+  projetos.forEach(function(p){
+    h+='<div class="pcard" style="cursor:pointer;border-color:#AFA9EC" onclick="abrirEditarProjeto(\''+p.id+'\',\''+encodeURIComponent(proc)+'\',\''+encodeURIComponent(turma)+'\',\''+encodeURIComponent(p.nome||'')+'\',\''+encodeURIComponent(p.tipo||'')+'\',\''+encodeURIComponent(p.data||'')+'\',\''+encodeURIComponent(p.desc||'')+'\')">';
+    h+='<div class="ptitle">'+(p.nome||'')+'</div>';
+    h+='<div class="pmeta">'+fmtData(p.data)+(p.tipo?' · '+p.tipo:'')+'</div>';
+    h+='<div class="pmeta" style="margin-top:4px;color:#534AB7;font-size:12px">→ Clica para editar este projeto</div>';
+    h+='</div>';
+  });
+  container.innerHTML=h;
+}
+function abrirEditarProjeto(id, proc, turma, nome, tipo, data, desc){
+  proc=decodeURIComponent(proc); turma=decodeURIComponent(turma);
+  nome=decodeURIComponent(nome); tipo=decodeURIComponent(tipo);
+  data=decodeURIComponent(data); desc=decodeURIComponent(desc);
+  var container = document.getElementById('edit-resultado');
+  var h='<div class="edit-form">';
+  h+='<h3>✏️ Editar projeto: '+nome+'</h3>';
+  h+='<div style="font-size:12px;color:#888;margin-bottom:12px">ID: '+id+' · Turma: '+turma+'</div>';
+  h+='<div class="field"><label>Nome da atividade</label><input type="text" id="ed-nome" value="'+nome.replace(/"/g,'&quot;')+'"></div>';
+  h+='<div class="field"><label>Tipo de atividade</label>';
+  h+='<select id="ed-tipo"><option value="">Selecionar...</option>';
+  ['Palestra','Workshop','Jogo','Prova de orientação','Peddy paper','Escape room','Demonstração de experiências','Exposição','Debate','Artes performativas / Teatro / Dança','Outro'].forEach(function(t){
+    h+='<option'+(t===tipo?' selected':'')+'>'+t+'</option>';
+  });
+  h+='</select></div>';
+  h+='<div class="field"><label>Descrição da atividade</label><textarea id="ed-desc">'+desc+'</textarea></div>';
+  h+='<div class="field"><label>Data de realização</label><input type="text" id="ed-data" value="'+data+'"></div>';
+  h+='<div class="field"><label>Facilitador(a)</label><input type="text" id="ed-prof" placeholder="Nome do facilitador"></div>';
+  h+='<div style="display:flex;gap:10px;margin-top:12px">';
+  h+='<button class="btn-sub" style="margin-top:0" onclick="guardarEdicao(\''+id+'\',\''+encodeURIComponent(turma)+'\',\''+encodeURIComponent(proc)+'\')">💾 Guardar alterações</button>';
+  h+='<button style="padding:12px 16px;border:1px solid #C8C6BE;background:#fff;border-radius:9px;font-size:14px;cursor:pointer;font-family:inherit" onclick="document.getElementById(\'edit-resultado\').innerHTML=\'\'">Cancelar</button>';
+  h+='</div>';
+  h+='</div>';
+  container.innerHTML=h;
+}
+function guardarEdicao(id, turma, proc){
+  turma=decodeURIComponent(turma); proc=decodeURIComponent(proc);
+  var nome=document.getElementById('ed-nome').value.trim();
+  var tipo=document.getElementById('ed-tipo').value;
+  var desc=document.getElementById('ed-desc').value.trim();
+  var data=document.getElementById('ed-data').value.trim();
+  var prof=document.getElementById('ed-prof').value.trim();
+  if(!nome){ alert('O nome da atividade é obrigatório.'); return; }
+  var edicao={id:id, turma:turma, proc:proc, nome:nome, tipo:tipo, desc:desc, data:data, prof:prof};
+  var btns=document.querySelectorAll('.edit-form .btn-sub');
+  btns.forEach(function(b){b.disabled=true;b.textContent='⏳ A guardar...';});
+  sheetPost('edicaoProjeto', edicao, function(ok){
+    btns.forEach(function(b){b.disabled=false;b.textContent='💾 Guardar alterações';});
+    if(ok){
+      alert('✅ Projeto atualizado!');
+      document.getElementById('edit-resultado').innerHTML='';
+      document.getElementById('edit-proc').value='';
+      document.getElementById('edit-turma').value='';
+    } else {
+      alert('✅ Pedido enviado.\n⚠️ Verifique a ligação à Google Sheet.');
+    }
+  });
+}
+
 // ---- Export DT Excel ----
 function exportDT(){
   if(!dtTurma){ alert('Sem turma definida.'); return; }
-  var projList = [], particList = [], pending = 2;
+  var projList=[], particList=[], facList=[], pending=3;
   function checkDone(){
     pending--;
-    if(pending !== 0) return;
-
-    var scoreLabels = {1:'Insuficiente',2:'Suficiente',3:'Bom',4:'Muito Bom'};
-    var rows = [];
-
+    if(pending!==0) return;
+    var rows=[];
     projList.forEach(function(p){
-      // Get alunos from participacao if available
-      var alunosPartic = particList.filter(function(a){ return String(a.idProjeto)===String(p.id); });
-      var avaliado = p.mencao && p.mencao !== 'Por registar';
-
+      var alunosPartic=particList.filter(function(a){ return String(a.idProjeto)===String(p.id); });
+      var facRow=facList.find(function(f){ return String(f.idProjeto)===String(p.id); });
+      var facNome=facRow?facRow.nomeFac:'';
+      var facData=facRow?fmtData(facRow.dataAssumiu):'';
+      var facFeedback=facRow?facRow.feedback:'';
       if(alunosPartic.length){
-        // One row per student with participation data
         alunosPartic.forEach(function(a){
+          var facAval=facRow&&facRow.avalAlunos?facRow.avalAlunos[a.proc]||{}:{};
           rows.push({
-            'N.º Processo': a.proc || '',
-            'Nome do aluno': a.nome || '',
-            'Turma': p.turma || dtTurma,
-            'Nome do projeto': p.nome || '',
-            'Tipo de atividade': p.tipo || '',
-            'Domínios C&D': p.doms || '',
-            'Descrição do projeto': p.desc || '',
-            'Data de realização': fmtData(p.data),
-            'Facilitador(a)': p.prof || '',
-            'Parceiro / Convidado externo': p.convidado || '',
-            'Menção global': a.mencao || 'Por avaliar',
-            'Observações para certificado': a.obs || ''
+            'N.º Processo':a.proc||'',
+            'Nome do aluno':a.nome||'',
+            'Turma':p.turma||dtTurma,
+            'Nome do projeto':p.nome||'',
+            'Tipo de atividade':p.tipo||'',
+            'Domínios C&D':p.doms||'',
+            'Descrição do projeto':p.desc||'',
+            'Data de realização':fmtData(p.data),
+            'Facilitador(a)':p.prof||'',
+            'Parceiro / Convidado':p.convidado||'',
+            'Facilitador externo':facNome,
+            'Data assunção facilitador':facData,
+            'Feedback do facilitador':facFeedback,
+            'Avaliação facilitador — Menção':facAval.mencao||'',
+            'Menção global (oficial)':a.mencao||'Por avaliar',
+            'Observações para certificado':a.obs||''
           });
         });
       } else {
-        // No participation data yet - show project info only
+        var facAval={};
         rows.push({
-          'N.º Processo': '',
-          'Nome do aluno': '',
-          'Turma': p.turma || dtTurma,
-          'Nome do projeto': p.nome || '',
-          'Tipo de atividade': p.tipo || '',
-          'Domínios C&D': p.doms || '',
-          'Descrição do projeto': p.desc || '',
-          'Data de realização': fmtData(p.data),
-          'Facilitador(a)': p.prof || '',
-          'Parceiro / Convidado externo': p.convidado || '',
-          'Menção global': p.mencao && p.mencao !== 'Por registar' ? p.mencao : 'Por avaliar',
-          'Observações para certificado': ''
+          'N.º Processo':'','Nome do aluno':'',
+          'Turma':p.turma||dtTurma,'Nome do projeto':p.nome||'',
+          'Tipo de atividade':p.tipo||'','Domínios C&D':p.doms||'',
+          'Descrição do projeto':p.desc||'','Data de realização':fmtData(p.data),
+          'Facilitador(a)':p.prof||'','Parceiro / Convidado':p.convidado||'',
+          'Facilitador externo':facNome,'Data assunção facilitador':facData,
+          'Feedback do facilitador':facFeedback,
+          'Avaliação facilitador — Menção':'',
+          'Menção global (oficial)':p.mencao&&p.mencao!=='Por registar'?p.mencao:'Por avaliar',
+          'Observações para certificado':''
         });
       }
     });
-
     if(!rows.length){ alert('Não há projetos para exportar.'); return; }
-
-    var ws = XLSX.utils.json_to_sheet(rows);
-    ws['!cols'] = [
-      {wch:12},{wch:28},{wch:8},{wch:30},{wch:22},{wch:40},
-      {wch:40},{wch:16},{wch:28},{wch:30},{wch:26},{wch:40}
-    ];
-    // Style header row
-    var wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Projetos '+dtTurma);
-    XLSX.writeFile(wb, 'CD_'+dtTurma.replace(/[^a-zA-Z0-9]/g,'_')+'_projetos.xlsx');
+    var ws=XLSX.utils.json_to_sheet(rows);
+    ws['!cols']=[{wch:12},{wch:28},{wch:8},{wch:30},{wch:22},{wch:40},{wch:40},{wch:16},{wch:28},{wch:30},{wch:25},{wch:20},{wch:40},{wch:25},{wch:26},{wch:40}];
+    var wb=XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb,ws,'Projetos '+dtTurma);
+    XLSX.writeFile(wb,'CD_'+dtTurma.replace(/[^a-zA-Z0-9]/g,'_')+'_projetos.xlsx');
   }
-
-  sheetGet('getProjetos', dtTurma, function(res){ projList=(res&&res.dados)||[]; checkDone(); });
-  sheetGet('getParticipacao', dtTurma, function(res){ particList=(res&&res.dados)||[]; checkDone(); });
+  sheetGet('getProjetos',dtTurma,function(res){ projList=(res&&res.dados)||[]; checkDone(); });
+  sheetGet('getParticipacao',dtTurma,function(res){ particList=(res&&res.dados)||[]; checkDone(); });
+  sheetGet('getFacilitadores',dtTurma,function(res){ facList=(res&&res.dados)||[]; checkDone(); });
 }
 
 // ---- DT Login ----
@@ -642,17 +789,14 @@ function logoutDT(){
 function carregarDT(){
   var cont=document.getElementById('dt-content');
   cont.innerHTML='<div class="empty">⏳ A carregar dados da Google Sheet...</div>';
-  var projList=[], particList=[], pending=2;
-  function checkDone(){
-    pending--;
-    if(pending!==0) return;
-    renderDT(projList, particList);
-  }
-  sheetGet('getProjetos', dtTurma, function(res){ projList=(res&&res.dados)||[]; checkDone(); });
-  sheetGet('getParticipacao', dtTurma, function(res){ particList=(res&&res.dados)||[]; checkDone(); });
+  var projList=[], particList=[], facList=[], pending=3;
+  function checkDone(){ pending--; if(pending!==0) return; renderDT(projList,particList,facList); }
+  sheetGet('getProjetos',dtTurma,function(res){ projList=(res&&res.dados)||[]; checkDone(); });
+  sheetGet('getParticipacao',dtTurma,function(res){ particList=(res&&res.dados)||[]; checkDone(); });
+  sheetGet('getFacilitadores',dtTurma,function(res){ facList=(res&&res.dados)||[]; checkDone(); });
 }
 
-function renderDT(projList, particList){
+function renderDT(projList,particList,facList){
   var cont=document.getElementById('dt-content');
   var done=projList.filter(function(p){ return p.mencao&&p.mencao!=='Por registar'; }).length;
   document.getElementById('dt-stats').innerHTML=
@@ -667,25 +811,43 @@ function renderDT(projList, particList){
   projList.forEach(function(row){
     var avaliado=row.mencao&&row.mencao!=='Por registar';
     var pid='ev_'+row.id;
-    // get alunos from partic
     var alunosList=particList.filter(function(a){ return String(a.idProjeto)===String(row.id); });
+    var facRow=facList.find(function(f){ return String(f.idProjeto)===String(row.id); });
+
     h+='<div class="pcard">';
     h+='<div class="ph"><div>';
     h+='<div class="ptitle">'+(row.nome||'')+'</div>';
     h+='<div class="pmeta">'+fmtData(row.data)+(row.prof?' · Prof. '+row.prof:'')+'</div>';
     h+='<div class="pmeta" style="margin-top:3px"><span class="ptag">'+(row.tipo||'')+'</span></div>';
     h+='</div>';
-    h+='<span class="sbadge '+(avaliado?'sd':'sp')+'">'+(row.mencao&&row.mencao!=='Por registar'?row.mencao:'Por avaliar')+'</span>';
+    h+='<span class="sbadge '+(avaliado?'sd':'sp')+'">'+(avaliado?row.mencao:'Por avaliar')+'</span>';
     h+='</div>';
+
+    // Info facilitador externo
+    if(facRow&&facRow.nomeFac){
+      h+='<div class="fac-box" style="margin-top:8px">';
+      h+='<strong>🤝 Facilitador externo:</strong> '+facRow.nomeFac;
+      if(facRow.dataAssumiu) h+=' · Assumiu em '+fmtData(facRow.dataAssumiu);
+      if(facRow.feedback) h+='<div style="margin-top:4px"><strong>Feedback:</strong> '+facRow.feedback+'</div>';
+      h+='</div>';
+    }
+
     // alunos
     if(alunosList.length){
       h+='<div style="margin-top:8px;border-top:1px solid #E0DED6;padding-top:8px">';
       h+='<div style="font-size:11px;font-weight:600;color:#888;margin-bottom:5px;text-transform:uppercase">'+alunosList.length+' aluno(s)</div>';
       alunosList.forEach(function(a){
-        h+='<div style="font-size:12px;color:#555;padding:1px 0">'+(a.proc?'<strong>'+a.proc+'</strong> — ':'')+a.nome+'</div>';
+        // avaliação do facilitador para este aluno
+        var facAval='';
+        if(facRow&&facRow.avalAlunos&&facRow.avalAlunos[a.proc]){
+          var fa=facRow.avalAlunos[a.proc];
+          facAval=' <span class="sbadge sf" style="font-size:10px">Fac: '+(fa.mencao||'—')+'</span>';
+        }
+        h+='<div style="font-size:12px;color:#555;padding:1px 0">'+(a.proc?'<strong>'+a.proc+'</strong> — ':'')+a.nome+facAval+'</div>';
       });
       h+='</div>';
     }
+
     // desc expandível
     if(row.desc||row.doms){
       h+='<div style="margin-top:8px">';
@@ -695,10 +857,20 @@ function renderDT(projList, particList){
       if(row.doms) h+='<div style="margin-top:4px"><strong>Domínios:</strong> '+row.doms+'</div>';
       h+='</div></div>';
     }
-    // botão avaliação
+
+    // botão avaliação + opção de aceitar avaliação do facilitador
     if(!avaliado){
+      var temAvalFac=facRow&&facRow.avalGlobal;
       h+='<div style="margin-top:10px">';
-      h+='<button class="btn-aval" onclick="abrirAval(this)">📋 Avaliação</button>';
+      if(temAvalFac){
+        h+='<div class="fac-box" style="margin-top:0;margin-bottom:8px"><strong>Avaliação do facilitador:</strong> <span class="sbadge sf">'+facRow.avalGlobal+'</span>';
+        h+='<div style="margin-top:6px;display:flex;gap:8px;flex-wrap:wrap">';
+        h+='<button class="eval-save" style="font-size:12px;padding:7px 14px;margin-top:0" onclick="aceitarAvalFac(this,\''+row.id+'\',\''+encodeURIComponent(facRow.avalGlobal)+'\',\''+encodeURIComponent(facRow.obsFac||'')+'\',\''+encodeURIComponent(row.turma||dtTurma)+'\',\''+row.ano+'\',\''+encodeURIComponent(row.nome||'')+'\',\''+encodeURIComponent(row.tipo||'')+'\',\''+encodeURIComponent(row.data||'')+'\',\''+encodeURIComponent(row.prof||'')+'\',\''+row.curso+'\')">✓ Aceitar avaliação do facilitador</button>';
+        h+='<button class="btn-aval" onclick="abrirAval(this)" style="margin-top:0">✏️ Atribuir avaliação diferente</button>';
+        h+='</div></div>';
+      } else {
+        h+='<button class="btn-aval" onclick="abrirAval(this)">📋 Avaliação</button>';
+      }
       h+='</div>';
       h+='<div class="eval-box" style="display:none" data-pid="'+pid+'" data-rowid="'+row.id+'" data-nome="'+encodeURIComponent(row.nome||'')+'" data-curso="'+(row.curso||'')+'">';
       h+='<h3>Registo de participação</h3>';
@@ -739,8 +911,29 @@ function renderDT(projList, particList){
   cont.innerHTML=h;
 }
 
+function aceitarAvalFac(btn,id,mencao,obs,turma,ano,nome,tipo,data,prof,curso){
+  mencao=decodeURIComponent(mencao); obs=decodeURIComponent(obs);
+  turma=decodeURIComponent(turma); nome=decodeURIComponent(nome);
+  tipo=decodeURIComponent(tipo); data=decodeURIComponent(data); prof=decodeURIComponent(prof);
+  btn.disabled=true; btn.textContent='⏳ A guardar...';
+  var proxyProj={
+    id:id, nome:nome, tipo:tipo, turma:turma, ano:ano, data:data, prof:prof, curso:curso,
+    dominios:[], alunos:[], mats:[], turmaDT:dtTurma||'',
+    participacao:{scores:{}, obs:obs, mencao:mencao}
+  };
+  sheetPost('participacao', proxyProj, function(ok){
+    btn.disabled=false; btn.textContent='✓ Aceitar avaliação do facilitador';
+    alert(ok?'✅ Avaliação do facilitador aceite e guardada!':'✅ Guardado.\n⚠️ Verifique a ligação.');
+    carregarDT();
+  });
+}
+
 function abrirAval(btn){
-  var box=btn.parentElement.nextElementSibling;
+  var box=btn.parentElement.querySelector('.eval-box')||btn.parentElement.nextElementSibling;
+  if(!box||!box.classList.contains('eval-box')){
+    // tenta pcard pai
+    box=btn.closest('.pcard').querySelector('.eval-box');
+  }
   if(!box) return;
   box.style.display=box.style.display==='none'?'block':'none';
   btn.textContent=box.style.display==='none'?'📋 Avaliação':'🔼 Fechar avaliação';
@@ -784,6 +977,197 @@ function guardarAval(btn){
     btn.disabled=false; btn.textContent='✓ Guardar participação';
     alert(ok?'✅ Participação guardada na Google Sheet!':'✅ Participação guardada.\n⚠️ Verifique a ligação.');
     carregarDT();
+  });
+}
+
+// ---- FACILITADORES ----
+function loginFac(){
+  var pwd=document.getElementById('fac-pwd').value;
+  if(pwd===PWD_FAC){
+    facOk=true;
+    document.getElementById('fac-lock').style.display='none';
+    document.getElementById('fac-area').style.display='block';
+    carregarFac();
+  } else {
+    document.getElementById('fac-err').style.display='block';
+    document.getElementById('fac-pwd').value='';
+  }
+}
+function logoutFac(){
+  facOk=false;
+  document.getElementById('fac-area').style.display='none';
+  document.getElementById('fac-lock').style.display='block';
+  document.getElementById('fac-pwd').value='';
+  document.getElementById('fac-err').style.display='none';
+}
+
+function carregarFac(){
+  var cont=document.getElementById('fac-content');
+  cont.innerHTML='<div class="empty">⏳ A carregar projetos...</div>';
+  var projList=[], facList=[], pending=2;
+  function checkDone(){ pending--; if(pending!==0) return; renderFac(projList,facList); }
+  sheetGet('getTodos','',function(res){ projList=(res&&res.dados)||[]; checkDone(); });
+  sheetGet('getFacilitadores','',function(res){ facList=(res&&res.dados)||[]; checkDone(); });
+}
+
+function renderFac(projList, facList){
+  var cont=document.getElementById('fac-content');
+  if(!projList.length){
+    cont.innerHTML='<div class="empty">📁 Ainda não há projetos registados.</div>';
+    return;
+  }
+  var h='<div class="secao">📋 Todos os projetos (por ordem de entrada)</div>';
+  projList.forEach(function(row){
+    var facRow=facList.find(function(f){ return String(f.idProjeto)===String(row.id); });
+    var assumido=facRow&&facRow.nomeFac;
+    h+='<div class="pcard">';
+    h+='<div class="ph"><div>';
+    h+='<div class="ptitle">'+(row.nome||'')+'</div>';
+    h+='<div class="pmeta">'+fmtData(row.data)+' · '+(row.turma||'')+' · '+(row.tipo||'')+'</div>';
+    h+='</div>';
+    h+='<span class="sbadge '+(assumido?'sf':'sp')+'">'+(assumido?'Assumido':'Disponível')+'</span>';
+    h+='</div>';
+    if(assumido){
+      h+='<div class="fac-box" style="margin-top:8px"><strong>Facilitador:</strong> '+facRow.nomeFac;
+      if(facRow.dataAssumiu) h+=' · desde '+fmtData(facRow.dataAssumiu);
+      if(facRow.feedback) h+='<div style="margin-top:4px"><em>Feedback:</em> '+facRow.feedback+'</div>';
+      h+='</div>';
+    }
+    if(!assumido){
+      h+='<button class="btn-assumir" onclick="abrirAssumirFac(this,\''+row.id+'\',\''+encodeURIComponent(row.nome||'')+'\',\''+encodeURIComponent(row.turma||'')+'\')">🤝 Assumir este projeto</button>';
+    } else {
+      h+='<button class="btn-assumir" style="background:#534AB7" onclick="abrirAvalFac(this,\''+row.id+'\',\''+encodeURIComponent(row.nome||'')+'\',\''+encodeURIComponent(row.turma||'')+'\')">📋 Avaliação por aluno</button>';
+    }
+    h+='<div class="aval-fac-box" style="display:none" id="fac-box-'+row.id+'"></div>';
+    h+='</div>';
+  });
+  cont.innerHTML=h;
+}
+
+function abrirAssumirFac(btn, id, nome, turma){
+  nome=decodeURIComponent(nome); turma=decodeURIComponent(turma);
+  var box=document.getElementById('fac-box-'+id);
+  if(box.style.display!=='none'){ box.style.display='none'; return; }
+  box.style.display='block';
+  box.innerHTML='<h3 style="font-size:14px;font-weight:600;margin-bottom:10px">Assumir: '+nome+' ('+turma+')</h3>'+
+    '<div class="field"><label>O teu nome completo <span class="req">*</span></label><input type="text" id="fa-nome-'+id+'" placeholder="Nome completo do facilitador"></div>'+
+    '<div class="field"><label>Feedback sobre o projeto (opcional)</label><textarea id="fa-fb-'+id+'" placeholder="Observações, comentários sobre o projeto..."></textarea></div>'+
+    '<button class="eval-save" onclick="guardarAssumirFac(\''+id+'\',\''+encodeURIComponent(turma)+'\')">💾 Confirmar que vou facilitar este projeto</button>';
+}
+
+function guardarAssumirFac(id, turma){
+  turma=decodeURIComponent(turma);
+  var nome=document.getElementById('fa-nome-'+id).value.trim();
+  if(!nome){ alert('Indica o teu nome.'); return; }
+  var fb=document.getElementById('fa-fb-'+id).value.trim();
+  var dados={id:id, turma:turma, nomeFac:nome, feedback:fb, dataAssumiu:new Date().toISOString().split('T')[0], avalAlunos:{}, avalGlobal:''};
+  sheetPost('facilitador', dados, function(ok){
+    alert(ok?'✅ Ficaste registado como facilitador!':'✅ Registado.\n⚠️ Verifique a ligação.');
+    carregarFac();
+  });
+}
+
+function abrirAvalFac(btn, id, nome, turma){
+  nome=decodeURIComponent(nome); turma=decodeURIComponent(turma);
+  var box=document.getElementById('fac-box-'+id);
+  if(box.style.display!=='none'&&box.dataset.mode==='aval'){ box.style.display='none'; return; }
+  box.dataset.mode='aval';
+  box.style.display='block';
+  box.innerHTML='<div class="empty">⏳ A carregar alunos...</div>';
+  // carrega alunos desta turma
+  sheetGet('getParticipacao', turma, function(res){
+    var alunos=(res&&res.dados)||[];
+    // filtra por este projeto
+    var al=alunos.filter(function(a){ return String(a.idProjeto)===String(id); });
+    if(!al.length){
+      // tenta carregar projeto para ver os alunos registados
+      sheetGet('getProjetos', turma, function(res2){
+        var projs=(res2&&res2.dados)||[];
+        var proj=projs.find(function(p){ return String(p.id)===String(id); });
+        if(proj&&proj.alunos&&proj.alunos.length){
+          renderAvalFac(box, id, turma, proj.alunos, nome);
+        } else {
+          box.innerHTML='<div style="font-size:13px;color:#888">Ainda não há alunos registados para este projeto. Os alunos aparecem aqui após o Diretor de Turma os avaliar, ou aguarda que os alunos se registem.</div>';
+        }
+      });
+      return;
+    }
+    renderAvalFac(box, id, turma, al.map(function(a){ return {proc:a.proc,nome:a.nome}; }), nome);
+  });
+}
+
+function renderAvalFac(box, id, turma, alunos, projNome){
+  var h='<h3 style="font-size:14px;font-weight:600;margin-bottom:10px">Avaliação por aluno: '+projNome+'</h3>';
+  alunos.forEach(function(a, idx){
+    h+='<div style="background:#fff;border:1px solid #D5D3CB;border-radius:9px;padding:12px;margin-bottom:10px">';
+    h+='<div style="font-size:13px;font-weight:600;margin-bottom:8px">'+(a.proc?'<strong>'+a.proc+'</strong> — ':'')+a.nome+'</div>';
+    CRITERIOS.forEach(function(c){
+      h+='<div class="crit-row"><span class="crit-lbl" style="font-size:12px">'+c.l+'</span><div class="sbtns">';
+      [1,2,3,4].forEach(function(v){
+        h+='<button class="sb" data-crit="'+c.id+'" data-val="'+v+'" data-aluno="'+idx+'" onclick="setSbFac(this)">'+SCORE_L[v]+'</button>';
+      });
+      h+='</div></div>';
+    });
+    h+='<div style="margin-top:8px"><label style="font-size:12px;font-weight:500;color:#555;display:block;margin-bottom:5px">Menção global</label>';
+    h+='<div class="menc-group-fac" data-aluno="'+idx+'" style="display:flex;gap:5px;flex-wrap:wrap">';
+    MENCOES.forEach(function(m){
+      h+='<label class="ropt" style="font-size:12px" onclick="selMencFac(this)"><input type="radio"> '+m+'</label>';
+    });
+    h+='</div></div></div>';
+  });
+  h+='<div class="field" style="margin-top:8px"><label>Feedback / observações gerais (opcional)</label><textarea id="fac-obs-geral-'+id+'" placeholder="Observações sobre o grupo..."></textarea></div>';
+  h+='<div class="field"><label style="font-size:13px;font-weight:500;color:#555;display:block;margin-bottom:6px">Menção global da atividade <span class="req">*</span></label>';
+  h+='<div class="menc-group-aval" style="display:flex;gap:5px;flex-wrap:wrap">';
+  MENCOES.forEach(function(m){ h+='<label class="ropt" onclick="selMencGroup(this,\'menc-group-aval\')"><input type="radio"> '+m+'</label>'; });
+  h+='</div></div>';
+  h+='<button class="eval-save" onclick="guardarAvalFac(this,\''+id+'\',\''+encodeURIComponent(turma)+'\')">✓ Guardar avaliações</button>';
+  box.innerHTML=h;
+  box._alunos=alunos;
+}
+
+function setSbFac(btn){
+  var crit=btn.dataset.crit, alunoIdx=btn.dataset.aluno;
+  var box=btn.closest('.aval-fac-box');
+  box.querySelectorAll('.sb[data-crit="'+crit+'"][data-aluno="'+alunoIdx+'"]').forEach(function(b){ b.classList.remove('act'); });
+  btn.classList.add('act');
+}
+function selMencFac(el){
+  var grp=el.closest('.menc-group-fac');
+  grp.querySelectorAll('.ropt').forEach(function(r){ r.classList.remove('chk'); });
+  el.classList.add('chk');
+}
+function selMencGroup(el, cls){
+  var grp=el.closest('.'+cls);
+  grp.querySelectorAll('.ropt').forEach(function(r){ r.classList.remove('chk'); });
+  el.classList.add('chk');
+}
+
+function guardarAvalFac(btn, id, turma){
+  turma=decodeURIComponent(turma);
+  var box=btn.closest('.aval-fac-box');
+  var alunos=box._alunos||[];
+  var mencGlobalEl=box.querySelector('.menc-group-aval .ropt.chk');
+  if(!mencGlobalEl){ alert('Seleciona a menção global da atividade.'); return; }
+  var mencGlobal=mencGlobalEl.textContent.trim();
+  var obsFac=document.getElementById('fac-obs-geral-'+id)?document.getElementById('fac-obs-geral-'+id).value:'';
+
+  var avalAlunos={};
+  alunos.forEach(function(a, idx){
+    var mencEl=box.querySelector('.menc-group-fac[data-aluno="'+idx+'"] .ropt.chk');
+    var scores={};
+    CRITERIOS.forEach(function(c){
+      var active=box.querySelector('.sb[data-crit="'+c.id+'"][data-aluno="'+idx+'"].act');
+      scores[c.id]=active?parseInt(active.dataset.val):null;
+    });
+    avalAlunos[a.proc||String(idx)]={mencao:mencEl?mencEl.textContent.trim():'', scores:scores};
+  });
+
+  var dados={id:id, turma:turma, atualizarAval:true, avalAlunos:avalAlunos, avalGlobal:mencGlobal, obsFac:obsFac};
+  btn.disabled=true; btn.textContent='⏳ A guardar...';
+  sheetPost('facilitador', dados, function(ok){
+    btn.disabled=false; btn.textContent='✓ Guardar avaliações';
+    alert(ok?'✅ Avaliações guardadas!':'✅ Guardado.\n⚠️ Verifique a ligação.');
+    carregarFac();
   });
 }
 
@@ -851,7 +1235,6 @@ function carregarTodos(){
     h+='<div class="stat"><div class="snum">'+totAl+'</div><div class="slbl">Alunos</div></div>';
     h+='<div class="stat"><div class="snum">'+done+'</div><div class="slbl">Avaliados</div></div>';
     h+='</div>';
-    // resumo por ano
     var anos={};
     lista.forEach(function(r){
       var ano=String(r.turma||'').match(/^(\d+)/);
@@ -867,18 +1250,18 @@ function carregarTodos(){
       h+='<div class="ano-box"><div class="snum">'+d.p+'</div><div style="font-size:12px;font-weight:600;margin:2px 0">'+a+'.º ano</div><div style="font-size:11px;color:#888">'+Object.keys(d.turmas).length+' turma(s) · '+d.al+' aluno(s)</div></div>';
     });
     h+='</div>';
-    // tabela por turma
     var turmas={};
     lista.forEach(function(r){ if(!turmas[r.turma]) turmas[r.turma]=[]; turmas[r.turma].push(r); });
-    h+='<div style="overflow-x:auto"><table class="todos-tbl"><thead><tr><th>Turma</th><th>Nome da atividade</th><th>Tipo</th><th>Data</th><th style="text-align:center">Alunos</th><th>Estado</th></tr></thead><tbody>';
+    h+='<div style="overflow-x:auto"><table class="todos-tbl"><thead><tr><th>Turma</th><th>Nome da atividade</th><th>Tipo</th><th>Data</th><th style="text-align:center">Alunos</th><th>Estado</th><th>Facilitador</th></tr></thead><tbody>';
     Object.keys(turmas).sort().forEach(function(t){
       var ps=turmas[t];
       var doneT=ps.filter(function(r){ return r.mencao&&r.mencao!=='Por registar'; }).length;
-      h+='<tr class="grp-row"><td colspan="6">'+t+' — '+ps.length+' projeto(s) · '+doneT+' avaliado(s)</td></tr>';
+      h+='<tr class="grp-row"><td colspan="7">'+t+' — '+ps.length+' projeto(s) · '+doneT+' avaliado(s)</td></tr>';
       ps.forEach(function(r){
         h+='<tr><td>'+r.turma+'</td><td><strong>'+r.nome+'</strong></td><td>'+r.tipo+'</td><td>'+fmtData(r.data)+'</td>';
         h+='<td style="text-align:center"><span class="sbadge" style="background:#EEEDFE;color:#3C3489">'+r.nalunos+'</span></td>';
-        h+='<td><span class="sbadge '+(r.mencao&&r.mencao!=='Por registar'?'sd':'sp')+'">'+r.mencao+'</span></td></tr>';
+        h+='<td><span class="sbadge '+(r.mencao&&r.mencao!=='Por registar'?'sd':'sp')+'">'+r.mencao+'</span></td>';
+        h+='<td style="font-size:12px;color:#666">'+(r.nomeFac||'—')+'</td></tr>';
       });
     });
     h+='</tbody></table></div>';
@@ -891,7 +1274,7 @@ function exportProjetos(){
   sheetGet('getTodos','',function(res){
     var lista=(res&&res.dados)||[];
     if(!lista.length){ alert('Não há projetos para exportar.'); return; }
-    var rows=lista.map(function(r){ return {'Turma':r.turma,'Nome da atividade':r.nome,'Tipo':r.tipo,'Data':fmtData(r.data),'N.º alunos':r.nalunos,'Estado':r.mencao}; });
+    var rows=lista.map(function(r){ return {'Turma':r.turma,'Nome da atividade':r.nome,'Tipo':r.tipo,'Data':fmtData(r.data),'N.º alunos':r.nalunos,'Estado':r.mencao,'Facilitador externo':r.nomeFac||''}; });
     var ws=XLSX.utils.json_to_sheet(rows);
     var wb=XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb,ws,'Projetos');
@@ -909,11 +1292,21 @@ function exportParticipacao(){
     XLSX.writeFile(wb,'CD_Templarios_Participacao_2027.xlsx');
   });
 }
-
-
+function exportFacilitadores(){
+  sheetGet('getFacilitadores','',function(res){
+    var lista=(res&&res.dados)||[];
+    if(!lista.length){ alert('Não há dados de facilitadores para exportar.'); return; }
+    var rows=lista.map(function(r){ return {'ID Projeto':r.idProjeto,'Turma':r.turma,'Nome da atividade':r.nomeProjeto||'','Facilitador':r.nomeFac||'','Data assunção':fmtData(r.dataAssumiu),'Feedback':r.feedback||'','Menção global (facilitador)':r.avalGlobal||''}; });
+    var ws=XLSX.utils.json_to_sheet(rows);
+    var wb=XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb,ws,'Facilitadores');
+    XLSX.writeFile(wb,'CD_Templarios_Facilitadores_2027.xlsx');
+  });
+}
 
 // ---- Init ----
 selAno(document.querySelector('.ytab.act'), '10');
+popularTurmasSel('edit-turma');
 verificarPrazo();
 </script>
 </body>
