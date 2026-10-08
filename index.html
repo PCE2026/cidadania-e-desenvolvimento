@@ -1027,11 +1027,20 @@ function logoutFac(){
   document.getElementById('fac-err').style.display='none';
 }
 
-function carregarFac(){
+function carregarFac(tentativa){
+  tentativa=tentativa||1;
   var cont=document.getElementById('fac-content');
   cont.innerHTML='<div class="empty">⏳ A carregar projetos...</div>';
   var projList=[], facList=[], pending=2;
-  function checkDone(){ pending--; if(pending!==0) return; renderFac(projList,facList); }
+  function checkDone(){
+    pending--;
+    if(pending!==0) return;
+    if(!projList.length && tentativa<3){
+      setTimeout(function(){ carregarFac(tentativa+1); }, 1500);
+      return;
+    }
+    renderFac(projList,facList);
+  }
   sheetGet('getTodos','',function(res){ projList=(res&&res.dados)||[]; checkDone(); });
   sheetGet('getFacilitadores','',function(res){ facList=(res&&res.dados)||[]; checkDone(); });
 }
