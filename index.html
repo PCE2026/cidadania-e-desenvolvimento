@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- CD Templários 2027 — v7 -->
+<!-- CD Templários 2027 — v8 -->
 <html lang="pt">
 <head>
 <meta charset="UTF-8">
@@ -124,7 +124,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#F5F4F0;color:#1a
     <div class="badge">Agrupamento de Escolas Templários</div>
     <h1>Cidadania e Desenvolvimento</h1>
     <p>Registo e avaliação de projetos de cidadania</p>
-    <p style="font-size:10px;color:#aaa;margin-top:4px">v7</p>
+    <p style="font-size:10px;color:#aaa;margin-top:4px">v8</p>
   </div>
   <div class="tabs">
     <button class="tab active" onclick="switchTab('registo')" id="tab-registo">✏️ Alunos registam o seu projeto de cidadania</button>
@@ -366,8 +366,8 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#F5F4F0;color:#1a
 
 <script>
 // ============================================================
-// CD TEMPLÁRIOS v7
-console.log('CD Templários v7 carregado');
+// CD TEMPLÁRIOS v8
+console.log('CD Templários v8 carregado');
 // CONFIGURAÇÕES
 // ============================================================
 var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxzNPBwQQ5nmNTRQ6XIgDwibTIx2f9dLIMOfGlRU35wbbCEOPN3Pu_VDVRxOlxB5nwn/exec';
@@ -1109,25 +1109,15 @@ function abrirAvalFac(btn, id, nome, turma){
   box.dataset.mode='aval';
   box.style.display='block';
   box.innerHTML='<div class="empty">⏳ A carregar alunos...</div>';
-  // carrega alunos desta turma
-  sheetGet('getParticipacao', turma, function(res){
-    var alunos=(res&&res.dados)||[];
-    // filtra por este projeto
-    var al=alunos.filter(function(a){ return String(a.idProjeto)===String(id); });
-    if(!al.length){
-      // tenta carregar projeto para ver os alunos registados
-      sheetGet('getProjetos', turma, function(res2){
-        var projs=(res2&&res2.dados)||[];
-        var proj=projs.find(function(p){ return String(p.id)===String(id); });
-        if(proj&&proj.alunos&&proj.alunos.length){
-          renderAvalFac(box, id, turma, proj.alunos, nome);
-        } else {
-          box.innerHTML='<div style="font-size:13px;color:#888">Ainda não há alunos registados para este projeto. Os alunos aparecem aqui após o Diretor de Turma os avaliar, ou aguarda que os alunos se registem.</div>';
-        }
-      });
-      return;
+  // Carrega os alunos do projeto diretamente (não depende de o DT ter avaliado)
+  sheetGet('getProjetos', turma, function(res){
+    var projs=(res&&res.dados)||[];
+    var proj=projs.find(function(p){ return String(p.id)===String(id); });
+    if(proj&&proj.alunos&&proj.alunos.length){
+      renderAvalFac(box, id, turma, proj.alunos, nome);
+    } else {
+      box.innerHTML='<div style="font-size:13px;color:#888">Ainda não há alunos registados neste projeto.</div>';
     }
-    renderAvalFac(box, id, turma, al.map(function(a){ return {proc:a.proc,nome:a.nome}; }), nome);
   });
 }
 
