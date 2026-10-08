@@ -1136,7 +1136,7 @@ function renderAvalFac(box, id, turma, alunos, projNome){
     h+='<div style="margin-top:8px"><label style="font-size:12px;font-weight:500;color:#555;display:block;margin-bottom:5px">Menção global</label>';
     h+='<div class="menc-group-fac" data-aluno="'+idx+'" style="display:flex;gap:5px;flex-wrap:wrap">';
     MENCOES.forEach(function(m){
-      h+='<label class="ropt" style="font-size:12px" onclick="selMencFac(this)"><input type="radio"> '+m+'</label>';
+      h+='<label class="ropt" style="font-size:12px" onclick="selMencFac(this);event.preventDefault()"><input type="radio"> '+m+'</label>';
     });
     h+='</div></div></div>';
   });
