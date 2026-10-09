@@ -270,9 +270,9 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#F5F4F0;color:#1a
       <div class="field" id="r-anos-f" style="display:none"><label>Quais os anos abrangidos?</label><input type="text" id="r-anos" placeholder="Ex: 10.º e 11.º anos"></div>
 
       <div class="divider"></div>
-      <div class="stitle">Editar projeto já submetido</div>
+      <div class="stitle">Editar e acompanhar o projeto</div>
       <div class="box" style="background:#F0EDE8">
-        <p style="font-size:13px;color:#555;margin-bottom:10px">Se já submeteste o teu projeto e queres fazer alterações, usa o teu número de processo para o recuperar.</p>
+        <p style="font-size:13px;color:#555;margin-bottom:10px">Se já submeteste o teu projeto e queres fazer alterações ou ver o feedback do facilitador, usa o teu número de processo para o recuperar.</p>
         <div class="g2" style="align-items:flex-end">
           <div class="field" style="margin-bottom:0"><label>N.º de processo</label><input type="text" id="edit-proc" placeholder="Ex: 12345" oninput="this.value=this.value.replace(/\D/g,'')" inputmode="numeric"></div>
           <div class="field" style="margin-bottom:0"><label>Turma</label>
@@ -625,18 +625,23 @@ function procurarProjeto(){
   if(!proc){ alert('Indica o teu número de processo.'); return; }
   if(!turma){ alert('Seleciona a tua turma.'); return; }
   res.innerHTML = '<div style="font-size:13px;color:#888;padding:8px 0">⏳ A procurar...</div>';
+  var projetos=[], facList=[], pending=2;
+  function checkReady(){
+    pending--;
+    if(pending!==0) return;
+    if(!projetos.length){
+      res.innerHTML='<div style="font-size:13px;color:#888;padding:8px 0">Não foram encontrados projetos para a turma '+turma+'.</div>';
+      return;
+    }
+    renderEditarProjetos(projetos, proc, turma, res, facList);
+  }
   sheetGet('getProjetos', turma, function(data){
-    var projetos = (data && data.dados) || [];
-    // encontrar projetos que contenham este aluno (precisa de getProjetoCompleto que devolver alunos)
-    // Como getProjetos devolve info resumida, enviamos para o script um pedido específico
-    sheetGet('getProjetosPorProc&proc='+encodeURIComponent(proc)+'&turma2='+encodeURIComponent(turma), '', function(res2){
-      // fallback: filtra por turma e mostra todos (aluno escolhe o seu)
-      if(!projetos.length){
-        res.innerHTML='<div style="font-size:13px;color:#888;padding:8px 0">Não foram encontrados projetos para a turma '+turma+'.</div>';
-        return;
-      }
-      renderEditarProjetos(projetos, proc, turma, res);
-    });
+    projetos=(data&&data.dados)||[];
+    checkReady();
+  });
+  sheetGet('getFacilitadores', turma, function(data){
+    facList=(data&&data.dados)||[];
+    checkReady();
   });
 }
 function renderEditarProjetos(projetos, proc, turma, container){
@@ -859,7 +864,7 @@ function renderDT(projList,particList,facList){
       h+='<strong>🤝 Facilitador externo:</strong> '+facRow.nomeFac;
       if(facRow.dataAssumiu) h+=' · Assumiu em '+fmtData(facRow.dataAssumiu);
       if(facRow.feedback) h+='<div style="margin-top:4px"><strong>Feedback:</strong> '+facRow.feedback+'</div>';
-      if(facRow.obsFac) h+='<div style="margin-top:4px"><strong>Observações gerais:</strong> '+facRow.obsFac+'</div>';
+      if(facRow.obsFac) h+='<div style="margin-top:4px"><strong>Acompanhamento:</strong> '+facRow.obsFac+'</div>';
       h+='</div>';
     }
 
@@ -1070,6 +1075,7 @@ function renderFac(projList, facList){
     h+='<div class="ph"><div>';
     h+='<div class="ptitle">'+(row.nome||'')+'</div>';
     h+='<div class="pmeta">'+fmtData(row.data)+' · '+(row.turma||'')+' · '+(row.tipo||'')+'</div>';
+    if(row.email||row.telm) h+='<div class="pmeta" style="margin-top:3px">📧 '+(row.email||'—')+(row.telm?' · 📞 '+row.telm:'')+'</div>';
     h+='</div>';
     h+='<span class="sbadge '+(assumido?'sf':'sp')+'">'+(assumido?'Assumido':'Disponível')+'</span>';
     h+='</div>';
@@ -1097,7 +1103,7 @@ function abrirAssumirFac(btn, id, nome, turma){
   box.style.display='block';
   box.innerHTML='<h3 style="font-size:14px;font-weight:600;margin-bottom:10px">Assumir: '+nome+' ('+turma+')</h3>'+
     '<div class="field"><label>O teu nome completo <span class="req">*</span></label><input type="text" id="fa-nome-'+id+'" placeholder="Nome completo do facilitador"></div>'+
-    '<div class="field"><label>Feedback sobre o projeto (opcional)</label><textarea id="fa-fb-'+id+'" placeholder="Observações, comentários sobre o projeto..."></textarea></div>'+
+    '<div class="field"><label>Feedback (opcional)</label><textarea id="fa-fb-'+id+'" placeholder="Observações, comentários sobre o projeto..."></textarea></div>'+
     '<button class="eval-save" onclick="guardarAssumirFac(\''+id+'\',\''+encodeURIComponent(turma)+'\',\''+encodeURIComponent(nome)+'\')">💾 Confirmar que vou facilitar este projeto</button>';
 }
 
@@ -1170,7 +1176,7 @@ function renderAvalFac(box, id, turma, alunos, projNome, facData){
     });
     h+='</div></div></div>';
   });
-  h+='<div class="field" style="margin-top:8px"><label>Feedback / observações gerais (opcional)</label><textarea id="fac-obs-geral-'+id+'" placeholder="Observações sobre o grupo...">'+prevObs.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</textarea></div>';
+  h+='<div class="field" style="margin-top:8px"><label>Acompanhamento (opcional)</label><textarea id="fac-obs-geral-'+id+'" placeholder="Observações sobre o grupo...">'+prevObs.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</textarea></div>';
   h+='<div class="field"><label style="font-size:13px;font-weight:500;color:#555;display:block;margin-bottom:6px">Menção global da atividade <span class="req">*</span></label>';
   h+='<div class="menc-group-aval" style="display:flex;gap:5px;flex-wrap:wrap">';
   MENCOES.forEach(function(m){
