@@ -658,10 +658,24 @@ function renderEditarProjetos(projetos, proc, turma, container, facList){
     h+='<div class="pmeta">'+fmtData(p.data)+(p.tipo?' · '+p.tipo:'')+'</div>';
     // Feedback do facilitador externo (só mostra se há facilitador e tem feedback ou acompanhamento)
     if(facRow&&facRow.nomeFac&&p.facilTipo==='outro'){
-      h+='<div style="background:#E6F0FF;border:1px solid #B5D4F4;border-radius:8px;padding:10px 12px;margin-top:8px;font-size:13px;color:#0C447C">';
-      h+='<strong>🤝 '+facRow.nomeFac+'</strong>';
-      if(facRow.feedback) h+='<div style="margin-top:4px"><strong>Feedback:</strong> '+facRow.feedback+'</div>';
-      if(facRow.obsFac) h+='<div style="margin-top:4px"><strong>Acompanhamento:</strong> '+facRow.obsFac+'</div>';
+      h+='<div style="background:#E6F0FF;border:2px solid #534AB7;border-radius:10px;padding:14px 16px;margin-top:10px">';
+      h+='<div style="font-size:11px;font-weight:700;color:#534AB7;text-transform:uppercase;letter-spacing:.7px;margin-bottom:6px">🤝 O teu facilitador</div>';
+      h+='<div style="font-size:16px;font-weight:700;color:#1a1a18;margin-bottom:10px">'+facRow.nomeFac+'</div>';
+      if(facRow.feedback){
+        h+='<div style="background:#fff;border-radius:7px;padding:10px 12px;margin-bottom:8px">';
+        h+='<div style="font-size:11px;font-weight:600;color:#534AB7;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">💬 Feedback</div>';
+        h+='<div style="font-size:13px;color:#333;line-height:1.6">'+facRow.feedback+'</div>';
+        h+='</div>';
+      }
+      if(facRow.obsFac){
+        h+='<div style="background:#fff;border-radius:7px;padding:10px 12px">';
+        h+='<div style="font-size:11px;font-weight:600;color:#0F6E56;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">📋 Acompanhamento</div>';
+        h+='<div style="font-size:13px;color:#333;line-height:1.6">'+facRow.obsFac+'</div>';
+        h+='</div>';
+      }
+      if(!facRow.feedback&&!facRow.obsFac){
+        h+='<div style="font-size:13px;color:#666;font-style:italic">O facilitador ainda não deixou feedback.</div>';
+      }
       h+='</div>';
     }
     h+='<button class="btn-expand" style="margin-top:10px" onclick="abrirEditarProjeto(\''+p.id+'\',\''+encodeURIComponent(proc)+'\',\''+encodeURIComponent(turma)+'\',\''+encodeURIComponent(p.nome||'')+'\',\''+encodeURIComponent(p.tipo||'')+'\',\''+encodeURIComponent(p.data||'')+'\',\''+encodeURIComponent(p.desc||'')+'\')">✏️ Editar este projeto</button>';
