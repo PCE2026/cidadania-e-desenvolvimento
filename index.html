@@ -678,15 +678,18 @@ function renderEditarProjetos(projetos, proc, turma, container, facList){
       }
       h+='</div>';
     }
-    h+='<button class="btn-expand" style="margin-top:10px" onclick="abrirEditarProjeto(\''+p.id+'\',\''+encodeURIComponent(proc)+'\',\''+encodeURIComponent(turma)+'\',\''+encodeURIComponent(p.nome||'')+'\',\''+encodeURIComponent(p.tipo||'')+'\',\''+encodeURIComponent(p.data||'')+'\',\''+encodeURIComponent(p.desc||'')+'\')">✏️ Editar este projeto</button>';
+    h+='<button class="btn-expand" style="margin-top:10px" onclick="abrirEditarProjeto(\''+p.id+'\',\''+encodeURIComponent(proc)+'\',\''+encodeURIComponent(turma)+'\',\''+encodeURIComponent(p.nome||'')+'\',\''+encodeURIComponent(p.tipo||'')+'\',\''+encodeURIComponent(p.data||'')+'\',\''+encodeURIComponent(p.desc||'')+'\',\''+encodeURIComponent(p.prof||'')+'\',\''+encodeURIComponent(JSON.stringify(p.mats||[]))+'\')">✏️ Editar este projeto</button>';
     h+='</div>';
   });
   container.innerHTML=h;
 }
-function abrirEditarProjeto(id, proc, turma, nome, tipo, data, desc){
+function abrirEditarProjeto(id, proc, turma, nome, tipo, data, desc, prof, matsEnc){
   proc=decodeURIComponent(proc); turma=decodeURIComponent(turma);
   nome=decodeURIComponent(nome); tipo=decodeURIComponent(tipo);
   data=decodeURIComponent(data); desc=decodeURIComponent(desc);
+  prof=decodeURIComponent(prof||'');
+  var mats=[]; try{ mats=JSON.parse(decodeURIComponent(matsEnc||'[]')); }catch(e){}
+  if(!mats.length) mats=[{qt:'',prod:''}];
   var container = document.getElementById('edit-resultado');
   var h='<div class="edit-form">';
   h+='<h3>✏️ Editar projeto: '+nome+'</h3>';
@@ -699,8 +702,19 @@ function abrirEditarProjeto(id, proc, turma, nome, tipo, data, desc){
   });
   h+='</select></div>';
   h+='<div class="field"><label>Descrição da atividade</label><textarea id="ed-desc">'+desc+'</textarea></div>';
-  h+='<div class="field"><label>Data de realização</label><input type="text" id="ed-data" value="'+data+'"></div>';
-  h+='<div class="field"><label>Facilitador(a)</label><input type="text" id="ed-prof" placeholder="Nome do facilitador"></div>';
+  var dataFmt=data?data.replace(/T.*$/,''):'';
+  h+='<div class="field"><label>Data de realização</label><input type="date" id="ed-data" value="'+dataFmt+'"></div>';
+  h+='<div class="field"><label>Facilitador(a)</label><input type="text" id="ed-prof" placeholder="Nome do facilitador" value="'+prof.replace(/"/g,'&quot;')+'"></div>';
+  h+='<div class="field"><label>Materiais necessários</label>';
+  h+='<div class="box" style="padding:.75rem">';
+  h+='<table class="mat-tbl" style="margin-bottom:6px"><thead><tr><th style="width:110px">Quantidade</th><th>Produto/Material</th><th style="width:36px"></th></tr></thead>';
+  h+='<tbody id="ed-mats-list">';
+  mats.forEach(function(m){
+    h+='<tr><td><input type="text" placeholder="Ex: 30" value="'+((m.qt||'').replace(/"/g,'&quot;'))+'"></td><td><input type="text" placeholder="Ex: Folhas A4" value="'+((m.prod||'').replace(/"/g,'&quot;'))+'"></td><td><button class="btn-rm" onclick="rmEdMat(this)">✕</button></td></tr>';
+  });
+  h+='</tbody></table>';
+  h+='<button class="btn-add" onclick="addEdMat()">+ Adicionar material</button>';
+  h+='</div></div>';
   h+='<div class="field"><label>Acrescentar colegas ao grupo</label>';
   h+='<div class="box" style="padding:.75rem">';
   h+='<div id="ed-alunos-list">';
@@ -714,6 +728,16 @@ function abrirEditarProjeto(id, proc, turma, nome, tipo, data, desc){
   h+='</div>';
   h+='</div>';
   container.innerHTML=h;
+}
+function addEdMat(){
+  var list=document.getElementById('ed-mats-list');
+  var tr=document.createElement('tr');
+  tr.innerHTML='<td><input type="text" placeholder="Ex: 30"></td><td><input type="text" placeholder="Ex: Folhas A4"></td><td><button class="btn-rm" onclick="rmEdMat(this)">✕</button></td>';
+  list.appendChild(tr);
+}
+function rmEdMat(btn){
+  var list=document.getElementById('ed-mats-list');
+  if(list.querySelectorAll('tr').length>1) btn.closest('tr').remove();
 }
 function addEdAluno(){
   var list=document.getElementById('ed-alunos-list');
@@ -734,6 +758,14 @@ function guardarEdicao(id, turma, proc){
   var data=document.getElementById('ed-data').value.trim();
   var prof=document.getElementById('ed-prof').value.trim();
   if(!nome){ alert('O nome da atividade é obrigatório.'); return; }
+  // Recolher materiais
+  var mats=[];
+  document.querySelectorAll('#ed-mats-list tr').forEach(function(tr){
+    var inputs=tr.querySelectorAll('input');
+    var qt=(inputs[0]?inputs[0].value.trim():'');
+    var prod=(inputs[1]?inputs[1].value.trim():'');
+    if(qt||prod) mats.push({qt:qt,prod:prod});
+  });
   // Recolher colegas novos (só os preenchidos)
   var novosAlunos=[];
   document.querySelectorAll('#ed-alunos-list .arow').forEach(function(row){
@@ -741,7 +773,7 @@ function guardarEdicao(id, turma, proc){
     var n=row.querySelector('[data-f="nome"]').value.trim();
     if(p||n) novosAlunos.push({proc:p,nome:n});
   });
-  var edicao={id:id, turma:turma, proc:proc, nome:nome, tipo:tipo, desc:desc, data:data, prof:prof, novosAlunos:novosAlunos};
+  var edicao={id:id, turma:turma, proc:proc, nome:nome, tipo:tipo, desc:desc, data:data, prof:prof, mats:mats, novosAlunos:novosAlunos};
   var btns=document.querySelectorAll('.edit-form .btn-sub');
   btns.forEach(function(b){b.disabled=true;b.textContent='⏳ A guardar...';});
   sheetPost('edicaoProjeto', edicao, function(ok){
