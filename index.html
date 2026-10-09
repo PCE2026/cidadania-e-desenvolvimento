@@ -1346,6 +1346,70 @@ function carregarGestao(){
       });
     });
     h+='</tbody></table></div>';
+
+    // ---- Lista de materiais ----
+    var comMats=lista.filter(function(r){ return r.mats&&r.mats.length&&r.mats.some(function(m){ return m.prod; }); });
+    if(comMats.length){
+      h+='<div class="secao" style="margin-top:2rem">📦 Materiais solicitados por projeto</div>';
+      h+='<div style="overflow-x:auto"><table class="todos-tbl"><thead><tr><th>Ano</th><th>Turma</th><th>Nome da atividade</th><th>Data</th><th>Contactos</th><th>Materiais</th></tr></thead><tbody>';
+      comMats.forEach(function(r){
+        var matStr=r.mats.filter(function(m){ return m.prod; }).map(function(m){ return (m.qt?m.qt+'× ':'')+m.prod; }).join(', ');
+        var contactos=(r.email||'')+(r.telm?' · '+r.telm:'');
+        var ano=String(r.turma||'').match(/^(\d+)/); ano=ano?ano[1]+'º':'?';
+        h+='<tr><td>'+ano+'</td><td>'+r.turma+'</td><td><strong>'+r.nome+'</strong></td><td>'+fmtData(r.data)+'</td><td style="font-size:12px">'+contactos+'</td><td style="font-size:12px">'+matStr+'</td></tr>';
+      });
+      h+='</tbody></table></div>';
+
+      // ---- Lista de compras por loja ----
+      var LOJAS={
+        'Papelaria':['papel','folha','cartolina','cartão','caneta','lápis','marcador','tesoura','cola','fita','post-it','caderno','pasta','envelope','impressão','tinta','brush','pincel','régua','compasso','borracha','afia','clip','agrafador','agrafos','elástico','capa','dossier','arquivo','bloco','etiqueta','autocolante','plástico','acetato','separador','índice','mapa','poster','cartaz'],
+        'Mercearia / Alimentar':['água','sumo','café','chá','açúcar','sal','azeite','vinagre','farinha','arroz','massa','feijão','grão','lentilha','atum','sardinha','tomate','cebola','alho','batata','fruta','legume','iogurte','leite','manteiga','queijo','fiambre','pão','bolacha','chocolate','bolinha','snack','saco','copo','prato descartável','guardanapo','palha','detergente','esponja','lixívia'],
+        'Talho / Peixaria':['carne','frango','peru','porco','vaca','bife','costeleta','peixe','bacalhau','salmão','atum fresco','camarão','lula','polvo'],
+        'Farmácia / Saúde':['luva','máscara','penso','ligadura','álcool','gel','desinfetante','termómetro','compressa','seringa','creme','pomada'],
+        'Bricolage / Ferragens':['parafuso','prego','martelo','fita métrica','lixa','madeira','tábua','tinta parede','rolo','pincel grande','cola pistola','pistola cola','extensão','pilha','bateria','led','cabo','fio','placa','esferovite','foam','cartão canelado'],
+        'Outros / A confirmar':[]
+      };
+      function categorizarMaterial(prod){
+        var p=(prod||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+        for(var loja in LOJAS){
+          if(loja==='Outros / A confirmar') continue;
+          var palavras=LOJAS[loja];
+          for(var i=0;i<palavras.length;i++){
+            if(p.indexOf(palavras[i])>=0) return loja;
+          }
+        }
+        return 'Outros / A confirmar';
+      }
+      var lojaMap={};
+      comMats.forEach(function(r){
+        r.mats.filter(function(m){ return m.prod; }).forEach(function(m){
+          var loja=categorizarMaterial(m.prod);
+          if(!lojaMap[loja]) lojaMap[loja]=[];
+          lojaMap[loja].push({qt:m.qt,prod:m.prod,atividade:r.nome,turma:r.turma});
+        });
+      });
+      var ordemLojas=['Papelaria','Mercearia / Alimentar','Talho / Peixaria','Farmácia / Saúde','Bricolage / Ferragens','Outros / A confirmar'];
+      var temLojas=ordemLojas.filter(function(l){ return lojaMap[l]&&lojaMap[l].length; });
+      if(temLojas.length){
+        h+='<div class="secao" style="margin-top:2rem">🛒 Lista de compras por loja</div>';
+        temLojas.forEach(function(loja){
+          var emoji={'Papelaria':'🖊️','Mercearia / Alimentar':'🛍️','Talho / Peixaria':'🥩','Farmácia / Saúde':'💊','Bricolage / Ferragens':'🔧','Outros / A confirmar':'❓'}[loja]||'📦';
+          var isConf=loja==='Outros / A confirmar';
+          h+='<div style="margin-bottom:1rem">';
+          h+='<div style="font-size:13px;font-weight:700;color:'+(isConf?'#A35C00':'#1a1a18')+';margin-bottom:6px;padding:6px 10px;background:'+(isConf?'#FFF4E0':'#F0EDE8')+';border-radius:7px">'+emoji+' '+loja+(isConf?' — verificar categoria':'' )+'</div>';
+          h+='<div style="overflow-x:auto"><table class="todos-tbl"><thead><tr><th>Quantidade</th><th>Material</th><th>Projeto</th><th>Turma</th></tr></thead><tbody>';
+          lojaMap[loja].forEach(function(item){
+            h+='<tr'+(isConf?' style="background:#FFFBF0"':'')+'>'+
+               '<td>'+(item.qt||'—')+'</td>'+
+               '<td><strong>'+item.prod+'</strong></td>'+
+               '<td style="font-size:12px">'+item.atividade+'</td>'+
+               '<td style="font-size:12px">'+item.turma+'</td></tr>';
+          });
+          h+='</tbody></table></div></div>';
+        });
+      }
+    }
+
     cont.innerHTML=h;
   });
 }
