@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- CD Templários 2027 — v11 -->
+<!-- CD Templários 2027 — v13 -->
 <html lang="pt">
 <head>
 <meta charset="UTF-8">
@@ -189,7 +189,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#F5F4F0;color:#1a
         <div class="rgroup" id="fac-group" style="margin-bottom:10px">
           <label class="ropt" onclick="selFac(this,'dt')"><input type="radio" name="facilitador"> Diretor(a) de Turma</label>
           <label class="ropt" onclick="selFac(this,'prof')"><input type="radio" name="facilitador"> Outro(a) professor(a) da turma</label>
-          <label class="ropt" onclick="selFac(this,'outro')"><input type="radio" name="facilitador"> Outro(a), amigo(a), convidado(a) meu(minha) fora do Agrupamento</label>
+          <label class="ropt" onclick="selFac(this,'outro')"><input type="radio" name="facilitador"> Facilitador fora do Conselho de Turma</label>
         </div>
         <div id="fac-nome-f" style="display:none">
           <p style="font-size:13px;color:#555;margin-bottom:6px">Tens também à tua disposição no Agrupamento Artistas e voluntários que funcionam na sala B24.</p>
@@ -644,17 +644,27 @@ function procurarProjeto(){
     checkReady();
   });
 }
-function renderEditarProjetos(projetos, proc, turma, container){
+function renderEditarProjetos(projetos, proc, turma, container, facList){
+  facList=facList||[];
   if(!projetos.length){
     container.innerHTML='<div style="font-size:13px;color:#888;padding:8px 0">Não foram encontrados projetos para esta turma.</div>';
     return;
   }
   var h='<div style="font-size:13px;font-weight:600;color:#555;margin-bottom:8px">Projetos da turma '+turma+' — identifica o teu projeto:</div>';
   projetos.forEach(function(p){
-    h+='<div class="pcard" style="cursor:pointer;border-color:#AFA9EC" onclick="abrirEditarProjeto(\''+p.id+'\',\''+encodeURIComponent(proc)+'\',\''+encodeURIComponent(turma)+'\',\''+encodeURIComponent(p.nome||'')+'\',\''+encodeURIComponent(p.tipo||'')+'\',\''+encodeURIComponent(p.data||'')+'\',\''+encodeURIComponent(p.desc||'')+'\')">';
+    var facRow=facList.find(function(f){ return String(f.idProjeto)===String(p.id); });
+    h+='<div class="pcard" style="border-color:#AFA9EC">';
     h+='<div class="ptitle">'+(p.nome||'')+'</div>';
     h+='<div class="pmeta">'+fmtData(p.data)+(p.tipo?' · '+p.tipo:'')+'</div>';
-    h+='<div class="pmeta" style="margin-top:4px;color:#534AB7;font-size:12px">→ Clica para editar este projeto</div>';
+    // Feedback do facilitador externo (só mostra se há facilitador e tem feedback ou acompanhamento)
+    if(facRow&&facRow.nomeFac&&p.facilTipo==='outro'){
+      h+='<div style="background:#E6F0FF;border:1px solid #B5D4F4;border-radius:8px;padding:10px 12px;margin-top:8px;font-size:13px;color:#0C447C">';
+      h+='<strong>🤝 '+facRow.nomeFac+'</strong>';
+      if(facRow.feedback) h+='<div style="margin-top:4px"><strong>Feedback:</strong> '+facRow.feedback+'</div>';
+      if(facRow.obsFac) h+='<div style="margin-top:4px"><strong>Acompanhamento:</strong> '+facRow.obsFac+'</div>';
+      h+='</div>';
+    }
+    h+='<button class="btn-expand" style="margin-top:10px" onclick="abrirEditarProjeto(\''+p.id+'\',\''+encodeURIComponent(proc)+'\',\''+encodeURIComponent(turma)+'\',\''+encodeURIComponent(p.nome||'')+'\',\''+encodeURIComponent(p.tipo||'')+'\',\''+encodeURIComponent(p.data||'')+'\',\''+encodeURIComponent(p.desc||'')+'\')">✏️ Editar este projeto</button>';
     h+='</div>';
   });
   container.innerHTML=h;
