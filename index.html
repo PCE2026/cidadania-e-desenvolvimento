@@ -1143,7 +1143,7 @@ function renderFac(projList, facList){
       h+='</div>';
     }
     if(!assumido){
-      h+='<button class="btn-assumir" onclick="abrirAssumirFac(this,\''+row.id+'\',\''+encodeURIComponent(row.nome||'')+'\',\''+encodeURIComponent(row.turma||'')+'\')">🤝 Assumir este projeto</button>';
+      h+='<button class="btn-assumir" onclick="abrirAssumirFac(this,\''+row.id+'\',\''+encodeURIComponent(row.nome||'')+'\',\''+encodeURIComponent(row.turma||'')+'\',\''+encodeURIComponent(row.desc||'')+'\')">🤝 Assumir este projeto</button>';
     } else {
       h+='<button class="btn-assumir" style="background:#534AB7" onclick="abrirAvalFac(this,\''+row.id+'\',\''+encodeURIComponent(row.nome||'')+'\',\''+encodeURIComponent(row.turma||'')+'\')">📋 Avaliação por aluno</button>';
     }
@@ -1153,15 +1153,23 @@ function renderFac(projList, facList){
   cont.innerHTML=h;
 }
 
-function abrirAssumirFac(btn, id, nome, turma){
+function abrirAssumirFac(btn, id, nome, turma, descEnc){
   nome=decodeURIComponent(nome); turma=decodeURIComponent(turma);
+  var desc=decodeURIComponent(descEnc||'');
   var box=document.getElementById('fac-box-'+id);
   if(box.style.display!=='none'){ box.style.display='none'; return; }
   box.style.display='block';
-  box.innerHTML='<h3 style="font-size:14px;font-weight:600;margin-bottom:10px">Assumir: '+nome+' ('+turma+')</h3>'+
-    '<div class="field"><label>O teu nome completo <span class="req">*</span></label><input type="text" id="fa-nome-'+id+'" placeholder="Nome completo do facilitador"></div>'+
-    '<div class="field"><label>Feedback (opcional)</label><textarea id="fa-fb-'+id+'" placeholder="Observações, comentários sobre o projeto..."></textarea></div>'+
-    '<button class="eval-save" onclick="guardarAssumirFac(\''+id+'\',\''+encodeURIComponent(turma)+'\',\''+encodeURIComponent(nome)+'\')">💾 Confirmar que vou facilitar este projeto</button>';
+  var h='';
+  h+='<div style="margin-bottom:12px">';
+  h+='<div style="font-size:12px;font-weight:700;color:#534AB7;text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px">📌 Projeto</div>';
+  h+='<div style="font-size:15px;font-weight:600;color:#1a1a18;margin-bottom:2px">'+nome+'</div>';
+  h+='<div style="font-size:12px;color:#888;margin-bottom:'+(desc?'8px':'0px')+'">'+turma+'</div>';
+  if(desc) h+='<div style="font-size:13px;color:#444;line-height:1.6;background:#F5F4F0;border-radius:7px;padding:8px 10px">'+desc+'</div>';
+  h+='</div>';
+  h+='<div class="field"><label>O teu nome completo <span class="req">*</span></label><input type="text" id="fa-nome-'+id+'" placeholder="Nome completo do facilitador"></div>';
+  h+='<div class="field"><label>Feedback (opcional)</label><textarea id="fa-fb-'+id+'" placeholder="Observações, comentários sobre o projeto..."></textarea></div>';
+  h+='<button class="eval-save" onclick="guardarAssumirFac(\''+id+'\',\''+encodeURIComponent(turma)+'\',\''+encodeURIComponent(nome)+'\')">💾 Confirmar que vou facilitar este projeto</button>';
+  box.innerHTML=h;
 }
 
 function guardarAssumirFac(id, turma, nomeAtiv){
