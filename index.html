@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- CD Templários 2027 — v8 -->
+<!-- CD Templários 2027 — v9 -->
 <html lang="pt">
 <head>
 <meta charset="UTF-8">
@@ -583,9 +583,13 @@ function submitProjeto(){
   }
   var btn=document.getElementById('btn-registar');
   btn.disabled=true; btn.textContent='⏳ A registar...';
+  var facTipoEl=document.querySelector('#fac-group .ropt.chk input[type="radio"]');
+  var facTipoLabel=facTipoEl?facTipoEl.closest('.ropt').textContent.trim():'';
+  var facilTipo=facTipoLabel.indexOf('Diretor')>=0?'dt':(facTipoLabel.indexOf('professor')>=0?'prof':'outro');
   var proj={
     id:Date.now(), nome:nome, tipo:tipo, turma:turma, desc:desc, curso:curso,
     ano:anoAtual, data:data, prof:document.getElementById('r-prof').value.trim(),
+    facilTipo:facilTipo,
     contactoEmail:email, contactoTelm:telm, alunos:alunos, mats:getMats(),
     espaco:document.getElementById('r-espaco').value,
     espacoDet:document.getElementById('r-espaco-det').value.trim(),
@@ -1047,11 +1051,17 @@ function carregarFac(tentativa){
 
 function renderFac(projList, facList){
   var cont=document.getElementById('fac-content');
+  // Só mostrar projetos cujo facilTipo é 'outro' (facilitador externo)
+  // Registos antigos sem facilTipo: mostrar apenas se prof não é DT
+  projList=projList.filter(function(row){
+    if(row.facilTipo) return row.facilTipo==='outro';
+    return row.prof!=='Diretor(a) de Turma';
+  });
   if(!projList.length){
-    cont.innerHTML='<div class="empty">📁 Ainda não há projetos registados.</div>';
+    cont.innerHTML='<div class="empty">📁 Não há projetos disponíveis para facilitadores externos.</div>';
     return;
   }
-  var h='<div class="secao">📋 Todos os projetos (por ordem de entrada)</div>';
+  var h='<div class="secao">📋 Projetos com facilitador externo (por ordem de entrada)</div>';
   projList.forEach(function(row){
     var facRow=facList.find(function(f){ return String(f.idProjeto)===String(row.id); });
     var assumido=facRow&&facRow.nomeFac;
