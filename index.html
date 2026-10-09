@@ -657,7 +657,8 @@ function renderEditarProjetos(projetos, proc, turma, container, facList){
     h+='<div class="ptitle">'+(p.nome||'')+'</div>';
     h+='<div class="pmeta">'+fmtData(p.data)+(p.tipo?' · '+p.tipo:'')+'</div>';
     // Feedback do facilitador externo (só mostra se há facilitador e tem feedback ou acompanhamento)
-    if(facRow&&facRow.nomeFac&&p.facilTipo==='outro'){
+    var isExterno=p.facilTipo?p.facilTipo==='outro':(p.prof!=='Diretor(a) de Turma');
+    if(facRow&&facRow.nomeFac&&isExterno){
       h+='<div style="background:#E6F0FF;border:2px solid #534AB7;border-radius:10px;padding:14px 16px;margin-top:10px">';
       h+='<div style="font-size:11px;font-weight:700;color:#534AB7;text-transform:uppercase;letter-spacing:.7px;margin-bottom:6px">🤝 O teu facilitador</div>';
       h+='<div style="font-size:16px;font-weight:700;color:#1a1a18;margin-bottom:10px">'+facRow.nomeFac+'</div>';
