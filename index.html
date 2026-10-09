@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- CD Templários 2027 — v9 -->
+<!-- CD Templários 2027 — v11 -->
 <html lang="pt">
 <head>
 <meta charset="UTF-8">
@@ -859,6 +859,7 @@ function renderDT(projList,particList,facList){
       h+='<strong>🤝 Facilitador externo:</strong> '+facRow.nomeFac;
       if(facRow.dataAssumiu) h+=' · Assumiu em '+fmtData(facRow.dataAssumiu);
       if(facRow.feedback) h+='<div style="margin-top:4px"><strong>Feedback:</strong> '+facRow.feedback+'</div>';
+      if(facRow.obsFac) h+='<div style="margin-top:4px"><strong>Observações gerais:</strong> '+facRow.obsFac+'</div>';
       h+='</div>';
     }
 
@@ -1097,15 +1098,16 @@ function abrirAssumirFac(btn, id, nome, turma){
   box.innerHTML='<h3 style="font-size:14px;font-weight:600;margin-bottom:10px">Assumir: '+nome+' ('+turma+')</h3>'+
     '<div class="field"><label>O teu nome completo <span class="req">*</span></label><input type="text" id="fa-nome-'+id+'" placeholder="Nome completo do facilitador"></div>'+
     '<div class="field"><label>Feedback sobre o projeto (opcional)</label><textarea id="fa-fb-'+id+'" placeholder="Observações, comentários sobre o projeto..."></textarea></div>'+
-    '<button class="eval-save" onclick="guardarAssumirFac(\''+id+'\',\''+encodeURIComponent(turma)+'\')">💾 Confirmar que vou facilitar este projeto</button>';
+    '<button class="eval-save" onclick="guardarAssumirFac(\''+id+'\',\''+encodeURIComponent(turma)+'\',\''+encodeURIComponent(nome)+'\')">💾 Confirmar que vou facilitar este projeto</button>';
 }
 
-function guardarAssumirFac(id, turma){
+function guardarAssumirFac(id, turma, nomeAtiv){
   turma=decodeURIComponent(turma);
-  var nome=document.getElementById('fa-nome-'+id).value.trim();
-  if(!nome){ alert('Indica o teu nome.'); return; }
+  nomeAtiv=decodeURIComponent(nomeAtiv||'');
+  var nomeFac=document.getElementById('fa-nome-'+id).value.trim();
+  if(!nomeFac){ alert('Indica o teu nome.'); return; }
   var fb=document.getElementById('fa-fb-'+id).value.trim();
-  var dados={id:id, turma:turma, nomeFac:nome, feedback:fb, dataAssumiu:new Date().toISOString().split('T')[0], avalAlunos:{}, avalGlobal:''};
+  var dados={id:id, turma:turma, nome:nomeAtiv, nomeFac:nomeFac, feedback:fb, dataAssumiu:new Date().toISOString().split('T')[0], avalAlunos:{}, avalGlobal:''};
   sheetPost('facilitador', dados, function(ok){
     alert(ok?'✅ Ficaste registado como facilitador!':'✅ Registado.\n⚠️ Verifique a ligação.');
     carregarFac();
@@ -1119,41 +1121,62 @@ function abrirAvalFac(btn, id, nome, turma){
   box.dataset.mode='aval';
   box.style.display='block';
   box.innerHTML='<div class="empty">⏳ A carregar alunos...</div>';
-  // Carrega os alunos do projeto diretamente (não depende de o DT ter avaliado)
-  sheetGet('getProjetos', turma, function(res){
-    var projs=(res&&res.dados)||[];
-    var proj=projs.find(function(p){ return String(p.id)===String(id); });
-    if(proj&&proj.alunos&&proj.alunos.length){
-      renderAvalFac(box, id, turma, proj.alunos, nome);
+  // Carrega alunos e avaliação já guardada em paralelo
+  var projData=null, facData=null, pending=2;
+  function checkReady(){
+    pending--;
+    if(pending!==0) return;
+    if(projData&&projData.alunos&&projData.alunos.length){
+      renderAvalFac(box, id, turma, projData.alunos, nome, facData);
     } else {
       box.innerHTML='<div style="font-size:13px;color:#888">Ainda não há alunos registados neste projeto.</div>';
     }
+  }
+  sheetGet('getProjetos', turma, function(res){
+    var projs=(res&&res.dados)||[];
+    projData=projs.find(function(p){ return String(p.id)===String(id); })||null;
+    checkReady();
+  });
+  sheetGet('getFacilitadores', turma, function(res){
+    var facs=(res&&res.dados)||[];
+    facData=facs.find(function(f){ return String(f.idProjeto)===String(id); })||null;
+    checkReady();
   });
 }
 
-function renderAvalFac(box, id, turma, alunos, projNome){
+function renderAvalFac(box, id, turma, alunos, projNome, facData){
+  var prevAval=(facData&&facData.avalAlunos)||{};
+  var prevGlobal=(facData&&facData.avalGlobal)||'';
+  var prevObs=(facData&&facData.obsFac)||'';
   var h='<h3 style="font-size:14px;font-weight:600;margin-bottom:10px">Avaliação por aluno: '+projNome+'</h3>';
   alunos.forEach(function(a, idx){
+    var key=a.proc||String(idx);
+    var prev=prevAval[key]||{};
     h+='<div style="background:#fff;border:1px solid #D5D3CB;border-radius:9px;padding:12px;margin-bottom:10px">';
     h+='<div style="font-size:13px;font-weight:600;margin-bottom:8px">'+(a.proc?'<strong>'+a.proc+'</strong> — ':'')+a.nome+'</div>';
     CRITERIOS.forEach(function(c){
       h+='<div class="crit-row"><span class="crit-lbl" style="font-size:12px">'+c.l+'</span><div class="sbtns">';
       [1,2,3,4].forEach(function(v){
-        h+='<button class="sb" data-crit="'+c.id+'" data-val="'+v+'" data-aluno="'+idx+'" onclick="setSbFac(this)">'+SCORE_L[v]+'</button>';
+        var act=(prev.scores&&prev.scores[c.id]===v)?' act':'';
+        h+='<button class="sb'+act+'" data-crit="'+c.id+'" data-val="'+v+'" data-aluno="'+idx+'" onclick="setSbFac(this)">'+SCORE_L[v]+'</button>';
       });
       h+='</div></div>';
     });
     h+='<div style="margin-top:8px"><label style="font-size:12px;font-weight:500;color:#555;display:block;margin-bottom:5px">Menção global</label>';
     h+='<div class="menc-group-fac" data-aluno="'+idx+'" style="display:flex;gap:5px;flex-wrap:wrap">';
     MENCOES.forEach(function(m){
-      h+='<label class="ropt" style="font-size:12px" onclick="selMencFac(this);event.preventDefault()"><input type="radio"> '+m+'</label>';
+      var chk=(prev.mencao===m)?' chk':'';
+      h+='<label class="ropt'+chk+'" style="font-size:12px" onclick="selMencFac(this);event.preventDefault()"><input type="radio"> '+m+'</label>';
     });
     h+='</div></div></div>';
   });
-  h+='<div class="field" style="margin-top:8px"><label>Feedback / observações gerais (opcional)</label><textarea id="fac-obs-geral-'+id+'" placeholder="Observações sobre o grupo..."></textarea></div>';
+  h+='<div class="field" style="margin-top:8px"><label>Feedback / observações gerais (opcional)</label><textarea id="fac-obs-geral-'+id+'" placeholder="Observações sobre o grupo...">'+prevObs.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</textarea></div>';
   h+='<div class="field"><label style="font-size:13px;font-weight:500;color:#555;display:block;margin-bottom:6px">Menção global da atividade <span class="req">*</span></label>';
   h+='<div class="menc-group-aval" style="display:flex;gap:5px;flex-wrap:wrap">';
-  MENCOES.forEach(function(m){ h+='<label class="ropt" onclick="selMencGroup(this,\'menc-group-aval\');event.preventDefault()"><input type="radio"> '+m+'</label>'; });
+  MENCOES.forEach(function(m){
+    var chk=(prevGlobal===m)?' chk':'';
+    h+='<label class="ropt'+chk+'" onclick="selMencGroup(this,\'menc-group-aval\');event.preventDefault()"><input type="radio"> '+m+'</label>';
+  });
   h+='</div></div>';
   h+='<button class="eval-save" onclick="guardarAvalFac(this,\''+id+'\',\''+encodeURIComponent(turma)+'\')">✓ Guardar avaliações</button>';
   box.innerHTML=h;
