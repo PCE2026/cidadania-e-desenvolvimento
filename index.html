@@ -1143,7 +1143,7 @@ function renderAvalFac(box, id, turma, alunos, projNome){
   h+='<div class="field" style="margin-top:8px"><label>Feedback / observações gerais (opcional)</label><textarea id="fac-obs-geral-'+id+'" placeholder="Observações sobre o grupo..."></textarea></div>';
   h+='<div class="field"><label style="font-size:13px;font-weight:500;color:#555;display:block;margin-bottom:6px">Menção global da atividade <span class="req">*</span></label>';
   h+='<div class="menc-group-aval" style="display:flex;gap:5px;flex-wrap:wrap">';
-  MENCOES.forEach(function(m){ h+='<label class="ropt" onclick="selMencGroup(this,\'menc-group-aval\')"><input type="radio"> '+m+'</label>'; });
+  MENCOES.forEach(function(m){ h+='<label class="ropt" onclick="selMencGroup(this,\'menc-group-aval\');event.preventDefault()"><input type="radio"> '+m+'</label>'; });
   h+='</div></div>';
   h+='<button class="eval-save" onclick="guardarAvalFac(this,\''+id+'\',\''+encodeURIComponent(turma)+'\')">✓ Guardar avaliações</button>';
   box.innerHTML=h;
