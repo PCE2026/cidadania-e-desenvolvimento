@@ -925,19 +925,33 @@ function renderDT(projList,particList,facList){
       h+='</div>';
     }
 
-    // alunos
-    if(alunosList.length){
+    // alunos registados no projeto
+    var regAlunos=row.alunos||[];
+    if(regAlunos.length||alunosList.length){
       h+='<div style="margin-top:8px;border-top:1px solid #E0DED6;padding-top:8px">';
-      h+='<div style="font-size:11px;font-weight:600;color:#888;margin-bottom:5px;text-transform:uppercase">'+alunosList.length+' aluno(s)</div>';
-      alunosList.forEach(function(a){
-        // avaliação do facilitador para este aluno
-        var facAval='';
-        if(facRow&&facRow.avalAlunos&&facRow.avalAlunos[a.proc]){
-          var fa=facRow.avalAlunos[a.proc];
-          facAval=' <span class="sbadge sf" style="font-size:10px">Fac: '+(fa.mencao||'—')+'</span>';
-        }
-        h+='<div style="font-size:12px;color:#555;padding:1px 0">'+(a.proc?'<strong>'+a.proc+'</strong> — ':'')+a.nome+facAval+'</div>';
-      });
+      if(regAlunos.length){
+        h+='<div style="font-size:11px;font-weight:600;color:#888;margin-bottom:5px;text-transform:uppercase">'+regAlunos.length+' aluno(s) registado(s)</div>';
+        regAlunos.forEach(function(a){
+          var particA=alunosList.find(function(p){ return String(p.proc)===String(a.proc); });
+          var facAval='';
+          if(facRow&&facRow.avalAlunos&&facRow.avalAlunos[a.proc]){
+            var fa=facRow.avalAlunos[a.proc];
+            facAval=' <span class="sbadge sf" style="font-size:10px">Fac: '+(fa.mencao||'—')+'</span>';
+          }
+          var avalBadge=particA?' <span class="sbadge sd" style="font-size:10px">'+particA.mencao+'</span>':'';
+          h+='<div style="font-size:12px;color:#555;padding:1px 0">'+(a.proc?'<strong>'+a.proc+'</strong> — ':'')+a.nome+avalBadge+facAval+'</div>';
+        });
+      } else if(alunosList.length){
+        h+='<div style="font-size:11px;font-weight:600;color:#888;margin-bottom:5px;text-transform:uppercase">'+alunosList.length+' aluno(s)</div>';
+        alunosList.forEach(function(a){
+          var facAval='';
+          if(facRow&&facRow.avalAlunos&&facRow.avalAlunos[a.proc]){
+            var fa=facRow.avalAlunos[a.proc];
+            facAval=' <span class="sbadge sf" style="font-size:10px">Fac: '+(fa.mencao||'—')+'</span>';
+          }
+          h+='<div style="font-size:12px;color:#555;padding:1px 0">'+(a.proc?'<strong>'+a.proc+'</strong> — ':'')+a.nome+facAval+'</div>';
+        });
+      }
       h+='</div>';
     }
 
