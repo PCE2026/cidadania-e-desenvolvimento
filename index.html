@@ -249,17 +249,32 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#F5F4F0;color:#1a
         </div>
         <div class="field"><label>Especificação</label><input type="text" id="r-espaco-det" placeholder="Ex: com projetor, 60 lugares..."></div>
       </div>
-      <div class="field"><label>Materiais necessários</label>
-        <div class="box">
+      <div class="field" id="r-mats-field">
+        <label>Materiais necessários <span id="r-mats-prazo" style="font-size:11px;font-weight:400;color:#888">(até 8 de janeiro de 2027)</span></label>
+        <div class="box" id="r-mats-box">
           <div class="mat-wrap">
             <table class="mat-tbl">
               <thead><tr><th style="width:150px">Quantidade</th><th>Material / Produto</th><th style="width:38px"></th></tr></thead>
               <tbody id="r-mats"><tr><td><input type="text" placeholder="Ex: 30 unidades"></td><td><input type="text" placeholder="Ex: Folhas A4"></td><td><button class="btn-rm" onclick="rmMat(this)">✕</button></td></tr></tbody>
             </table>
           </div>
-          <button class="btn-add" onclick="addMat()">+ Adicionar material</button>
+          <button class="btn-add" id="r-mats-add" onclick="addMat()">+ Adicionar material</button>
         </div>
       </div>
+      <script>
+      (function(){
+        var prazo=new Date('2027-01-08T23:59:59');
+        if(new Date()>prazo){
+          var box=document.getElementById('r-mats-box');
+          if(box){
+            box.style.opacity='0.45';
+            box.style.pointerEvents='none';
+            var sp=document.getElementById('r-mats-prazo');
+            if(sp){ sp.textContent='(prazo encerrado — 8 de janeiro de 2027)'; sp.style.color='#c0392b'; }
+          }
+        }
+      })();
+      </script>
       <div class="field"><label>A atividade é aberta a outras turmas?</label>
         <div class="rgroup" id="r-abertura">
           <label class="ropt" onclick="selRopt(this,'abertura');showEl('r-anos-f',false)"><input type="radio" name="abertura"> Aberta a todas as turmas</label>
@@ -419,10 +434,13 @@ function selFac(el, tipo){
   if(tipo === 'dt'){
     nomeF.style.display = 'none';
     nomeI.value = 'Diretor(a) de Turma';
-  } else {
+  } else if(tipo === 'prof'){
     nomeF.style.display = 'block';
     nomeI.value = '';
-    nomeI.placeholder = tipo === 'prof' ? 'Nome do(a) professor(a)' : 'Nome do(a) facilitador(a)';
+    nomeI.placeholder = 'Nome do(a) professor(a)';
+  } else {
+    nomeF.style.display = 'none';
+    nomeI.value = '';
   }
 }
 function pickData(el, val){
