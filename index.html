@@ -185,15 +185,20 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#F5F4F0;color:#1a
       <div class="divider"></div>
       <div class="stitle">Facilitador(a)</div>
       <div class="field">
-        <label>Nome do(a) facilitador(a)</label>
+        <label>Quem orienta o projeto?</label>
         <div class="rgroup" id="fac-group" style="margin-bottom:10px">
           <label class="ropt" onclick="selFac(this,'dt')"><input type="radio" name="facilitador"> Diretor(a) de Turma</label>
           <label class="ropt" onclick="selFac(this,'prof')"><input type="radio" name="facilitador"> Outro(a) professor(a) da turma</label>
-          <label class="ropt" onclick="selFac(this,'outro')"><input type="radio" name="facilitador"> Facilitador fora do Conselho de Turma</label>
         </div>
+        <input type="hidden" id="r-prof" value="">
         <div id="fac-nome-f" style="display:none">
-          <p style="font-size:13px;color:#555;margin-bottom:6px">Tens também à tua disposição no Agrupamento Artistas e voluntários que funcionam na sala B24.</p>
-          <input type="text" id="r-prof" placeholder="Nome completo">
+          <div class="field" style="margin-bottom:8px"><label>Nome do(a) professor(a) <span class="req">*</span></label><input type="text" id="r-prof-nome" placeholder="Nome completo"></div>
+        </div>
+        <div id="fac-extras-f" style="display:none">
+          <div class="field" style="margin-bottom:8px"><label>Outros professores do conselho de turma envolvidos</label><input type="text" id="r-outros-profs" placeholder="Ex: Prof. Ana Silva, Prof. João Costa"></div>
+        </div>
+        <div id="fac-discs-f" style="display:none">
+          <div class="field" style="margin-bottom:0"><label>Disciplinas envolvidas</label><input type="text" id="r-disciplinas" placeholder="Ex: Português, Matemática, Educação Física"></div>
         </div>
       </div>
       <div class="divider"></div>
@@ -430,17 +435,19 @@ function selFac(el, tipo){
   document.querySelectorAll('#fac-group .ropt').forEach(function(r){ r.classList.remove('chk'); });
   el.classList.add('chk');
   var nomeF = document.getElementById('fac-nome-f');
-  var nomeI = document.getElementById('r-prof');
+  var extrasF = document.getElementById('fac-extras-f');
+  var discsF = document.getElementById('fac-discs-f');
+  var profHidden = document.getElementById('r-prof');
   if(tipo === 'dt'){
     nomeF.style.display = 'none';
-    nomeI.value = 'Diretor(a) de Turma';
+    extrasF.style.display = 'block';
+    discsF.style.display = 'block';
+    profHidden.value = 'Diretor(a) de Turma';
   } else if(tipo === 'prof'){
     nomeF.style.display = 'block';
-    nomeI.value = '';
-    nomeI.placeholder = 'Nome do(a) professor(a)';
-  } else {
-    nomeF.style.display = 'none';
-    nomeI.value = '';
+    extrasF.style.display = 'none';
+    discsF.style.display = 'block';
+    profHidden.value = '';
   }
 }
 function pickData(el, val){
@@ -603,11 +610,18 @@ function submitProjeto(){
   btn.disabled=true; btn.textContent='⏳ A registar...';
   var facTipoEl=document.querySelector('#fac-group .ropt.chk input[type="radio"]');
   var facTipoLabel=facTipoEl?facTipoEl.closest('.ropt').textContent.trim():'';
-  var facilTipo=facTipoLabel.indexOf('Diretor')>=0?'dt':(facTipoLabel.indexOf('professor')>=0?'prof':'outro');
+  var facilTipo=facTipoLabel.indexOf('Diretor')>=0?'dt':'prof';
+  // para 'prof' o nome vem do campo visível; para 'dt' já está preenchido no hidden
+  if(facilTipo==='prof'){
+    var nomeProf=document.getElementById('r-prof-nome')?document.getElementById('r-prof-nome').value.trim():'';
+    document.getElementById('r-prof').value=nomeProf;
+  }
+  var outrosProfs=document.getElementById('r-outros-profs')?document.getElementById('r-outros-profs').value.trim():'';
+  var disciplinas=document.getElementById('r-disciplinas')?document.getElementById('r-disciplinas').value.trim():'';
   var proj={
     id:Date.now(), nome:nome, tipo:tipo, turma:turma, desc:desc, curso:curso,
     ano:anoAtual, data:data, prof:document.getElementById('r-prof').value.trim(),
-    facilTipo:facilTipo,
+    facilTipo:facilTipo, outrosProfs:outrosProfs, disciplinas:disciplinas,
     contactoEmail:email, contactoTelm:telm, alunos:alunos, mats:getMats(),
     espaco:document.getElementById('r-espaco').value,
     espacoDet:document.getElementById('r-espaco-det').value.trim(),
@@ -621,11 +635,11 @@ function submitProjeto(){
   });
 }
 function resetForm(){
-  ['r-nome','r-desc','r-prof','r-email','r-telm','r-espaco-det','r-conv-nome','r-conv-obs','r-anos','r-outra'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+  ['r-nome','r-desc','r-prof','r-prof-nome','r-outros-profs','r-disciplinas','r-email','r-telm','r-espaco-det','r-conv-nome','r-conv-obs','r-anos','r-outra'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
   ['r-tipo','r-turma','r-espaco','r-curso','r-conv-tipo'].forEach(function(id){ document.getElementById(id).value=''; });
   document.querySelectorAll('.chip').forEach(function(c){ c.classList.remove('sel'); });
   document.querySelectorAll('#fac-group .ropt').forEach(function(r){ r.classList.remove('chk'); });
-  showEl('fac-nome-f', false);
+  showEl('fac-nome-f', false); showEl('fac-extras-f', false); showEl('fac-discs-f', false);
   document.querySelectorAll('.ropt').forEach(function(r){ r.classList.remove('chk'); });
   document.querySelectorAll('.dchip').forEach(function(d){ d.classList.remove('sel-d'); });
   showEl('r-outra-f',false); showEl('r-anos-f',false); showEl('r-conv-det',false);
@@ -839,6 +853,8 @@ function exportDT(){
             'Nome do projeto':p.nome||'',
             'Tipo de atividade':p.tipo||'',
             'Domínios C&D':p.doms||'',
+            'Disciplinas envolvidas':p.disciplinas||'',
+            'Outros professores':p.outrosProfs||'',
             'Descrição do projeto':p.desc||'',
             'Data de realização':fmtData(p.data),
             'Facilitador(a)':p.prof||'',
@@ -857,6 +873,7 @@ function exportDT(){
           'N.º Processo':'','Nome do aluno':'',
           'Turma':p.turma||dtTurma,'Nome do projeto':p.nome||'',
           'Tipo de atividade':p.tipo||'','Domínios C&D':p.doms||'',
+          'Disciplinas envolvidas':p.disciplinas||'','Outros professores':p.outrosProfs||'',
           'Descrição do projeto':p.desc||'','Data de realização':fmtData(p.data),
           'Facilitador(a)':p.prof||'','Parceiro / Convidado':p.convidado||'',
           'Facilitador externo':facNome,'Data assunção facilitador':facData,
@@ -869,7 +886,7 @@ function exportDT(){
     });
     if(!rows.length){ alert('Não há projetos para exportar.'); return; }
     var ws=XLSX.utils.json_to_sheet(rows);
-    ws['!cols']=[{wch:12},{wch:28},{wch:8},{wch:30},{wch:22},{wch:40},{wch:40},{wch:16},{wch:28},{wch:30},{wch:25},{wch:20},{wch:40},{wch:25},{wch:26},{wch:40}];
+    ws['!cols']=[{wch:12},{wch:28},{wch:8},{wch:30},{wch:22},{wch:40},{wch:35},{wch:35},{wch:40},{wch:16},{wch:28},{wch:30},{wch:25},{wch:20},{wch:40},{wch:25},{wch:26},{wch:40}];
     var wb=XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb,ws,'Projetos '+dtTurma);
     XLSX.writeFile(wb,'CD_'+dtTurma.replace(/[^a-zA-Z0-9]/g,'_')+'_projetos.xlsx');
@@ -981,13 +998,28 @@ function renderDT(projList,particList,facList){
     }
 
     // desc expandível
-    if(row.desc||row.doms){
+    if(row.desc||row.doms||row.disciplinas||row.outrosProfs){
       h+='<div style="margin-top:8px">';
       h+='<button class="btn-expand" onclick="var d=this.nextElementSibling;d.style.display=d.style.display===\'none\'?\'block\':\'none\'">+ Ver detalhes</button>';
       h+='<div class="detail-box" style="display:none">';
       if(row.desc) h+='<div><strong>Descrição:</strong> '+row.desc+'</div>';
-      if(row.doms) h+='<div style="margin-top:4px"><strong>Domínios:</strong> '+row.doms+'</div>';
+      if(row.doms) h+='<div style="margin-top:4px"><strong>Dimensões:</strong> '+row.doms+'</div>';
+      if(row.disciplinas) h+='<div style="margin-top:4px"><strong>Disciplinas envolvidas:</strong> '+row.disciplinas+'</div>';
+      if(row.outrosProfs) h+='<div style="margin-top:4px"><strong>Outros professores:</strong> '+row.outrosProfs+'</div>';
       h+='</div></div>';
+    }
+
+    // botão solicitar facilitador externo
+    var jaSolicitou=row.pedidoFac===true||row.pedidoFac==='true'||row.pedidoFac==='TRUE';
+    var jaTemFac=facRow&&facRow.nomeFac;
+    if(!jaTemFac){
+      h+='<div style="margin-top:8px">';
+      if(jaSolicitou){
+        h+='<div style="font-size:12px;color:#534AB7;font-weight:600;padding:6px 0">🕐 Pedido de facilitador externo enviado — aguarda resposta.</div>';
+      } else {
+        h+='<button style="font-size:12px;padding:6px 12px;border:1px solid #AFA9EC;background:#F5F4FA;color:#534AB7;border-radius:7px;cursor:pointer;font-family:inherit;font-weight:600" onclick="solicitarFac(this,\''+row.id+'\',\''+encodeURIComponent(row.nome||'')+'\',\''+encodeURIComponent(row.turma||dtTurma)+'\')">🤝 Solicitar facilitador externo</button>';
+      }
+      h+='</div>';
     }
 
     // botão avaliação + opção de aceitar avaliação do facilitador
@@ -1057,6 +1089,23 @@ function aceitarAvalFac(btn,id,mencao,obs,turma,ano,nome,tipo,data,prof,curso){
     btn.disabled=false; btn.textContent='✓ Aceitar avaliação do facilitador';
     alert(ok?'✅ Avaliação do facilitador aceite e guardada!':'✅ Guardado.\n⚠️ Verifique a ligação.');
     carregarDT();
+  });
+}
+
+function solicitarFac(btn, id, nomeEnc, turmaEnc){
+  var nome=decodeURIComponent(nomeEnc); var turma=decodeURIComponent(turmaEnc);
+  if(!confirm('Confirmas que pretendes solicitar um facilitador externo para o projeto "'+nome+'"?\n\nDepois de confirmado, o projeto ficará visível na área dos facilitadores externos.')){ return; }
+  btn.disabled=true; btn.textContent='⏳ A enviar pedido...';
+  sheetPost('pedidoFac', {id:id, turma:turma, pedidoFac:true}, function(ok){
+    btn.disabled=false;
+    if(ok){
+      btn.textContent='🕐 Pedido enviado — aguarda resposta.';
+      btn.style.background='#EAF3DE'; btn.style.color='#27500A'; btn.style.borderColor='#B6D98A';
+      btn.onclick=null;
+    } else {
+      btn.textContent='🤝 Solicitar facilitador externo';
+      alert('⚠️ Não foi possível enviar o pedido. Verifica a ligação e tenta novamente.');
+    }
   });
 }
 
@@ -1153,11 +1202,9 @@ function carregarFac(tentativa){
 
 function renderFac(projList, facList){
   var cont=document.getElementById('fac-content');
-  // Só mostrar projetos cujo facilTipo é 'outro' (facilitador externo)
-  // Registos antigos sem facilTipo: mostrar apenas se prof não é DT
+  // Só mostrar projetos onde o DT solicitou facilitador externo
   projList=projList.filter(function(row){
-    if(row.facilTipo) return row.facilTipo==='outro';
-    return row.prof!=='Diretor(a) de Turma';
+    return row.pedidoFac===true||row.pedidoFac==='true'||row.pedidoFac==='TRUE';
   });
   if(!projList.length){
     cont.innerHTML='<div class="empty">📁 Não há projetos disponíveis para facilitadores externos.</div>';
