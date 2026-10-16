@@ -668,8 +668,15 @@ function renderEditarProjetos(projetos, proc, turma, container, facList){
     container.innerHTML='<div style="font-size:13px;color:#888;padding:8px 0">Não foram encontrados projetos para esta turma.</div>';
     return;
   }
-  var h='<div style="font-size:13px;font-weight:600;color:#555;margin-bottom:8px">Projetos da turma '+turma+' — identifica o teu projeto:</div>';
-  projetos.forEach(function(p){
+  var meusProjetos=projetos.filter(function(p){
+    return (p.alunos||[]).some(function(a){ return String(a.proc)===String(proc); });
+  });
+  if(!meusProjetos.length){
+    container.innerHTML='<div style="font-size:13px;color:#888;padding:8px 0">Não foram encontrados projetos com o número de processo '+proc+' na turma '+turma+'. Confirma o número de processo ou o registo do projeto.</div>';
+    return;
+  }
+  var h='<div style="font-size:13px;font-weight:600;color:#555;margin-bottom:8px">Os teus projetos na turma '+turma+':</div>';
+  meusProjetos.forEach(function(p){
     var facRow=facList.find(function(f){ return String(f.idProjeto)===String(p.id); });
     h+='<div class="pcard" style="border-color:#AFA9EC">';
     h+='<div class="ptitle">'+(p.nome||'')+'</div>';
